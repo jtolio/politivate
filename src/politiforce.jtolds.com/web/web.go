@@ -2,10 +2,10 @@ package web
 
 import (
 	"net/http"
-
-	"github.com/jtolds/webhelp"
 )
 
 func init() {
-	http.HandleFunc("/", webhelp.DirMux{})
+	http.HandleFunc("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hello"))
+	}))
 }
