@@ -10,7 +10,7 @@ class BackHandler extends Component {
     this.backPress = this.backPress.bind(this);
   }
 
-  backPress(e) {
+  backPress() {
     if (this.props.route.hasOwnProperty("_isRoot")) {
       return false;
     }
@@ -28,7 +28,7 @@ class BackHandler extends Component {
 
   render() {
     return (<this.props.route.component navigator={this.props.navigator}
-               {...this.props.route.passProps}/>);
+               backPress={this.backPress} {...this.props.route.passProps}/>);
   }
 }
 
@@ -43,8 +43,7 @@ export default class AppRoot extends Component {
   }
 
   render() {
-    return (<Navigator initialRoute={{component: Tabs, name: "tabs",
-                                      _isRoot: true}}
+    return (<Navigator initialRoute={{component: Tabs, _isRoot: true}}
                        renderScene={this.renderScene} />);
   }
 }
