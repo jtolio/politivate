@@ -1,3 +1,12 @@
 [submodule "src/github.com/jtolds/webhelp"]
 	path = src/github.com/jtolds/webhelp
 	url = https://github.com/jtolds/webhelp.git
+[submodule "src/github.com/spacemonkeygo/errors"]
+	path = src/github.com/spacemonkeygo/errors
+	url = https://github.com/spacemonkeygo/errors
+[submodule "src/golang.org/x/net"]
+	path = src/golang.org/x/net
+	url = https://github.com/golang/net.git
+[submodule "src/github.com/spacemonkeygo/spacelog"]
+	path = src/github.com/spacemonkeygo/spacelog
+	url = https://github.com/spacemonkeygo/spacelog
