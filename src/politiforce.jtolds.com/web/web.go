@@ -10,11 +10,13 @@ import (
 )
 
 type Cause struct {
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 	Icon string `json:"icon"`
 }
 
 type Challenge struct {
+	Id         int    `json:"id"`
 	Cause      Cause  `json:"cause"`
 	Title      string `json:"title"`
 	ShortDesc  string `json:"short_desc"`
@@ -30,11 +32,13 @@ var (
 	now = time.Now()
 
 	SierraClub = Cause{
+		Id:   1,
 		Name: "Sierra Club",
 		Icon: "http://66.media.tumblr.com/avatar_cdbb9208e450_128.png"}
 
 	challengeData = []Challenge{
 		{
+			Id:         2,
 			Cause:      SierraClub,
 			Title:      "Call your local representative",
 			ShortDesc:  "We need you to tell them how important the environment is!",
@@ -44,6 +48,7 @@ var (
 			Points:     10,
 		},
 		{
+			Id:         3,
 			Cause:      SierraClub,
 			Title:      "Show up to town hall",
 			ShortDesc:  "We need you to tell them how important the environment is!",
