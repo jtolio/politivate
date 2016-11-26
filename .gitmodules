@@ -1,0 +1,3 @@
+[submodule "src/github.com/jtolds/webhelp"]
+	path = src/github.com/jtolds/webhelp
+	url = https://github.com/jtolds/webhelp.git
