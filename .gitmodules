@@ -10,3 +10,27 @@
 [submodule "src/github.com/spacemonkeygo/spacelog"]
 	path = src/github.com/spacemonkeygo/spacelog
 	url = https://github.com/spacemonkeygo/spacelog
+[submodule "src/github.com/jtolds/webhelp-oauth2"]
+	path = src/github.com/jtolds/webhelp-oauth2
+	url = https://github.com/jtolds/webhelp-oauth2
+[submodule "src/golang.org/x/crypto"]
+	path = src/golang.org/x/crypto
+	url = https://github.com/golang/crypto
+[submodule "src/golang.org/x/oauth2"]
+	path = src/golang.org/x/oauth2
+	url = https://github.com/golang/oauth2
+[submodule "src/google.golang.org/appengine"]
+	path = src/google.golang.org/appengine
+	url = https://github.com/golang/appengine
+[submodule "src/github.com/golang/protobuf"]
+	path = src/github.com/golang/protobuf
+	url = https://github.com/golang/protobuf/
+[submodule "src/cloud.google.com/go"]
+	path = src/cloud.google.com/go
+	url = https://github.com/GoogleCloudPlatform/gcloud-golang
+[submodule "src/github.com/googleapis/gax-go"]
+	path = src/github.com/googleapis/gax-go
+	url = https://github.com/googleapis/gax-go
+[submodule "src/google.golang.org/grpc"]
+	path = src/google.golang.org/grpc
+	url = https://github.com/grpc/grpc-go

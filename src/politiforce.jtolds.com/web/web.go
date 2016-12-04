@@ -2,12 +2,23 @@ package web
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp-oauth2"
+	"github.com/jtolds/webhelp/sessions"
 	"golang.org/x/net/context"
+	xoauth2 "golang.org/x/oauth2"
 )
+
+func Twitter(conf oauth2.Config) *oauth2.Provider {
+	return &oauth2.Provider{
+		Name:   "twitter",
+		Config: xoauth2.Config(conf)}
+}
 
 type Cause struct {
 	Id   int    `json:"id"`
@@ -74,8 +85,62 @@ func challenges(ctx context.Context,
 	return err
 }
 
+func settings(ctx context.Context,
+	w webhelp.ResponseWriter, r *http.Request) error {
+	_, err := w.Write([]byte("settings!"))
+	return err
+}
+
+type LoginHandler struct {
+	Group *oauth2.ProviderGroup
+}
+
+func (l *LoginHandler) HandleHTTP(ctx context.Context,
+	w webhelp.ResponseWriter, r *http.Request) error {
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprintf(w, `<h3>Login required</h3>`)
+	fmt.Fprintf(w, "<p>Log in with:<ul>")
+	for name, provider := range l.Group.Providers() {
+		fmt.Fprintf(w, `<li><a href="%s">%s</a></li>`,
+			provider.LoginURL(r.FormValue("redirect_to"), false), name)
+	}
+	fmt.Fprintf(w, "</ul></p>")
+	return nil
+}
+
 func init() {
-	http.Handle("/", webhelp.Base{Root: webhelp.DirMux{
-		"challenges": webhelp.HandlerFunc(challenges),
-	}})
+	store := sessions.NewCookieStore(secret)
+	group, err := oauth2.NewProviderGroup(
+		"oauth", "/auth", oauth2.RedirectURLs{},
+		oauth2.Github(oauth2.Config{
+			ClientID:     githubClientId,
+			ClientSecret: githubClientSecret}),
+		oauth2.Google(oauth2.Config{
+			ClientID:     googleClientId,
+			ClientSecret: googleClientSecret}),
+		Twitter(oauth2.Config{
+			ClientID:     twitterClientId,
+			ClientSecret: twitterClientSecret}),
+		oauth2.Facebook(oauth2.Config{
+			ClientID:     facebookClientId,
+			ClientSecret: facebookClientSecret,
+			RedirectURL:  "https://politiforce-150719.appspot.com/auth/facebook/_cb"}))
+	if err != nil {
+		panic(err)
+	}
+
+	http.Handle("/", webhelp.Base{Root: webhelp.LoggingHandler(
+		sessions.HandlerWithStore(store,
+			webhelp.DirMux{
+				"challenges": webhelp.HandlerFunc(challenges),
+				"settings": group.LoginRequired(webhelp.HandlerFunc(settings),
+					func(redirect_to string) string {
+						return "/login?" + url.Values{
+							"redirect_to": {redirect_to}}.Encode()
+					}),
+				"auth":  group,
+				"login": &LoginHandler{Group: group},
+			},
+		),
+	)})
 }
