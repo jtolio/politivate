@@ -14,7 +14,7 @@ export default class Tabs extends Component {
     return (
       <View>
         <View style={styles.appheader} alignItems="center">
-          <Text style={styles.appheadertext}>PolitiForce</Text>
+          <Text style={styles.appheadertext}>Politivate</Text>
         </View>
         <ScrollableTabView
             tabBarPosition="bottom"

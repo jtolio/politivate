@@ -1,4 +1,4 @@
-package com.politiforce;
+package org.politivate;
 
 import android.app.Application;
 import android.util.Log;

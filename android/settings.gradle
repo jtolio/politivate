@@ -1,4 +1,4 @@
-rootProject.name = 'politiforce'
+rootProject.name = 'politivate'
 
 include ':app'
 include ':react-native-vector-icons'
