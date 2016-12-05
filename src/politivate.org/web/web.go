@@ -124,7 +124,7 @@ func init() {
 		oauth2.Facebook(oauth2.Config{
 			ClientID:     facebookClientId,
 			ClientSecret: facebookClientSecret,
-			RedirectURL:  "https://politiforce-150719.appspot.com/auth/facebook/_cb"}))
+			RedirectURL:  "https://politivate.org/auth/facebook/_cb"}))
 	if err != nil {
 		panic(err)
 	}
