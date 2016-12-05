@@ -15,6 +15,10 @@ import (
 )
 
 func Twitter(conf oauth2.Config) *oauth2.Provider {
+	conf.Endpoint = xoauth2.Endpoint{
+		AuthURL:  "https://api.twitter.com/oauth2/token",
+		TokenURL: "https://api.twitter.com/oauth/request_token",
+	}
 	return &oauth2.Provider{
 		Name:   "twitter",
 		Config: xoauth2.Config(conf)}
@@ -117,11 +121,12 @@ func init() {
 			ClientSecret: googleClientSecret}),
 		Twitter(oauth2.Config{
 			ClientID:     twitterClientId,
-			ClientSecret: twitterClientSecret}),
+			ClientSecret: twitterClientSecret,
+			RedirectURL:  "https://www.politivate.org/auth/twitter/_cb"}),
 		oauth2.Facebook(oauth2.Config{
 			ClientID:     facebookClientId,
 			ClientSecret: facebookClientSecret,
-			RedirectURL:  "https://politivate.org/auth/facebook/_cb"}))
+			RedirectURL:  "https://www.politivate.org/auth/facebook/_cb"}))
 	if err != nil {
 		panic(err)
 	}
