@@ -112,9 +112,6 @@ func init() {
 	store := sessions.NewCookieStore(secret)
 	group, err := oauth2.NewProviderGroup(
 		"oauth", "/auth", oauth2.RedirectURLs{},
-		oauth2.Github(oauth2.Config{
-			ClientID:     githubClientId,
-			ClientSecret: githubClientSecret}),
 		oauth2.Google(oauth2.Config{
 			ClientID:     googleClientId,
 			ClientSecret: googleClientSecret}),
@@ -130,7 +127,7 @@ func init() {
 	}
 
 	http.Handle("/", webhelp.Base{Root: webhelp.LoggingHandler(
-		sessions.HandlerWithStore(store,
+		RequireHTTPS("www.politivate.org", sessions.HandlerWithStore(store,
 			webhelp.DirMux{
 				"challenges": webhelp.HandlerFunc(challenges),
 				"settings": group.LoginRequired(webhelp.HandlerFunc(settings),
@@ -141,6 +138,18 @@ func init() {
 				"auth":  group,
 				"login": &LoginHandler{Group: group},
 			},
-		),
-	)})
+		)))})
+}
+
+func RequireHTTPS(host string, handler webhelp.Handler) webhelp.Handler {
+	return webhelp.HandlerFunc(func(ctx context.Context,
+		w webhelp.ResponseWriter, r *http.Request) error {
+		if r.URL.Scheme != "https" || r.URL.Host != host {
+			u := *r.URL
+			u.Scheme = "https"
+			u.Host = host
+			return webhelp.Redirect(w, r, u.String())
+		}
+		return handler.HandleHTTP(ctx, w, r)
+	})
 }
