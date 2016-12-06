@@ -12,6 +12,7 @@ import (
 	"github.com/jtolds/webhelp/sessions"
 	"golang.org/x/net/context"
 	xoauth2 "golang.org/x/oauth2"
+	"google.golang.org/appengine"
 )
 
 func Twitter(conf oauth2.Config) *oauth2.Provider {
@@ -149,6 +150,7 @@ func init() {
 func RequireHTTPS(host string, handler webhelp.Handler) webhelp.Handler {
 	return webhelp.HandlerFunc(func(ctx context.Context,
 		w webhelp.ResponseWriter, r *http.Request) error {
+		ctx = appengine.WithContext(ctx, r)
 		if r.URL.Scheme != "https" || r.URL.Host != host {
 			u := *r.URL
 			u.Scheme = "https"
