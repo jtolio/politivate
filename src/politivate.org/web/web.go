@@ -11,19 +11,8 @@ import (
 	"github.com/jtolds/webhelp-oauth2"
 	"github.com/jtolds/webhelp/sessions"
 	"golang.org/x/net/context"
-	xoauth2 "golang.org/x/oauth2"
 	"google.golang.org/appengine"
 )
-
-func Twitter(conf oauth2.Config) *oauth2.Provider {
-	conf.Endpoint = xoauth2.Endpoint{
-		AuthURL:  "https://api.twitter.com/oauth2/token",
-		TokenURL: "https://api.twitter.com/oauth/request_token",
-	}
-	return &oauth2.Provider{
-		Name:   "twitter",
-		Config: xoauth2.Config(conf)}
-}
 
 type Cause struct {
 	Id   int    `json:"id"`
@@ -90,12 +79,6 @@ func challenges(ctx context.Context,
 	return err
 }
 
-func settings(ctx context.Context,
-	w webhelp.ResponseWriter, r *http.Request) error {
-	_, err := w.Write([]byte("settings!"))
-	return err
-}
-
 type LoginHandler struct {
 	Group *oauth2.ProviderGroup
 }
@@ -113,17 +96,30 @@ func (l *LoginHandler) HandleHTTP(ctx context.Context,
 	return nil
 }
 
+type SettingsHandler struct {
+	Group *oauth2.ProviderGroup
+}
+
+func (l *SettingsHandler) HandleHTTP(ctx context.Context,
+	w webhelp.ResponseWriter, r *http.Request) error {
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprintf(w, `<h3>Logged in!</h3>`)
+	fmt.Fprintf(w, "<p>Settings!</p><p><ul>")
+	fmt.Fprintf(w, `<li><a href="%s">Logout</a></li>`,
+		l.Group.LogoutAllURL("/"))
+	fmt.Fprintf(w, "</ul></p>")
+	return nil
+}
+
 func init() {
 	store := sessions.NewCookieStore(secret)
 	group, err := oauth2.NewProviderGroup(
-		"oauth", "/auth", oauth2.RedirectURLs{},
+		"auth", "/auth", oauth2.RedirectURLs{},
 		oauth2.Google(oauth2.Config{
 			ClientID:     googleClientId,
-			ClientSecret: googleClientSecret}),
-		Twitter(oauth2.Config{
-			ClientID:     twitterClientId,
-			ClientSecret: twitterClientSecret,
-			RedirectURL:  "https://www.politivate.org/auth/twitter/_cb"}),
+			ClientSecret: googleClientSecret,
+			Scopes:       []string{"profile", "email"},
+			RedirectURL:  "https://www.politivate.org/auth/google/_cb"}),
 		oauth2.Facebook(oauth2.Config{
 			ClientID:     facebookClientId,
 			ClientSecret: facebookClientSecret,
@@ -136,15 +132,32 @@ func init() {
 		RequireHTTPS("www.politivate.org", sessions.HandlerWithStore(store,
 			webhelp.DirMux{
 				"challenges": webhelp.HandlerFunc(challenges),
-				"settings": group.LoginRequired(webhelp.HandlerFunc(settings),
+				"settings": group.LoginRequired(&SettingsHandler{Group: group},
 					func(redirect_to string) string {
 						return "/login?" + url.Values{
 							"redirect_to": {redirect_to}}.Encode()
 					}),
 				"auth":  group,
 				"login": &LoginHandler{Group: group},
+				"legal": webhelp.DirMux{
+					"tos":     webhelp.HandlerFunc(tos),
+					"privacy": webhelp.HandlerFunc(privacy),
+				},
+				"": webhelp.RedirectHandler("/settings"),
 			},
 		)))})
+}
+
+func tos(ctx context.Context,
+	w webhelp.ResponseWriter, r *http.Request) error {
+	_, err := w.Write([]byte("tos"))
+	return err
+}
+
+func privacy(ctx context.Context,
+	w webhelp.ResponseWriter, r *http.Request) error {
+	_, err := w.Write([]byte("privacy"))
+	return err
 }
 
 func RequireHTTPS(host string, handler webhelp.Handler) webhelp.Handler {

@@ -36,6 +36,7 @@ type Session struct {
 type Store interface {
 	Load(r *http.Request, namespace string) (SessionData, error)
 	Save(w webhelp.ResponseWriter, namespace string, s SessionData) error
+	Clear(w webhelp.ResponseWriter, namespace string) error
 }
 
 type reqCtx struct {
@@ -106,4 +107,12 @@ func (s *Session) Save(w webhelp.ResponseWriter) error {
 		s.SessionData.New = false
 	}
 	return err
+}
+
+func (s *Session) Clear(w webhelp.ResponseWriter) error {
+	// clear out the cache
+	for name := range s.Values {
+		delete(s.Values, name)
+	}
+	return s.store.Clear(w, s.namespace)
 }

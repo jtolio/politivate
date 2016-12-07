@@ -28,3 +28,9 @@
 [submodule "src/google.golang.org/grpc"]
 	path = src/google.golang.org/grpc
 	url = https://github.com/grpc/grpc-go
+[submodule "src/github.com/markbates/goth"]
+	path = src/github.com/markbates/goth
+	url = https://github.com/markbates/goth
+[submodule "src/github.com/mrjones/oauth"]
+	path = src/github.com/mrjones/oauth
+	url = https://github.com/mrjones/oauth
