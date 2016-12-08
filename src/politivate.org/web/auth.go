@@ -36,7 +36,7 @@ func NewProviderGroup(sessionNamespace string, groupBaseURL string,
 
 	g.mux = webhelp.DirMux{
 		"all": webhelp.DirMux{"logout": webhelp.Exact(
-			webhelp.HandlerFunc(g.logoutAll))},
+			http.HandlerFunc(g.logoutAll))},
 	}
 
 	for _, provider := range providers {
@@ -59,9 +59,8 @@ func NewProviderGroup(sessionNamespace string, groupBaseURL string,
 	return g, nil
 }
 
-func (g *ProviderGroup) HandleHTTP(ctx context.Context,
-	w webhelp.ResponseWriter, r *http.Request) error {
-	return g.mux.HandleHTTP(ctx, w, r)
+func (g *ProviderGroup) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	g.mux.ServeHTTP(w, r)
 }
 
 func (g *ProviderGroup) Routes(
@@ -69,7 +68,7 @@ func (g *ProviderGroup) Routes(
 	webhelp.Routes(g.mux, cb)
 }
 
-var _ webhelp.Handler = (*ProviderGroup)(nil)
+var _ http.Handler = (*ProviderGroup)(nil)
 var _ webhelp.RouteLister = (*ProviderGroup)(nil)
 
 // Handler returns a specific ProviderHandler given the Provider name
@@ -129,7 +128,7 @@ func (g *ProviderGroup) LoggedIn(ctx context.Context) bool {
 // should log out of just a specific provider, use the Logout method
 // on the associated ProviderHandler.
 func (g *ProviderGroup) LogoutAll(ctx context.Context,
-	w webhelp.ResponseWriter) error {
+	w http.ResponseWriter) error {
 	var errs errors.ErrorGroup
 	for _, handler := range g.handlers {
 		errs.Add(handler.Logout(ctx, w))
@@ -137,17 +136,18 @@ func (g *ProviderGroup) LogoutAll(ctx context.Context,
 	return errs.Finalize()
 }
 
-func (g *ProviderGroup) logoutAll(ctx context.Context,
-	w webhelp.ResponseWriter, r *http.Request) error {
+func (g *ProviderGroup) logoutAll(w http.ResponseWriter, r *http.Request) {
+	ctx := webhelp.Context(r)
 	err := g.LogoutAll(ctx, w)
 	if err != nil {
-		return err
+		webhelp.HandleError(w, r, err)
+		return
 	}
 	redirectTo := r.FormValue("redirect_to")
 	if redirectTo == "" {
 		redirectTo = g.urls.DefaultLogoutURL
 	}
-	return webhelp.Redirect(w, r, redirectTo)
+	webhelp.Redirect(w, r, redirectTo)
 }
 
 // LoginRequired is a middleware for redirecting users to a login page if
@@ -156,14 +156,16 @@ func (g *ProviderGroup) logoutAll(ctx context.Context,
 // If you already know which provider a user should use, consider using
 // (*ProviderHandler).LoginRequired instead, which doesn't require a
 // loginRedirect URL.
-func (g *ProviderGroup) LoginRequired(h webhelp.Handler,
-	loginRedirect func(redirectTo string) (url string)) webhelp.Handler {
-	return webhelp.HandlerFunc(
-		func(ctx context.Context, w webhelp.ResponseWriter, r *http.Request) error {
+func (g *ProviderGroup) LoginRequired(h http.Handler,
+	loginRedirect func(redirectTo string) (url string)) http.Handler {
+	return webhelp.RouteHandlerFunc(h,
+		func(w http.ResponseWriter, r *http.Request) {
+			ctx := webhelp.Context(r)
 			if !g.LoggedIn(ctx) {
-				return webhelp.Redirect(w, r, loginRedirect(r.RequestURI))
+				webhelp.Redirect(w, r, loginRedirect(r.RequestURI))
+			} else {
+				h.ServeHTTP(w, r)
 			}
-			return h.HandleHTTP(ctx, w, r)
 		})
 }
 
@@ -192,15 +194,14 @@ func NewProviderHandler(provider goth.Provider, sessionNamespace string,
 		handlerBaseURL:   strings.TrimRight(handlerBaseURL, "/"),
 		urls:             urls}
 	h.mux = webhelp.DirMux{
-		"login":  webhelp.Exact(webhelp.HandlerFunc(h.login)),
-		"logout": webhelp.Exact(webhelp.HandlerFunc(h.logout)),
-		"_cb":    webhelp.Exact(webhelp.HandlerFunc(h.cb))}
+		"login":  webhelp.Exact(http.HandlerFunc(h.login)),
+		"logout": webhelp.Exact(http.HandlerFunc(h.logout)),
+		"_cb":    webhelp.Exact(http.HandlerFunc(h.cb))}
 	return h
 }
 
-func (p *ProviderHandler) HandleHTTP(ctx context.Context,
-	w webhelp.ResponseWriter, r *http.Request) error {
-	return p.mux.HandleHTTP(ctx, w, r)
+func (p *ProviderHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	p.mux.ServeHTTP(w, r)
 }
 
 func (p *ProviderHandler) Name() string { return p.provider.Name() }
@@ -215,7 +216,7 @@ func (o *ProviderHandler) Session(ctx context.Context) (*sessions.Session,
 // Logout prepares the request to log the user out of just this provider.
 // If you're using a ProviderGroup you may be interested in LogoutAll.
 func (o *ProviderHandler) Logout(ctx context.Context,
-	w webhelp.ResponseWriter) error {
+	w http.ResponseWriter) error {
 	session, err := o.Session(ctx)
 	if err != nil {
 		return err
@@ -237,8 +238,8 @@ func (o *ProviderHandler) LogoutURL(redirectTo string) string {
 		"redirect_to": {redirectTo}}.Encode()
 }
 
-func (o *ProviderHandler) login(ctx context.Context, w webhelp.ResponseWriter,
-	r *http.Request) error {
+func (o *ProviderHandler) login(w http.ResponseWriter, r *http.Request) {
+	ctx := webhelp.Context(r)
 
 	redirectTo := r.FormValue("redirect_to")
 	if redirectTo == "" {
@@ -247,23 +248,27 @@ func (o *ProviderHandler) login(ctx context.Context, w webhelp.ResponseWriter,
 
 	session, err := o.Session(ctx)
 	if err != nil {
-		return err
+		webhelp.HandleError(w, r, err)
+		return
 	}
 
 	if o.loggedIn(session) {
-		return webhelp.Redirect(w, r, redirectTo)
+		webhelp.Redirect(w, r, redirectTo)
+		return
 	}
 
 	state := newState()
 
 	sess, err := o.provider.BeginAuth(state)
 	if err != nil {
-		return err
+		webhelp.HandleError(w, r, err)
+		return
 	}
 
 	url, err := sess.GetAuthURL()
 	if err != nil {
-		return err
+		webhelp.HandleError(w, r, err)
+		return
 	}
 
 	session.Values = map[interface{}]interface{}{
@@ -274,29 +279,32 @@ func (o *ProviderHandler) login(ctx context.Context, w webhelp.ResponseWriter,
 	}
 	err = session.Save(w)
 	if err != nil {
-		return err
+		webhelp.HandleError(w, r, err)
+		return
 	}
 
-	return webhelp.Redirect(w, r, url)
+	webhelp.Redirect(w, r, url)
 }
 
-func (o *ProviderHandler) cb(ctx context.Context, w webhelp.ResponseWriter,
-	r *http.Request) error {
-
+func (o *ProviderHandler) cb(w http.ResponseWriter, r *http.Request) {
+	ctx := webhelp.Context(r)
 	session, err := o.Session(ctx)
 	if err != nil {
-		return err
+		webhelp.HandleError(w, r, err)
+		return
 	}
 
 	val, exists := session.Values["_state"]
 	existingState, correct := val.(string)
 	if !exists || !correct {
 		session.Clear(w)
-		return webhelp.ErrBadRequest.New("invalid session")
+		webhelp.HandleError(w, r, webhelp.ErrBadRequest.New("invalid session"))
+		return
 	}
 
 	if existingState != r.FormValue("state") {
-		return webhelp.ErrBadRequest.New("csrf detected")
+		webhelp.HandleError(w, r, webhelp.ErrBadRequest.New("csrf detected"))
+		return
 	}
 
 	val, exists = session.Values["_redirect_to"]
@@ -309,42 +317,47 @@ func (o *ProviderHandler) cb(ctx context.Context, w webhelp.ResponseWriter,
 	data, correct := val.(string)
 	if !exists || !correct {
 		session.Clear(w)
-		return webhelp.ErrBadRequest.New("invalid session")
+		webhelp.HandleError(w, r, webhelp.ErrBadRequest.New("invalid session"))
+		return
 	}
 
 	sess, err := o.provider.UnmarshalSession(data)
 	if err != nil {
 		session.Clear(w)
-		return err
+		webhelp.HandleError(w, r, err)
+		return
 	}
 
 	_, err = sess.Authorize(o.provider, r.URL.Query())
 	if err != nil {
 		session.Clear(w)
-		return err
+		webhelp.HandleError(w, r, err)
+		return
 	}
 
 	session.Values["_data"] = sess.Marshal()
 	session.Values["_logged_in"] = true
 	err = session.Save(w)
 	if err != nil {
-		return err
+		webhelp.HandleError(w, r, err)
+		return
 	}
 
-	return webhelp.Redirect(w, r, redirectTo)
+	webhelp.Redirect(w, r, redirectTo)
 }
 
-func (o *ProviderHandler) logout(ctx context.Context, w webhelp.ResponseWriter,
-	r *http.Request) error {
+func (o *ProviderHandler) logout(w http.ResponseWriter, r *http.Request) {
+	ctx := webhelp.Context(r)
 	err := o.Logout(ctx, w)
 	if err != nil {
-		return err
+		webhelp.HandleError(w, r, err)
+		return
 	}
 	redirectTo := r.FormValue("redirect_to")
 	if redirectTo == "" {
 		redirectTo = o.urls.DefaultLogoutURL
 	}
-	return webhelp.Redirect(w, r, redirectTo)
+	webhelp.Redirect(w, r, redirectTo)
 }
 
 func (o *ProviderHandler) loggedIn(session *sessions.Session) bool {
@@ -387,13 +400,15 @@ func (o *ProviderHandler) User(ctx context.Context) (goth.User, error) {
 // they aren't logged in yet. If you are using a ProviderGroup and don't know
 // which provider a user should use, consider using
 // (*ProviderGroup).LoginRequired instead
-func (o *ProviderHandler) LoginRequired(h webhelp.Handler) webhelp.Handler {
-	return webhelp.HandlerFunc(
-		func(ctx context.Context, w webhelp.ResponseWriter, r *http.Request) error {
+func (o *ProviderHandler) LoginRequired(h http.Handler) http.Handler {
+	return webhelp.RouteHandlerFunc(h,
+		func(w http.ResponseWriter, r *http.Request) {
+			ctx := webhelp.Context(r)
 			if o.LoggedIn(ctx) {
-				return h.HandleHTTP(ctx, w, r)
+				h.ServeHTTP(w, r)
+			} else {
+				webhelp.Redirect(w, r, o.LoginURL(r.RequestURI))
 			}
-			return webhelp.Redirect(w, r, o.LoginURL(r.RequestURI))
 		})
 }
 

@@ -34,3 +34,9 @@
 [submodule "src/github.com/mrjones/oauth"]
 	path = src/github.com/mrjones/oauth
 	url = https://github.com/mrjones/oauth
+[submodule "src/github.com/jtolds/webhelp"]
+	path = src/github.com/jtolds/webhelp
+	url = https://github.com/jtolds/webhelp
+[submodule "src/github.com/jtolds/webhelp-oauth2"]
+	path = src/github.com/jtolds/webhelp-oauth2
+	url = https://github.com/jtolds/webhelp-oauth2

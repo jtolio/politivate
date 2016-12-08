@@ -10,8 +10,6 @@ import (
 	"github.com/jtolds/webhelp"
 	"github.com/jtolds/webhelp-oauth2"
 	"github.com/jtolds/webhelp/sessions"
-	"golang.org/x/net/context"
-	"google.golang.org/appengine"
 )
 
 type Cause struct {
@@ -65,26 +63,24 @@ var (
 	}
 )
 
-func challenges(ctx context.Context,
-	w webhelp.ResponseWriter, r *http.Request) error {
+func challenges(w http.ResponseWriter, r *http.Request) {
 	data, err := json.MarshalIndent(map[string]interface{}{
 		"response": challengeData,
 	}, "", "  ")
 	if err != nil {
-		return err
+		webhelp.FatalError(err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	_, err = w.Write(data)
-	return err
+	webhelp.FatalError(err)
 }
 
 type LoginHandler struct {
 	Group *oauth2.ProviderGroup
 }
 
-func (l *LoginHandler) HandleHTTP(ctx context.Context,
-	w webhelp.ResponseWriter, r *http.Request) error {
+func (l *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	fmt.Fprintf(w, `<h3>Login required</h3>`)
 	fmt.Fprintf(w, "<p>Log in with:<ul>")
@@ -93,22 +89,19 @@ func (l *LoginHandler) HandleHTTP(ctx context.Context,
 			provider.LoginURL(r.FormValue("redirect_to"), false), name)
 	}
 	fmt.Fprintf(w, "</ul></p>")
-	return nil
 }
 
 type SettingsHandler struct {
 	Group *oauth2.ProviderGroup
 }
 
-func (l *SettingsHandler) HandleHTTP(ctx context.Context,
-	w webhelp.ResponseWriter, r *http.Request) error {
+func (l *SettingsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	fmt.Fprintf(w, `<h3>Logged in!</h3>`)
 	fmt.Fprintf(w, "<p>Settings!</p><p><ul>")
 	fmt.Fprintf(w, `<li><a href="%s">Logout</a></li>`,
 		l.Group.LogoutAllURL("/"))
 	fmt.Fprintf(w, "</ul></p>")
-	return nil
 }
 
 func init() {
@@ -128,10 +121,10 @@ func init() {
 		panic(err)
 	}
 
-	http.Handle("/", webhelp.Base{Root: webhelp.LoggingHandler(
+	http.Handle("/", webhelp.LoggingHandler(
 		RequireHTTPS("www.politivate.org", sessions.HandlerWithStore(store,
 			webhelp.DirMux{
-				"challenges": webhelp.HandlerFunc(challenges),
+				"challenges": http.HandlerFunc(challenges),
 				"settings": group.LoginRequired(&SettingsHandler{Group: group},
 					func(redirect_to string) string {
 						return "/login?" + url.Values{
@@ -140,36 +133,32 @@ func init() {
 				"auth":  group,
 				"login": &LoginHandler{Group: group},
 				"legal": webhelp.DirMux{
-					"tos":     webhelp.HandlerFunc(tos),
-					"privacy": webhelp.HandlerFunc(privacy),
+					"tos":     http.HandlerFunc(tos),
+					"privacy": http.HandlerFunc(privacy),
 				},
 				"": webhelp.RedirectHandler("/settings"),
 			},
-		)))})
+		))))
 }
 
-func tos(ctx context.Context,
-	w webhelp.ResponseWriter, r *http.Request) error {
-	_, err := w.Write([]byte("tos"))
-	return err
+func tos(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("tos"))
 }
 
-func privacy(ctx context.Context,
-	w webhelp.ResponseWriter, r *http.Request) error {
-	_, err := w.Write([]byte("privacy"))
-	return err
+func privacy(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("privacy"))
 }
 
-func RequireHTTPS(host string, handler webhelp.Handler) webhelp.Handler {
-	return webhelp.HandlerFunc(func(ctx context.Context,
-		w webhelp.ResponseWriter, r *http.Request) error {
-		ctx = appengine.WithContext(ctx, r)
-		if r.URL.Scheme != "https" || r.URL.Host != host {
-			u := *r.URL
-			u.Scheme = "https"
-			u.Host = host
-			return webhelp.Redirect(w, r, u.String())
-		}
-		return handler.HandleHTTP(ctx, w, r)
-	})
+func RequireHTTPS(host string, handler http.Handler) http.Handler {
+	return webhelp.RouteHandlerFunc(handler,
+		func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Scheme != "https" || r.URL.Host != host {
+				u := *r.URL
+				u.Scheme = "https"
+				u.Host = host
+				webhelp.Redirect(w, r, u.String())
+			} else {
+				handler.ServeHTTP(w, r)
+			}
+		})
 }
