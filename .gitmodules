@@ -40,3 +40,6 @@
 [submodule "src/github.com/jtolds/webhelp-oauth2"]
 	path = server/src/github.com/jtolds/webhelp-oauth2
 	url = https://github.com/jtolds/webhelp-oauth2
+[submodule "server/src/github.com/spacemonkeygo/flagfile"]
+	path = server/src/github.com/spacemonkeygo/flagfile
+	url = https://github.com/spacemonkeygo/flagfile
