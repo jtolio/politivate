@@ -1,42 +1,42 @@
 [submodule "src/github.com/spacemonkeygo/errors"]
-	path = src/github.com/spacemonkeygo/errors
+	path = server/src/github.com/spacemonkeygo/errors
 	url = https://github.com/spacemonkeygo/errors
 [submodule "src/golang.org/x/net"]
-	path = src/golang.org/x/net
+	path = server/src/golang.org/x/net
 	url = https://github.com/golang/net.git
 [submodule "src/github.com/spacemonkeygo/spacelog"]
-	path = src/github.com/spacemonkeygo/spacelog
+	path = server/src/github.com/spacemonkeygo/spacelog
 	url = https://github.com/spacemonkeygo/spacelog
 [submodule "src/golang.org/x/crypto"]
-	path = src/golang.org/x/crypto
+	path = server/src/golang.org/x/crypto
 	url = https://github.com/golang/crypto
 [submodule "src/golang.org/x/oauth2"]
-	path = src/golang.org/x/oauth2
+	path = server/src/golang.org/x/oauth2
 	url = https://github.com/golang/oauth2
 [submodule "src/google.golang.org/appengine"]
-	path = src/google.golang.org/appengine
+	path = server/src/google.golang.org/appengine
 	url = https://github.com/golang/appengine
 [submodule "src/github.com/golang/protobuf"]
-	path = src/github.com/golang/protobuf
+	path = server/src/github.com/golang/protobuf
 	url = https://github.com/golang/protobuf/
 [submodule "src/cloud.google.com/go"]
-	path = src/cloud.google.com/go
+	path = server/src/cloud.google.com/go
 	url = https://github.com/GoogleCloudPlatform/gcloud-golang
 [submodule "src/github.com/googleapis/gax-go"]
-	path = src/github.com/googleapis/gax-go
+	path = server/src/github.com/googleapis/gax-go
 	url = https://github.com/googleapis/gax-go
 [submodule "src/google.golang.org/grpc"]
-	path = src/google.golang.org/grpc
+	path = server/src/google.golang.org/grpc
 	url = https://github.com/grpc/grpc-go
 [submodule "src/github.com/markbates/goth"]
-	path = src/github.com/markbates/goth
+	path = server/src/github.com/markbates/goth
 	url = https://github.com/markbates/goth
 [submodule "src/github.com/mrjones/oauth"]
-	path = src/github.com/mrjones/oauth
+	path = server/src/github.com/mrjones/oauth
 	url = https://github.com/mrjones/oauth
 [submodule "src/github.com/jtolds/webhelp"]
-	path = src/github.com/jtolds/webhelp
+	path = server/src/github.com/jtolds/webhelp
 	url = https://github.com/jtolds/webhelp
 [submodule "src/github.com/jtolds/webhelp-oauth2"]
-	path = src/github.com/jtolds/webhelp-oauth2
+	path = server/src/github.com/jtolds/webhelp-oauth2
 	url = https://github.com/jtolds/webhelp-oauth2
