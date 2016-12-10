@@ -1,1 +1,1 @@
-../../../../politivate-secrets/secrets.go
+../../../../../politivate-secrets/secrets.go
