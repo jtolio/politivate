@@ -10,7 +10,6 @@ import (
 )
 
 func init() {
-	spacelog.SetLevel(nil, spacelog.Debug)
 	http.Handle("/", RequireHTTPS("www.politivate.org", app.RootHandler))
 }
 
