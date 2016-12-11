@@ -1,0 +1,9 @@
+setup:
+
+  npm install
+
+development:
+
+  node_modules/.bin/react-native start (terminal 1)
+  node_modules/.bin/react-native log-android (terminal 2)
+  node_modules/.bin/react-native run-android (terminal 3)
