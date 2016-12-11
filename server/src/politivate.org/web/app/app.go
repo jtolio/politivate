@@ -12,5 +12,5 @@ var (
 	RootHandler = webhelp.ContextBase(webhelp.LoggingHandler(
 		webhelp.FatalHandler(sessions.HandlerWithStore(
 			sessions.NewCookieStore(secrets.CookieSecret),
-			controllers.Mux))))
+			controllers.Handler))))
 )

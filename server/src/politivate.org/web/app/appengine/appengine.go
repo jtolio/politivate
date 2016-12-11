@@ -9,6 +9,6 @@ import (
 )
 
 func init() {
-	http.Handle("/", webhelp.RequireHTTPS(
-		webhelp.RequireHost("www.politivate.org", app.RootHandler)))
+	http.Handle("/", webhelp.RequireHost("www.politivate.org",
+		webhelp.RequireHTTPS(app.RootHandler)))
 }
