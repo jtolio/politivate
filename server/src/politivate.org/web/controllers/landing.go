@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	Mux[""] = webhelp.ExactGet(http.HandlerFunc(landing))
+	Mux[""] = webhelp.RequireGet(http.HandlerFunc(landing))
 }
 
 func landing(w http.ResponseWriter, r *http.Request) {
