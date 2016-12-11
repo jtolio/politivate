@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	Mux["settings"] = auth.LoginRequired(webhelp.Exact(
+	mux["settings"] = auth.LoginRequired(webhelp.Exact(
 		http.HandlerFunc(settings)))
 }
 

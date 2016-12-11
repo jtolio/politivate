@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	Mux     = webhelp.DirMux{}
-	Handler = Mux
+	mux     = webhelp.DirMux{}
+	Handler = mux
 
 	Render = views.T.Render
 )

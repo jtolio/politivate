@@ -5,5 +5,5 @@ import (
 )
 
 func init() {
-	Mux["api"] = api.Handler
+	mux["api"] = api.Handler
 }

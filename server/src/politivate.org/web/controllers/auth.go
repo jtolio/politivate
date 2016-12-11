@@ -5,5 +5,5 @@ import (
 )
 
 func init() {
-	Mux["auth"] = auth.Auth
+	mux["auth"] = auth.Auth
 }

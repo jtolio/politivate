@@ -13,8 +13,8 @@ var (
 )
 
 func init() {
-	Mux["cause"] = causeId.Shift(webhelp.Exact(http.HandlerFunc(serveCause)))
-	Mux["causes"] = webhelp.Exact(http.HandlerFunc(serveCauses))
+	mux["cause"] = causeId.Shift(webhelp.Exact(http.HandlerFunc(serveCause)))
+	mux["causes"] = webhelp.Exact(http.HandlerFunc(serveCauses))
 }
 
 func serveCause(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +34,10 @@ func serveCauses(w http.ResponseWriter, r *http.Request) {
 
 // TEST DATA
 
-var TESTCAUSES = []models.Cause{{
-	Id:      1,
-	Name:    "Sierra Club",
-	IconURL: "http://66.media.tumblr.com/avatar_cdbb9208e450_128.png"}}
+var TESTCAUSES = []models.Cause{
+	{
+		Id:      1,
+		Name:    "Sierra Club",
+		IconURL: "http://66.media.tumblr.com/avatar_cdbb9208e450_128.png",
+	},
+}

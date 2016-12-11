@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	Mux     = webhelp.DirMux{}
+	mux     = webhelp.DirMux{}
 	Handler = webhelp.HandleErrorsWith(webhelp.JSONErrorHandler,
-		auth.LoginRequired(Mux))
+		auth.LoginRequired(webhelp.DirMux{"v1": mux}))
 
 	logger = spacelog.GetLogger()
 )

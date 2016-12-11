@@ -14,9 +14,9 @@ var (
 )
 
 func init() {
-	Mux["challenge"] = challengeId.Shift(webhelp.Exact(
+	mux["challenge"] = challengeId.Shift(webhelp.Exact(
 		http.HandlerFunc(serveChallenge)))
-	Mux["challenges"] = webhelp.Exact(http.HandlerFunc(serveChallenges))
+	mux["challenges"] = webhelp.Exact(http.HandlerFunc(serveChallenges))
 }
 
 func serveChallenge(w http.ResponseWriter, r *http.Request) {

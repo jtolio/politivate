@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	Mux["login"] = webhelp.Exact(http.HandlerFunc(loginPage))
+	mux["login"] = webhelp.Exact(http.HandlerFunc(loginPage))
 }
 
 func loginPage(w http.ResponseWriter, r *http.Request) {
