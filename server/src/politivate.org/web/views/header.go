@@ -1,6 +1,6 @@
 package views
 
-var _ = register(`<!DOCTYPE html>
+var _ = T.MustParse(`<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">

@@ -1,6 +1,6 @@
 package views
 
-var _ = register(`{{ template "header" . }}
+var _ = T.MustParse(`{{ template "header" . }}
 
 <h1>Terms of service</h1>
 

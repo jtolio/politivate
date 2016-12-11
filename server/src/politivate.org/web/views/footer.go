@@ -1,5 +1,5 @@
 package views
 
-var _ = register(`
+var _ = T.MustParse(`
   </body>
 </html>`)
