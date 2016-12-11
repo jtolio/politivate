@@ -23,7 +23,7 @@ func serveChallenge(w http.ResponseWriter, r *http.Request) {
 	id := challengeId.MustGet(webhelp.Context(r))
 	for _, c := range TESTCHALLENGES {
 		if c.Id == id {
-			RenderJSON(w, r, c)
+			webhelp.RenderJSON(w, r, c)
 			return
 		}
 	}
@@ -32,7 +32,7 @@ func serveChallenge(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveChallenges(w http.ResponseWriter, r *http.Request) {
-	RenderJSON(w, r, TESTCHALLENGES)
+	webhelp.RenderJSON(w, r, TESTCHALLENGES)
 }
 
 // TEST DATA

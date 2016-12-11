@@ -21,7 +21,7 @@ func serveCause(w http.ResponseWriter, r *http.Request) {
 	id := causeId.MustGet(webhelp.Context(r))
 	for _, c := range TESTCAUSES {
 		if c.Id == id {
-			RenderJSON(w, r, c)
+			webhelp.RenderJSON(w, r, c)
 			return
 		}
 	}
@@ -29,7 +29,7 @@ func serveCause(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveCauses(w http.ResponseWriter, r *http.Request) {
-	RenderJSON(w, r, TESTCAUSES)
+	webhelp.RenderJSON(w, r, TESTCAUSES)
 }
 
 // TEST DATA
