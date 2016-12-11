@@ -4,13 +4,14 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/jtolds/webhelp"
 	"github.com/jtolds/webhelp-oauth2"
 
 	"politivate.org/web/secrets"
 )
 
 func init() {
-	Mux["login"] = http.HandlerFunc(loginPage)
+	Mux["login"] = webhelp.Exact(http.HandlerFunc(loginPage))
 	Mux["auth"] = Auth
 }
 

@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	Mux["challenges"] = http.HandlerFunc(challenges)
+	Mux["challenges"] = webhelp.Exact(http.HandlerFunc(challenges))
 }
 
 type Cause struct {

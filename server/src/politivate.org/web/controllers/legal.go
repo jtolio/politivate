@@ -8,8 +8,8 @@ import (
 
 func init() {
 	Mux["legal"] = webhelp.DirMux{
-		"tos":     http.HandlerFunc(tos),
-		"privacy": http.HandlerFunc(privacy),
+		"tos":     webhelp.Exact(http.HandlerFunc(tos)),
+		"privacy": webhelp.Exact(http.HandlerFunc(privacy)),
 	}
 }
 

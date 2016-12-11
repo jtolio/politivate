@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	"github.com/jtolds/webhelp"
@@ -18,5 +19,12 @@ var (
 func main() {
 	flagfile.Load()
 	setup.MustSetup(os.Args[0])
-	panic(webhelp.ListenAndServe(*addr, app.RootHandler))
+	switch flag.Arg(0) {
+	case "serve":
+		panic(webhelp.ListenAndServe(*addr, app.RootHandler))
+	case "routes":
+		webhelp.PrintRoutes(os.Stdout, app.RootHandler)
+	default:
+		fmt.Printf("Usage: %s <serve|routes>\n", os.Args[0])
+	}
 }

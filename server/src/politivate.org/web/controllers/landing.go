@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"net/http"
+
+	"github.com/jtolds/webhelp"
 )
 
 func init() {
-	Mux[""] = http.HandlerFunc(landing)
+	Mux[""] = webhelp.ExactGet(http.HandlerFunc(landing))
 }
 
 func landing(w http.ResponseWriter, r *http.Request) {
