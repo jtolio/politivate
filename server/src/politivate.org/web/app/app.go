@@ -9,7 +9,8 @@ import (
 )
 
 var (
-	RootHandler = webhelp.LoggingHandler(webhelp.FatalHandler(
-		sessions.HandlerWithStore(sessions.NewCookieStore(secrets.CookieSecret),
-			controllers.Mux)))
+	RootHandler = webhelp.ContextBase(webhelp.LoggingHandler(
+		webhelp.FatalHandler(sessions.HandlerWithStore(
+			sessions.NewCookieStore(secrets.CookieSecret),
+			controllers.Mux))))
 )
