@@ -30,7 +30,8 @@ export default class ChallengesTab extends Component {
       <Card>
         <CardItem button header onPress={() => this.props.navigator.push({
               component: Challenge, passProps: {challenge: row}})}>
-          <Thumbnail source={{uri: row.icon}} />
+          {(row.icon_url != "") ?
+            <Thumbnail source={{uri: row.icon_url}} /> : null}
           <Text>{row.title}</Text>
         </CardItem>
         <CardItem>
@@ -42,12 +43,15 @@ export default class ChallengesTab extends Component {
 
   update() {
     this.setState({loading: true});
-    fetch("http://politiforce-150719.appspot.com/challenges/")
+    let req = new Request("https://www.politivate.org/api/v1/challenges/");
+    req.headers.append("X-Auth-Token-Google", this.props.appstate.token);
+    fetch(req)
       .then((response) => response.json())
       .then((json) => {
+        console.log(json);
         this.setState({
           loading: false,
-          challenges: json.response,
+          challenges: json.resp,
         });
       })
       .catch((error) => {

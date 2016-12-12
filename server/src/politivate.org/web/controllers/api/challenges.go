@@ -1,11 +1,14 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
 
 	"github.com/jtolds/webhelp"
+	"golang.org/x/oauth2"
 
+	"politivate.org/web/controllers/auth"
 	"politivate.org/web/models"
 )
 
@@ -32,7 +35,50 @@ func serveChallenge(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveChallenges(w http.ResponseWriter, r *http.Request) {
-	webhelp.RenderJSON(w, r, TESTCHALLENGES)
+	provider, ok := auth.Auth.Handler("google")
+	if !ok {
+		webhelp.HandleError(w, r, webhelp.ErrInternalServerError.New("uh oh"))
+		return
+	}
+	c := provider.Provider().Client(webhelp.Context(r),
+		&oauth2.Token{AccessToken: r.Header.Get("X-Auth-Token-Google")})
+
+	resp, err := c.Get("https://www.googleapis.com/oauth2/v1/userinfo?alt=json")
+	if err != nil {
+		webhelp.HandleError(w, r, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	var info struct {
+		Id         string `json:"id"`
+		Name       string `json:"name"`
+		GivenName  string `json:"given_name"`
+		FamilyName string `json:"family_name"`
+		Link       string `json:"link"`
+		Picture    string `json:"picture"`
+		Gender     string `json:"gender"`
+		Locale     string `json:"locale"`
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(&info)
+	if err != nil {
+		webhelp.HandleError(w, r, err)
+		return
+	}
+
+	webhelp.RenderJSON(w, r, append([]models.Challenge{
+		{
+			Id:         4,
+			CauseId:    1,
+			Title:      info.Name,
+			ShortDesc:  info.Link,
+			PostedTS:   time.Now().UnixNano(),
+			DeadlineTS: nil,
+			IconURL:    info.Picture,
+			Points:     10,
+		},
+	}, TESTCHALLENGES...))
 }
 
 // TEST DATA

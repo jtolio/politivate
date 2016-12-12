@@ -17,12 +17,13 @@ export default class Challenge extends Component {
           <Button transparent onPress={this.props.backPress}>
             <Icon name='ios-arrow-back' />
           </Button>
-          <Title>{row.cause.name}</Title>
+          <Title>{row.title}</Title>
         </Header>
         <Content>
           <Card style={{flex:1}}>
             <CardItem header>
-              <Thumbnail source={{uri: row.icon}} />
+              {(row.icon_url != "") ?
+                <Thumbnail source={{uri: row.icon_url}} /> : null}
               <Text>{row.title}</Text>
             </CardItem>
             <CardItem>

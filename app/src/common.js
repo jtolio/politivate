@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import OAuthManager from 'react-native-oauth';
 import { StyleSheet, View, Text } from 'react-native';
 import lightTheme from 'native-base/Components/Themes/light';
-import { secrets } from './secrets';
+import secrets from './secrets';
 
 var theme = lightTheme;
 

@@ -26,13 +26,13 @@ export default class Tabs extends Component {
             tabBarTextStyle={styles.tabBarText}
             style={styles.tabBar}>
           <ChallengesTab
-              tabLabel="Challenges"
+              tabLabel="Challenges" appstate={this.props.appstate}
               navigator={this.props.navigator}/>
           <CausesTab
-              tabLabel="Causes"
+              tabLabel="Causes" appstate={this.props.appstate}
               navigator={this.props.navigator}/>
           <ProfileTab
-              tabLabel="Profile"
+              tabLabel="Profile" appstate={this.props.appstate}
               navigator={this.props.navigator}/>
         </ScrollableTabView>
       </View>
