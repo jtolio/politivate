@@ -23,18 +23,25 @@ func init() {
 }
 
 func serveChallenge(w http.ResponseWriter, r *http.Request) {
-	id := challengeId.MustGet(webhelp.Context(r))
-	for _, c := range TESTCHALLENGES {
-		if c.Id == id {
-			webhelp.RenderJSON(w, r, c)
-			return
-		}
+	c, err := models.GetChallenge(challengeId.MustGet(webhelp.Context(r)))
+	if err != nil {
+		webhelp.HandleError(w, r, err)
+		return
 	}
-	webhelp.HandleError(w, r,
-		webhelp.ErrNotFound.New("challenge %d not found", id))
+	webhelp.RenderJSON(w, r, c)
 }
 
 func serveChallenges(w http.ResponseWriter, r *http.Request) {
+	challenges, err := models.GetChallenges()
+	if err != nil {
+		webhelp.HandleError(w, r, err)
+		return
+	}
+
+	// stupidness -------------------------------------
+	// TODO: this is just a bunch of stupidness to try and make sure that auth
+	// works. returning a challenge with the user's information makes no sense,
+	// but that way i don't have to change the app much to test it.
 	provider, ok := auth.Auth.Handler("google")
 	if !ok {
 		webhelp.HandleError(w, r, webhelp.ErrInternalServerError.New("uh oh"))
@@ -67,43 +74,18 @@ func serveChallenges(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	webhelp.RenderJSON(w, r, append([]models.Challenge{
-		{
-			Id:         4,
-			CauseId:    1,
-			Title:      info.Name,
-			ShortDesc:  info.Link,
-			PostedTS:   time.Now().UnixNano(),
-			DeadlineTS: nil,
-			IconURL:    info.Picture,
-			Points:     10,
-		},
-	}, TESTCHALLENGES...))
-}
-
-// TEST DATA
-
-func maybeInt64(val int64) *int64 { return &val }
-
-var TESTCHALLENGES = []models.Challenge{
-	{
-		Id:         2,
+	challenges = append(challenges, &models.Challenge{
+		Id:         4,
 		CauseId:    1,
-		Title:      "Call your local representative",
-		ShortDesc:  "We need you to tell them how important the environment is!",
+		Title:      info.Name,
+		ShortDesc:  info.Link,
 		PostedTS:   time.Now().UnixNano(),
 		DeadlineTS: nil,
-		IconURL:    "http://www.iconsdb.com/icons/preview/black/office-phone-xxl.png",
+		IconURL:    info.Picture,
 		Points:     10,
-	},
-	{
-		Id:         3,
-		CauseId:    1,
-		Title:      "Show up to town hall",
-		ShortDesc:  "We need you to tell them how important the environment is!",
-		PostedTS:   time.Now().UnixNano(),
-		DeadlineTS: maybeInt64(time.Now().UnixNano() + (7 * 24 * 60 * 60 * 1000000000)),
-		IconURL:    "https://cdn2.iconfinder.com/data/icons/the-urban-hustle-and-bustle/60/townhall-256.png",
-		Points:     100,
-	},
+	})
+
+	// okay, end stupidness ----------------------
+
+	webhelp.RenderJSON(w, r, challenges)
 }

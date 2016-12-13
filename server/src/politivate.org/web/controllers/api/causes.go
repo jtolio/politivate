@@ -18,26 +18,19 @@ func init() {
 }
 
 func serveCause(w http.ResponseWriter, r *http.Request) {
-	id := causeId.MustGet(webhelp.Context(r))
-	for _, c := range TESTCAUSES {
-		if c.Id == id {
-			webhelp.RenderJSON(w, r, c)
-			return
-		}
+	c, err := models.GetCause(causeId.MustGet(webhelp.Context(r)))
+	if err != nil {
+		webhelp.HandleError(w, r, err)
+		return
 	}
-	webhelp.HandleError(w, r, webhelp.ErrNotFound.New("cause %d not found", id))
+	webhelp.RenderJSON(w, r, c)
 }
 
 func serveCauses(w http.ResponseWriter, r *http.Request) {
-	webhelp.RenderJSON(w, r, TESTCAUSES)
-}
-
-// TEST DATA
-
-var TESTCAUSES = []models.Cause{
-	{
-		Id:      1,
-		Name:    "Sierra Club",
-		IconURL: "http://66.media.tumblr.com/avatar_cdbb9208e450_128.png",
-	},
+	c, err := models.GetCauses()
+	if err != nil {
+		webhelp.HandleError(w, r, err)
+		return
+	}
+	webhelp.RenderJSON(w, r, c)
 }
