@@ -8,19 +8,3 @@ running locally:
   export GOPATH=$(pwd)
   go install -v politivate.org/web/app/local && bin/local
 
-
-example secrets.go (to be placed where the symlink points to):
-
-  package secrets
-
-  var (
-	  CookieSecret = []byte("a cookie secret")
-  )
-
-  const (
-	  GoogleClientId     = "your dev client id"
-	  GoogleClientSecret = "your dev client secret"
-
-	  FacebookClientId     = "your dev client id"
-	  FacebookClientSecret = "your dev client secret"
-  )
