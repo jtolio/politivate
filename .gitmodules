@@ -43,3 +43,6 @@
 [submodule "server/src/github.com/spacemonkeygo/flagfile"]
 	path = server/src/github.com/spacemonkeygo/flagfile
 	url = https://github.com/spacemonkeygo/flagfile
+[submodule "secrets"]
+	path = secrets
+	url = https://source.developers.google.com/p/politiforce-150719/r/secrets
