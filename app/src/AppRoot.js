@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { Navigator, BackAndroid, AsyncStorage } from 'react-native';
 import Tabs from './Tabs';
-import { auth } from './common';
+import { auth, LoadingView } from './common';
 
 class BackHandler extends Component {
   constructor(props) {
@@ -80,7 +80,7 @@ export default class AppRoot extends Component {
 
   render() {
     if (this.state.loading) {
-      return null;
+      return <LoadingView/>;
     }
     return (<Navigator initialRoute={{component: Tabs, _isRoot: true}}
                        renderScene={this.renderScene} />);
