@@ -19,39 +19,28 @@ var (
 func init() {
 	causeMux["challenge"] = challengeId.Shift(webhelp.Exact(
 		http.HandlerFunc(serveChallenge)))
+	causeMux["challenges"] = webhelp.Exact(
+		http.HandlerFunc(serveCauseChallenges))
+
 	mux["challenges"] = webhelp.Exact(http.HandlerFunc(serveChallenges))
 }
 
 func serveChallenge(w http.ResponseWriter, r *http.Request) {
 	ctx := webhelp.Context(r)
-	cause, err := getCause(ctx)
-	if err != nil {
-		webhelp.HandleError(w, r, err)
-		return
-	}
-	challenge, err := cause.GetChallenge(ctx, challengeId.MustGet(ctx))
-	if err != nil {
-		webhelp.HandleError(w, r, err)
-		return
-	}
-	webhelp.RenderJSON(w, r, challenge)
+	webhelp.RenderJSON(w, r,
+		mustGetCause(ctx).GetChallenge(ctx, challengeId.MustGet(ctx)))
+}
+
+func serveCauseChallenges(w http.ResponseWriter, r *http.Request) {
+	ctx := webhelp.Context(r)
+	webhelp.RenderJSON(w, r, mustGetCause(ctx).GetChallenges(ctx))
 }
 
 func serveChallenges(w http.ResponseWriter, r *http.Request) {
 	ctx := webhelp.Context(r)
 	challenges := make([]*models.Challenge, 0) // so the json isn't `null`
-	causes, err := models.GetCauses(ctx)
-	if err != nil {
-		webhelp.HandleError(w, r, err)
-		return
-	}
-	for _, cause := range causes {
-		causeChallenges, err := cause.GetChallenges(ctx)
-		if err != nil {
-			webhelp.HandleError(w, r, err)
-			return
-		}
-		challenges = append(challenges, causeChallenges...)
+	for _, cause := range models.GetCauses(ctx) {
+		challenges = append(challenges, cause.GetChallenges(ctx)...)
 	}
 
 	// stupidness -------------------------------------
@@ -61,16 +50,14 @@ func serveChallenges(w http.ResponseWriter, r *http.Request) {
 	if r.FormValue("testauth") != "" {
 		provider, ok := auth.Auth.Handler("google")
 		if !ok {
-			webhelp.HandleError(w, r, webhelp.ErrInternalServerError.New("uh oh"))
-			return
+			webhelp.FatalError(webhelp.ErrInternalServerError.New("uh oh"))
 		}
 		c := provider.Provider().Client(webhelp.Context(r),
 			&oauth2.Token{AccessToken: r.Header.Get("X-Auth-Token-Google")})
 
 		resp, err := c.Get("https://www.googleapis.com/oauth2/v1/userinfo?alt=json")
 		if err != nil {
-			webhelp.HandleError(w, r, err)
-			return
+			webhelp.FatalError(err)
 		}
 		defer resp.Body.Close()
 
@@ -87,8 +74,7 @@ func serveChallenges(w http.ResponseWriter, r *http.Request) {
 
 		err = json.NewDecoder(resp.Body).Decode(&info)
 		if err != nil {
-			webhelp.HandleError(w, r, err)
-			return
+			webhelp.FatalError(err)
 		}
 
 		challenges = append(challenges, &models.Challenge{

@@ -25,39 +25,20 @@ func requireCause(h http.Handler) http.Handler {
 	return webhelp.RouteHandlerFunc(h,
 		func(w http.ResponseWriter, r *http.Request) {
 			ctx := webhelp.Context(r)
-			c, err := models.GetCause(ctx, causeId.MustGet(ctx))
-			if err != nil {
-				webhelp.HandleError(w, r, err)
-				return
-			}
 			h.ServeHTTP(w, webhelp.WithContext(
-				r, context.WithValue(ctx, causeKey, c)))
+				r, context.WithValue(ctx, causeKey,
+					models.GetCause(ctx, causeId.MustGet(ctx)))))
 		})
 }
 
-func getCause(ctx context.Context) (*models.Cause, error) {
-	cause, ok := ctx.Value(causeKey).(*models.Cause)
-	if !ok {
-		return nil, webhelp.ErrInternalServerError.New("no Cause")
-	}
-	return cause, nil
+func mustGetCause(ctx context.Context) *models.Cause {
+	return ctx.Value(causeKey).(*models.Cause)
 }
 
 func serveCause(w http.ResponseWriter, r *http.Request) {
-	ctx := webhelp.Context(r)
-	cause, err := getCause(ctx)
-	if err != nil {
-		webhelp.HandleError(w, r, err)
-		return
-	}
-	webhelp.RenderJSON(w, r, cause)
+	webhelp.RenderJSON(w, r, mustGetCause(webhelp.Context(r)))
 }
 
 func serveCauses(w http.ResponseWriter, r *http.Request) {
-	c, err := models.GetCauses(webhelp.Context(r))
-	if err != nil {
-		webhelp.HandleError(w, r, err)
-		return
-	}
-	webhelp.RenderJSON(w, r, c)
+	webhelp.RenderJSON(w, r, models.GetCauses(webhelp.Context(r)))
 }

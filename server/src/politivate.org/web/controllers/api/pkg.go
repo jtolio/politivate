@@ -10,7 +10,7 @@ import (
 var (
 	mux                  = webhelp.DirMux{}
 	Handler http.Handler = webhelp.HandleErrorsWith(webhelp.JSONErrorHandler,
-		webhelp.DirMux{"v1": mux})
+		webhelp.FatalHandler(webhelp.DirMux{"v1": mux}))
 
 	logger = spacelog.GetLogger()
 )

@@ -10,7 +10,6 @@ import (
 
 var (
 	RootHandler = webhelp.ContextBase(webhelp.LoggingHandler(
-		webhelp.FatalHandler(sessions.HandlerWithStore(
-			sessions.NewCookieStore(secrets.CookieSecret),
-			controllers.Handler))))
+		sessions.HandlerWithStore(sessions.NewCookieStore(secrets.CookieSecret),
+			webhelp.FatalHandler(controllers.Handler))))
 )
