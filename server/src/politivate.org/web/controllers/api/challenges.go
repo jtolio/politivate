@@ -17,25 +17,41 @@ var (
 )
 
 func init() {
-	mux["challenge"] = challengeId.Shift(webhelp.Exact(
+	causeMux["challenge"] = challengeId.Shift(webhelp.Exact(
 		http.HandlerFunc(serveChallenge)))
 	mux["challenges"] = webhelp.Exact(http.HandlerFunc(serveChallenges))
 }
 
 func serveChallenge(w http.ResponseWriter, r *http.Request) {
-	c, err := models.GetChallenge(challengeId.MustGet(webhelp.Context(r)))
+	ctx := webhelp.Context(r)
+	cause, err := getCause(ctx)
 	if err != nil {
 		webhelp.HandleError(w, r, err)
 		return
 	}
-	webhelp.RenderJSON(w, r, c)
-}
-
-func serveChallenges(w http.ResponseWriter, r *http.Request) {
-	challenges, err := models.GetChallenges()
+	challenge, err := cause.GetChallenge(ctx, challengeId.MustGet(ctx))
 	if err != nil {
 		webhelp.HandleError(w, r, err)
 		return
+	}
+	webhelp.RenderJSON(w, r, challenge)
+}
+
+func serveChallenges(w http.ResponseWriter, r *http.Request) {
+	ctx := webhelp.Context(r)
+	var challenges []*models.Challenge
+	causes, err := models.GetCauses(ctx)
+	if err != nil {
+		webhelp.HandleError(w, r, err)
+		return
+	}
+	for _, cause := range causes {
+		causeChallenges, err := cause.GetChallenges(ctx)
+		if err != nil {
+			webhelp.HandleError(w, r, err)
+			return
+		}
+		challenges = append(challenges, causeChallenges...)
 	}
 
 	// stupidness -------------------------------------
@@ -75,14 +91,13 @@ func serveChallenges(w http.ResponseWriter, r *http.Request) {
 	}
 
 	challenges = append(challenges, &models.Challenge{
-		Id:         4,
-		CauseId:    1,
-		Title:      info.Name,
-		ShortDesc:  info.Link,
-		PostedTS:   time.Now().UnixNano(),
-		DeadlineTS: nil,
-		IconURL:    info.Picture,
-		Points:     10,
+		Id:        -1,
+		CauseId:   -1,
+		Title:     info.Name,
+		ShortDesc: info.Link,
+		Posted:    time.Now(),
+		IconURL:   info.Picture,
+		Points:    10,
 	})
 
 	// okay, end stupidness ----------------------

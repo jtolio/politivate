@@ -2,55 +2,83 @@ package models
 
 import (
 	"time"
+
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/datastore"
 )
 
 type Challenge struct {
-	Id         int64  `json:"id"`
-	CauseId    int64  `json:"cause_id"`
-	Title      string `json:"title"`
-	ShortDesc  string `json:"short_desc"`
-	PostedTS   int64  `json:"posted_ts"`
-	DeadlineTS *int64 `json:"deadline_ts,omitempty"`
-	IconURL    string `json:"icon_url"`
-	Points     int    `json:"points"`
+	Id      int64 `json:"id" datastore:"-"`
+	CauseId int64 `json:"cause_id" datastore:"-"`
+
+	Title     string    `json:"title"`
+	ShortDesc string    `json:"short_desc"`
+	Posted    time.Time `json:"posted_ts"`
+	Deadline  time.Time `json:"deadline_ts,omitempty"`
+	IconURL   string    `json:"icon_url"`
+	Points    int       `json:"points"`
 }
 
-func GetChallenge(id int64) (*Challenge, error) {
-	for _, c := range TESTCHALLENGES {
-		if c.Id == id {
-			return c, nil
-		}
+func (cause *Cause) NewChallenge(ctx context.Context) (*Challenge, error) {
+	if cause.Id == 0 {
+		return nil, Error.New("must create Cause first")
 	}
-	return nil, NotFound.New("challenge %d not found", id)
+
+	return &Challenge{
+		CauseId: cause.Id,
+		Posted:  time.Now(),
+	}, nil
 }
 
-func GetChallenges() ([]*Challenge, error) {
-	return TESTCHALLENGES, nil
+func challengeKey(ctx context.Context, id, causeId int64) (
+	*datastore.Key, error) {
+	if causeId == 0 {
+		return nil, Error.New("must create cause first")
+	}
+	return datastore.NewKey(
+		ctx, "Challenge", "", id, causeKey(ctx, causeId)), nil
 }
 
-// TEST DATA
+func (c *Challenge) Save(ctx context.Context) error {
+	ik, err := challengeKey(ctx, c.Id, c.CauseId)
+	if err != nil {
+		return err
+	}
+	k, err := datastore.Put(ctx, ik, c)
+	if err != nil {
+		return wrapErr(err)
+	}
+	c.Id = k.IntID()
+	return nil
+}
 
-func maybeInt64(val int64) *int64 { return &val }
+func (cause *Cause) GetChallenge(ctx context.Context, id int64) (
+	*Challenge, error) {
+	challenge := Challenge{}
+	k, err := challengeKey(ctx, id, cause.Id)
+	if err != nil {
+		return nil, err
+	}
+	err = wrapErr(datastore.Get(ctx, k, &challenge))
+	challenge.Id = id
+	challenge.CauseId = cause.Id
+	return &challenge, err
+}
 
-var TESTCHALLENGES = []*Challenge{
-	{
-		Id:         2,
-		CauseId:    1,
-		Title:      "Call your local representative",
-		ShortDesc:  "We need you to tell them how important the environment is!",
-		PostedTS:   time.Now().UnixNano(),
-		DeadlineTS: nil,
-		IconURL:    "http://www.iconsdb.com/icons/preview/black/office-phone-xxl.png",
-		Points:     10,
-	},
-	{
-		Id:         3,
-		CauseId:    1,
-		Title:      "Show up to town hall",
-		ShortDesc:  "We need you to tell them how important the environment is!",
-		PostedTS:   time.Now().UnixNano(),
-		DeadlineTS: maybeInt64(time.Now().UnixNano() + (7 * 24 * 60 * 60 * 1000000000)),
-		IconURL:    "https://cdn2.iconfinder.com/data/icons/the-urban-hustle-and-bustle/60/townhall-256.png",
-		Points:     100,
-	},
+func (cause *Cause) GetChallenges(ctx context.Context) ([]*Challenge, error) {
+	if cause.Id == 0 {
+		return nil, nil
+	}
+	var challenges []*Challenge
+	keys, err := datastore.NewQuery("Challenge").
+		Ancestor(causeKey(ctx, cause.Id)).
+		Order("Posted").GetAll(ctx, &challenges)
+	if err != nil {
+		return nil, wrapErr(err)
+	}
+	for i, key := range keys {
+		challenges[i].Id = key.IntID()
+		challenges[i].CauseId = cause.Id
+	}
+	return challenges, nil
 }
