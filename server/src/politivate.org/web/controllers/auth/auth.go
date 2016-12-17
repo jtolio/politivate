@@ -28,7 +28,7 @@ var (
 		return group
 	}()
 
-	Handler = Auth
+	Handler http.Handler = Auth
 )
 
 func LoginRequired(h http.Handler) http.Handler {

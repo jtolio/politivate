@@ -69,7 +69,7 @@ func (cause *Cause) GetChallenges(ctx context.Context) ([]*Challenge, error) {
 	if cause.Id == 0 {
 		return nil, nil
 	}
-	var challenges []*Challenge
+	challenges := make([]*Challenge, 0) // so the json doesn't look like `null`
 	keys, err := datastore.NewQuery("Challenge").
 		Ancestor(causeKey(ctx, cause.Id)).
 		Order("Posted").GetAll(ctx, &challenges)

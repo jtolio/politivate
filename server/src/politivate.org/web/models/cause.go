@@ -36,7 +36,7 @@ func GetCause(ctx context.Context, id int64) (*Cause, error) {
 }
 
 func GetCauses(ctx context.Context) ([]*Cause, error) {
-	var causes []*Cause
+	causes := make([]*Cause, 0) // so the json doesn't look like `null`
 	keys, err := datastore.NewQuery("Cause").Order("Name").GetAll(ctx, &causes)
 	if err != nil {
 		return nil, wrapErr(err)
