@@ -41,12 +41,6 @@ func serveTest(w http.ResponseWriter, r *http.Request) {
 		user.Name = "Test User"
 		user.Save(ctx)
 
-	case "follow":
-		models.GetUsers(ctx)[0].Follow(ctx, models.GetCauses(ctx)[0])
-
-	case "unfollow":
-		models.GetUsers(ctx)[0].Unfollow(ctx, models.GetCauses(ctx)[0])
-
 	case "followtest":
 		u := models.GetUsers(ctx)[0]
 		c := models.GetCauses(ctx)[0]

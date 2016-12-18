@@ -8,28 +8,8 @@ import (
 	"politivate.org/web/models"
 )
 
-var (
-	challengeId = webhelp.NewIntArgMux()
-)
-
 func init() {
-	causeMux["challenge"] = challengeId.Shift(webhelp.Exact(
-		http.HandlerFunc(serveChallenge)))
-	causeMux["challenges"] = webhelp.Exact(
-		http.HandlerFunc(serveCauseChallenges))
-
 	mux["challenges"] = webhelp.Exact(http.HandlerFunc(serveChallenges))
-}
-
-func serveChallenge(w http.ResponseWriter, r *http.Request) {
-	ctx := webhelp.Context(r)
-	webhelp.RenderJSON(w, r,
-		mustGetCause(ctx).GetChallenge(ctx, challengeId.MustGet(ctx)))
-}
-
-func serveCauseChallenges(w http.ResponseWriter, r *http.Request) {
-	ctx := webhelp.Context(r)
-	webhelp.RenderJSON(w, r, mustGetCause(ctx).GetChallenges(ctx))
 }
 
 func serveChallenges(w http.ResponseWriter, r *http.Request) {
