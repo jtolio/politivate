@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { H2, Text, Card, CardItem, Thumbnail } from 'native-base';
-import Challenge from './Challenge';
+import ChallengePage from './ChallengePage';
 import ListTab from './ListTab';
 
 export default class ChallengesTab extends React.Component {
@@ -15,7 +15,7 @@ export default class ChallengesTab extends React.Component {
     return (
       <Card>
         <CardItem button header onPress={() => this.props.navigator.push({
-              component: Challenge, passProps: {challenge: row}})}>
+              component: ChallengePage, passProps: {challenge: row}})}>
           {(row.icon_url != "") ?
             <Thumbnail source={{uri: row.icon_url}} /> : null}
           <Text>{row.title}</Text>

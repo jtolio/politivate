@@ -4,7 +4,6 @@ import React from 'react';
 import { ListView, RefreshControl } from 'react-native';
 import { H2, View, Text, Card, CardItem, Thumbnail } from 'native-base';
 import { styles, ErrorView } from './common';
-import Challenge from './Challenge';
 
 export default class ListTab extends React.Component {
   constructor(props) {
