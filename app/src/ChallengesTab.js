@@ -1,28 +1,14 @@
 "use strict";
 
-import React, { Component } from 'react';
-import { ListView, Image, RefreshControl } from 'react-native';
-import {
-  Header, H2, ListItem, List, View, Text, Card, Icon, CardItem, Title,
-  Thumbnail
-} from 'native-base';
-import { styles, LoadingView, ErrorView } from './common';
+import React from 'react';
+import { H2, Text, Card, CardItem, Thumbnail } from 'native-base';
 import Challenge from './Challenge';
+import ListTab from './ListTab';
 
-export default class ChallengesTab extends Component {
+export default class ChallengesTab extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      loading: false,
-      challenges: [],
-      error: "",
-    };
     this.renderRow = this.renderRow.bind(this);
-    this.update = this.update.bind(this);
-  }
-
-  componentDidMount() {
-    this.update();
   }
 
   renderRow(row) {
@@ -41,43 +27,10 @@ export default class ChallengesTab extends Component {
     );
   }
 
-  update() {
-    this.setState({loading: true});
-    let req = new Request("https://www.politivate.org/api/v1/challenges/");
-    fetch(req)
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
-        this.setState({
-          loading: false,
-          challenges: json.resp,
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          loading: false,
-          error: error,
-        });
-      });
-  }
-
   render() {
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1.id !== r2.id});
-    let dataSource = ds.cloneWithRows(this.state.challenges);
     return (
-      <View tabLabel={this.props.tabLabel}>
-        <View style={styles.tabheader}>
-          <H2>Challenges</H2>
-        </View>
-        {this.state.error.length > 0 ?
-         (<ErrorView msg={this.state.error}/>) :
-         (<ListView refreshControl={
-              <RefreshControl refreshing={this.state.loading}
-                              onRefresh={this.update}/>}
-             enableEmptySections={true}
-             dataSource={dataSource} renderRow={this.renderRow}/>)}
-      </View>
+      <ListTab url="https://www.politivate.org/api/v1/challenges/"
+        header={<H2>Challenges</H2>} renderRow={this.renderRow} />
     );
   }
 }
