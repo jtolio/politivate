@@ -43,8 +43,7 @@ export default class ChallengesTab extends Component {
 
   update() {
     this.setState({loading: true});
-    let req = new Request("https://www.politivate.org/api/v1/challenges/?testauth=true");
-    req.headers.append("X-Auth-Token-Google", this.props.appstate.token);
+    let req = new Request("https://www.politivate.org/api/v1/challenges/");
     fetch(req)
       .then((response) => response.json())
       .then((json) => {

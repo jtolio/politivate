@@ -1,10 +1,8 @@
 "use strict";
 
 import React, { Component } from 'react';
-import OAuthManager from 'react-native-oauth';
 import { StyleSheet, View, Text } from 'react-native';
 import lightTheme from 'native-base/Components/Themes/light';
-import secrets from './secrets';
 
 var theme = lightTheme;
 
@@ -68,19 +66,9 @@ class ErrorView extends Component {
   }
 }
 
-const auth = new OAuthManager('politivate');
-auth.configure({
-  google: {
-    callback_url: "http://localhost/google",
-    client_id: secrets.googleClientId,
-    client_secret: secrets.googleClientSecret
-  }
-})
-
 module.exports = {
   "styles": styles,
   "LoadingView": LoadingView,
   "ErrorView": ErrorView,
-  "theme": theme,
-  "auth": auth
+  "theme": theme
 }
