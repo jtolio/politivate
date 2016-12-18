@@ -5,12 +5,14 @@ import (
 	"net/url"
 
 	"github.com/jtolds/webhelp-oauth2"
+	"golang.org/x/net/context"
 
+	"politivate.org/web/models"
 	"politivate.org/web/secrets"
 )
 
 var (
-	Auth = func() *oauth2.ProviderGroup {
+	auth = func() *oauth2.ProviderGroup {
 		group, err := oauth2.NewProviderGroup(
 			"auth", "/auth", oauth2.RedirectURLs{},
 			oauth2.Google(oauth2.Config{
@@ -28,11 +30,26 @@ var (
 		return group
 	}()
 
-	Handler http.Handler = Auth
+	Handler   http.Handler = auth
+	Providers              = auth.Providers
+	LogoutURL              = auth.LogoutAllURL
 )
 
-func LoginRequired(h http.Handler) http.Handler {
-	return Auth.LoginRequired(h, LoginRedirect)
+func WebLoginRequired(h http.Handler) http.Handler {
+	// TODO
+	// 	return Auth.LoginRequired(h, LoginRedirect)
+	return h
+}
+
+func APILoginRequired(h http.Handler) http.Handler {
+	// TODO
+	// Should return an error if the user isn't logged in
+	return h
+}
+
+func User(ctx context.Context) *models.User {
+	// TODO
+	return models.GetUsers(ctx)[0]
 }
 
 func LoginRedirect(redirectTo string) string {

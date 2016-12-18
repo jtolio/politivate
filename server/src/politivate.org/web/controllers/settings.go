@@ -9,11 +9,11 @@ import (
 )
 
 func init() {
-	mux["settings"] = auth.LoginRequired(webhelp.Exact(
+	mux["settings"] = auth.WebLoginRequired(webhelp.Exact(
 		http.HandlerFunc(settings)))
 }
 
 func settings(w http.ResponseWriter, r *http.Request) {
 	Render(w, r, "settings", map[string]interface{}{
-		"LogoutURL": auth.Auth.LogoutAllURL("/")})
+		"LogoutURL": auth.LogoutURL("/")})
 }

@@ -1,14 +1,10 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/jtolds/webhelp"
-	"golang.org/x/oauth2"
 
-	"politivate.org/web/controllers/auth"
 	"politivate.org/web/models"
 )
 

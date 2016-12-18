@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	mux["test"] = webhelp.Exact(http.HandlerFunc(serveTest))
+	mux["testing"] = webhelp.Exact(http.HandlerFunc(serveTest))
 }
 
 func serveTest(w http.ResponseWriter, r *http.Request) {
@@ -36,6 +36,10 @@ func serveTest(w http.ResponseWriter, r *http.Request) {
 		chalSD.IconURL = "https://cdn2.iconfinder.com/data/icons/the-urban-hustle-and-bustle/60/townhall-256.png"
 		chalSD.Points = 100
 		chalSD.Save(ctx)
+
+		user := models.NewUser(ctx)
+		user.Name = "Test User"
+		user.Save(ctx)
 	}
 
 	webhelp.RenderJSON(w, r, "ok")
