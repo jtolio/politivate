@@ -27,7 +27,7 @@ func serveTest(w http.ResponseWriter, r *http.Request) {
 		chalSD.Title = "Go to your state's capitol building!"
 		chalSD.ShortDesc = "On December 19th, we will go to every state capitol " +
 			"building, join the peaceful protest, and call on the electoral college " +
-			"to do their job and prevent a demogogue from gaining power."
+			"to do their job and prevent a demagogue from gaining power."
 		var err error
 		chalSD.Deadline, err = time.Parse(time.RFC822, "19 Dec 16 23:59 PST")
 		if err != nil {
