@@ -46,7 +46,7 @@ func serveTest(w http.ResponseWriter, r *http.Request) {
 		c := models.GetCauses(ctx)[0]
 
 		webhelp.RenderJSON(w, r, map[string]interface{}{
-			"user_is_following":   u.Causes(ctx),
+			"user_is_following":   u.CauseIds(ctx),
 			"cause_has_followers": c.UserCount(ctx),
 		})
 		return

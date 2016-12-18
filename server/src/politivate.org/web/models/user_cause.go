@@ -68,7 +68,7 @@ func (u *User) IsFollowing(ctx context.Context, c *Cause) bool {
 	return count > 0
 }
 
-func (u *User) Causes(ctx context.Context) []int64 {
+func (u *User) CauseIds(ctx context.Context) []int64 {
 	var userCauses []*userCause
 	_, err := datastore.NewQuery("userCause").
 		Ancestor(userKey(ctx, u.Id)).GetAll(ctx, &userCauses)

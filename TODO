@@ -1,7 +1,7 @@
 authentication
 make sure ios works
 get flow working (https://flowtype.org/)
-users can follow causes - jt
+users can follow causes on mobile
 challenges are listed only from followed causes ordered by deadline, then posted time
 challenge completion and point scoring
   integration with phone gps

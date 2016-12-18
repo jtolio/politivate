@@ -58,20 +58,31 @@ func (cause *Cause) GetChallenge(ctx context.Context, id int64) *Challenge {
 	return &challenge
 }
 
-func (cause *Cause) GetChallenges(ctx context.Context) []*Challenge {
+func getChallenges(ctx context.Context, causeId int64) []*Challenge {
 	challenges := make([]*Challenge, 0) // so the json doesn't look like `null`
-	if cause.Id == 0 {
+	if causeId == 0 {
 		return challenges
 	}
 	keys, err := datastore.NewQuery("Challenge").
-		Ancestor(causeKey(ctx, cause.Id)).
-		Order("Posted").GetAll(ctx, &challenges)
+		Ancestor(causeKey(ctx, causeId)).GetAll(ctx, &challenges)
 	if err != nil {
 		webhelp.FatalError(wrapErr(err))
 	}
 	for i, key := range keys {
 		challenges[i].Id = key.IntID()
-		challenges[i].CauseId = cause.Id
+		challenges[i].CauseId = causeId
+	}
+	return challenges
+}
+
+func (cause *Cause) GetChallenges(ctx context.Context) []*Challenge {
+	return getChallenges(ctx, cause.Id)
+}
+
+func GetChallenges(ctx context.Context, causeIds ...int64) []*Challenge {
+	challenges := make([]*Challenge, 0) // so the json doesn't look like `null`
+	for _, causeId := range causeIds {
+		challenges = append(challenges, getChallenges(ctx, causeId)...)
 	}
 	return challenges
 }
