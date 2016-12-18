@@ -2,7 +2,8 @@ authentication
 make sure ios works
 get flow working (https://flowtype.org/)
 users can follow causes on mobile
-challenges are listed only from followed causes ordered by deadline, then posted time
+challenges are listed only from followed causes ordered by deadline, then
+  posted time
 challenge completion and point scoring
   integration with phone gps
   integration with phone call log
@@ -14,3 +15,11 @@ website
 get politivate.org emails working
 graphic design
 privacy policy and TOS
+
+
+consider blog post asking for volunteers
+  get politivate.org designed enough to have a nice landing page with graphic
+    design, a blog post, etc.
+  downside of volunteers - less editorial control over what causes are approved
+  set up a github org
+  investigate if we should form an LLC/PAC/501(c)3/501(c)4, etc, or not.
