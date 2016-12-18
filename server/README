@@ -1,10 +1,14 @@
-deploying:
-
-  export GOPATH=$(pwd)
-  $GO_APPENGINE_ROOT/goapp deploy politivate.org/web/app/appengine
-
-running locally:
+just checking everything compiles:
 
   export GOPATH=$(pwd)
   go install -v politivate.org/web/app/local && bin/local
 
+running locally:
+
+  export GOPATH=$(pwd)
+  $GO_APPENGINE_ROOT/goapp serve politivate.org/web/app/appengine
+
+deploying:
+
+  export GOPATH=$(pwd)
+  $GO_APPENGINE_ROOT/goapp deploy politivate.org/web/app/appengine

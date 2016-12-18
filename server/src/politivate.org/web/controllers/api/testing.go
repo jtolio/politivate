@@ -40,6 +40,22 @@ func serveTest(w http.ResponseWriter, r *http.Request) {
 		user := models.NewUser(ctx)
 		user.Name = "Test User"
 		user.Save(ctx)
+
+	case "follow":
+		models.GetUsers(ctx)[0].Follow(ctx, models.GetCauses(ctx)[0])
+
+	case "unfollow":
+		models.GetUsers(ctx)[0].Unfollow(ctx, models.GetCauses(ctx)[0])
+
+	case "followtest":
+		u := models.GetUsers(ctx)[0]
+		c := models.GetCauses(ctx)[0]
+
+		webhelp.RenderJSON(w, r, map[string]interface{}{
+			"user_is_following":   u.Causes(ctx),
+			"cause_has_followers": c.UserCount(ctx),
+		})
+		return
 	}
 
 	webhelp.RenderJSON(w, r, "ok")
