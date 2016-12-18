@@ -9,7 +9,7 @@ export default class ListTab extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
+      loading: true,
       items: [],
       error: ""
     };
