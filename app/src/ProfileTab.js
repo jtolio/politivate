@@ -51,7 +51,7 @@ export default class ProfileTab extends Component {
 
   render() {
     return (
-      <View tabLabel={this.props.tabLabel}>
+      <View>
         <View style={styles.tabheader}>
           <H2>Profile</H2>
         </View>

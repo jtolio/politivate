@@ -7,6 +7,7 @@ var ScrollableTabView = require('react-native-scrollable-tab-view');
 import CausesTab from './CausesTab';
 import ChallengesTab from './ChallengesTab';
 import ProfileTab from './ProfileTab';
+import SettingsTab from './SettingsTab';
 import { styles, theme } from './common';
 
 export default class Tabs extends Component {
@@ -33,6 +34,9 @@ export default class Tabs extends Component {
               navigator={this.props.navigator}/>
           <ProfileTab
               tabLabel="Profile" appstate={this.props.appstate}
+              navigator={this.props.navigator}/>
+          <SettingsTab
+              tabLabel="Settings" appstate={this.props.appstate}
               navigator={this.props.navigator}/>
         </ScrollableTabView>
       </View>
