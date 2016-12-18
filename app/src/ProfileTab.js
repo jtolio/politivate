@@ -1,8 +1,9 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { H2, ListItem, List, View } from 'native-base';
-import { styles, LoadingView, ErrorView } from './common';
+import { ScrollView, RefreshControl } from 'react-native';
+import { H2, View, Text } from 'native-base';
+import { styles, ErrorView } from './common';
 
 export default class ProfileTab extends Component {
   constructor(props) {
@@ -13,6 +14,7 @@ export default class ProfileTab extends Component {
       error: null
     };
     this.update = this.update.bind(this);
+    this.renderLoaded = this.renderLoaded.bind(this);
   }
 
   componentDidMount() {
@@ -38,18 +40,26 @@ export default class ProfileTab extends Component {
       });
   }
 
+  renderLoaded() {
+    return (
+      <View>
+        <Text>Id: {this.state.profile.id}</Text>
+        <Text>Name: {this.state.profile.name}</Text>
+      </View>
+    );
+  }
+
   render() {
-    if (this.state.loading) {
-      return <LoadingView/>;
-    }
-    if (this.state.error) {
-      return <ErrorView msg={this.state.error}/>
-    }
     return (
       <View tabLabel={this.props.tabLabel}>
         <View style={styles.tabheader}>
-          <H2>{this.state.profile.name}</H2>
+          <H2>Profile</H2>
         </View>
+        <ScrollView refreshControl={
+            <RefreshControl refreshing={this.state.loading}
+                            onRefresh={this.update}/>}>
+          { this.state.loading ? null : this.renderLoaded() }
+        </ScrollView>
       </View>
     );
   }
