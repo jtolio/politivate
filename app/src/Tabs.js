@@ -1,16 +1,52 @@
 "use strict";
 
-import React, { Component } from 'react';
+import React from 'react';
 import { Text } from 'react-native';
-import { H1, View } from 'native-base';
-var ScrollableTabView = require('react-native-scrollable-tab-view');
+import { View } from 'native-base';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
+import DefaultTabBar from 'react-native-scrollable-tab-view/DefaultTabBar';
+import Button from 'react-native-scrollable-tab-view/Button';
 import CausesTab from './CausesTab';
 import ChallengesTab from './ChallengesTab';
 import ProfileTab from './ProfileTab';
 import SettingsTab from './SettingsTab';
 import { styles, theme } from './common';
+import Icon from 'react-native-vector-icons/Entypo';
 
-export default class Tabs extends Component {
+export default class Tabs extends React.Component {
+  constructor(props) {
+    super(props);
+    this.renderTab = this.renderTab.bind(this);
+    this.icons = {
+      "Challenges": "stopwatch",
+      "Causes": "awareness-ribbon",
+      "Profile": "v-card",
+      "Settings": "cog"};
+  }
+
+  renderTab(name, page, isTabActive, onPressHandler) {
+    const textColor = (isTabActive ?
+        theme.topTabBarActiveTextColor : theme.topTabBarTextColor);
+    const fontWeight = (isTabActive ? "bold" : "normal");
+    return (<Button
+                style={{flex: 1}}
+                key={name}
+                accessible={true}
+                accessibilityLabel={name}
+                accessibilityTraits="button"
+                onPress={() => onPressHandler(page)}>
+              <View
+                  style={[{flex: 1,
+                           alignItems: "center",
+                           justifyContent: "center",
+                           paddingBottom: 10,
+                           paddingTop: 5}, styles.tabBar]}>
+                <Icon name={this.icons[name]} size={30}
+                  style={[{color: textColor}, theme.tabBarText]}/>
+              </View>
+            </Button>);
+  }
+
   render() {
     return (
       <View>
@@ -20,6 +56,8 @@ export default class Tabs extends Component {
         <ScrollableTabView
             tabBarPosition="bottom"
             locked={true}
+            renderTabBar={(props) => <DefaultTabBar
+                    renderTab={this.renderTab} {...props}/>}
             tabBarUnderlineStyle={styles.tabBarUnderline}
             tabBarBackgroundColor={theme.tabDefaultBg}
             tabBarActiveTextColor={theme.topTabBarActiveTextColor}
