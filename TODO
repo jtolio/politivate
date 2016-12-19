@@ -2,6 +2,8 @@ authentication
 make sure ios works
 get flow working (https://flowtype.org/)
 users can follow causes on mobile
+clean up navigation of challenge list, cause list, cause navigation,
+  filtering, cause and challenge descriptions, action buttons, etc
 challenges are listed only from followed causes ordered by deadline, then
   posted time
 challenge completion and point scoring
