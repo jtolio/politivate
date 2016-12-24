@@ -53,7 +53,6 @@ export default class AppRoot extends Component {
   logout() {
     this.setState({loading: true});
     AsyncStorage.removeItem("@v1/auth/token")
-      .then(() => AsyncStorage.removeItem("@v2/auth/token"))
       .then(() => this.setState({loading: false}))
       .catch((err) => {
         this.setState({loading: false, error: err})

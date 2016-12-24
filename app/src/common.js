@@ -1,7 +1,8 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Text, View } from 'native-base';
 import lightTheme from 'native-base/Components/Themes/light';
 
 var theme = lightTheme;
@@ -62,13 +63,18 @@ class LoadingView extends Component {
 
 class ErrorView extends Component {
   render() {
-    return <View><Text>Error: {this.props.msg}</Text></View>;
+    return <View><Text>Error: {this.props.msg.toString()}</Text></View>;
+  }
+}
+
+class Link extends Component {
+  render() {
+    return (<Text style={{color: "blue"}} onPress={this.props.onPress}>
+      {this.props.children}
+    </Text>);
   }
 }
 
 module.exports = {
-  "styles": styles,
-  "LoadingView": LoadingView,
-  "ErrorView": ErrorView,
-  "theme": theme
+  styles, LoadingView, ErrorView, theme, Link
 }

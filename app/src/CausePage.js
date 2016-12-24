@@ -1,22 +1,28 @@
 "use strict";
 
 import React from 'react';
-import { Card, CardItem, Text, Thumbnail } from 'native-base';
+import { Linking } from 'react-native';
+import { Card, CardItem, Text, Thumbnail, Button, View } from 'native-base';
 import Subpage from './Subpage';
+import CauseHeader from './CauseHeader';
+import { ErrorView, Link } from './common';
+import Icon from 'react-native-vector-icons/Entypo';
 
 export default class Cause extends React.Component {
   render() {
     let row = this.props.cause;
     return (
       <Subpage backPress={this.props.backPress} title={row.name}>
-        <Card style={{flex:1}}>
-          <CardItem header>
-            {(row.icon_url != "") ?
-              <Thumbnail source={{uri: row.icon_url}} /> : null}
-            <Text>{row.name}</Text>
+        <Card>
+          <CauseHeader cause={this.props.cause}/>
+          <CardItem onPress={() => Linking
+                .openURL(row.url).catch(err => this.setState({error: err}))}>
+            <Link>
+              {row.url}
+            </Link>
           </CardItem>
           <CardItem>
-            <Text>Description</Text>
+            <Text>{row.description}</Text>
           </CardItem>
         </Card>
       </Subpage>

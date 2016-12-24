@@ -4,6 +4,7 @@ import React from 'react';
 import { H2, Text, Card, CardItem, Thumbnail } from 'native-base';
 import ListTab from './ListTab';
 import CausePage from './CausePage';
+import CauseHeader from './CauseHeader';
 
 export default class CausesTab extends React.Component {
   constructor(props) {
@@ -14,15 +15,8 @@ export default class CausesTab extends React.Component {
   renderRow(row) {
     return (
       <Card>
-        <CardItem button header onPress={() => this.props.navigator.push({
-                component: CausePage, passProps: {cause: row}})}>
-          {(row.icon_url != "") ?
-            <Thumbnail source={{uri: row.icon_url}} /> : null}
-          <Text>{row.name}</Text>
-        </CardItem>
-        <CardItem>
-          <Text>Description</Text>
-        </CardItem>
+        <CauseHeader cause={row} button onPress={() => this
+          .props.navigator.push({component: CausePage, passProps: {cause: row}})}/>
       </Card>
     );
   }

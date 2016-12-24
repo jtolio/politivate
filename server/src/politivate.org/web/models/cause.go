@@ -7,9 +7,11 @@ import (
 )
 
 type Cause struct {
-	Id      int64  `json:"id" datastore:"-"`
-	Name    string `json:"name"`
-	IconURL string `json:"icon_url"`
+	Id          int64  `json:"id" datastore:"-"`
+	Name        string `json:"name"`
+	IconURL     string `json:"icon_url" datastore:",noindex"`
+	URL         string `json:"url" datastore:",noindex"`
+	Description string `json:"description" datastore:",noindex"`
 }
 
 func NewCause(ctx context.Context) *Cause {
