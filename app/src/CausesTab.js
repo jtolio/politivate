@@ -4,7 +4,7 @@ import React from 'react';
 import { H2, Text, Card, CardItem, Thumbnail } from 'native-base';
 import ListTab from './ListTab';
 import CausePage from './CausePage';
-import CauseHeader from './CauseHeader';
+import FollowButton from './FollowButton';
 
 export default class CausesTab extends React.Component {
   constructor(props) {
@@ -13,10 +13,17 @@ export default class CausesTab extends React.Component {
   }
 
   renderRow(row) {
+    let followButton = <FollowButton cause={row}/>;
     return (
       <Card>
-        <CauseHeader cause={row} button onPress={() => this
-          .props.navigator.push({component: CausePage, passProps: {cause: row}})}/>
+        <CardItem header button onPress={() => this
+          .props.navigator.push({component: CausePage, passProps: {
+              cause: row, followButton: followButton}})}>
+          {(row.icon_url != "") ?
+            <Thumbnail source={{uri: row.icon_url}} /> : null}
+          <Text>{row.name}</Text>
+          {followButton}
+        </CardItem>
       </Card>
     );
   }
