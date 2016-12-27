@@ -3,13 +3,13 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whmux"
 
 	"politivate.org/web/controllers/auth"
 )
 
 func init() {
-	mux["settings"] = auth.WebLoginRequired(webhelp.Exact(
+	mux["settings"] = auth.WebLoginRequired(whmux.Exact(
 		http.HandlerFunc(settings)))
 }
 

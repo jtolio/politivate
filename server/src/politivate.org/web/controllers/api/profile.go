@@ -3,15 +3,17 @@ package api
 import (
 	"net/http"
 
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whcompat"
+	"github.com/jtolds/webhelp/whjson"
+	"github.com/jtolds/webhelp/whmux"
 
 	"politivate.org/web/controllers/auth"
 )
 
 func init() {
-	mux["profile"] = webhelp.Exact(http.HandlerFunc(serveProfile))
+	mux["profile"] = whmux.Exact(http.HandlerFunc(serveProfile))
 }
 
 func serveProfile(w http.ResponseWriter, r *http.Request) {
-	webhelp.RenderJSON(w, r, auth.User(webhelp.Context(r)))
+	whjson.Render(w, r, auth.User(whcompat.Context(r)))
 }

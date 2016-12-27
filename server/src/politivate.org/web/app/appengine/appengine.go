@@ -3,7 +3,7 @@ package appengine
 import (
 	"net/http"
 
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whredir"
 	"google.golang.org/appengine"
 
 	"politivate.org/web/app"
@@ -12,8 +12,8 @@ import (
 func init() {
 	handler := app.RootHandler
 	if !appengine.IsDevAppServer() {
-		handler = webhelp.RequireHost("www.politivate.org",
-			webhelp.RequireHTTPS(handler))
+		handler = whredir.RequireHost("www.politivate.org",
+			whredir.RequireHTTPS(handler))
 	}
 	http.Handle("/", handler)
 }

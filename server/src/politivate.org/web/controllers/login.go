@@ -3,13 +3,13 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whmux"
 
 	"politivate.org/web/controllers/auth"
 )
 
 func init() {
-	mux["login"] = webhelp.Exact(http.HandlerFunc(loginPage))
+	mux["login"] = whmux.Exact(http.HandlerFunc(loginPage))
 }
 
 func loginPage(w http.ResponseWriter, r *http.Request) {

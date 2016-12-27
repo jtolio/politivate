@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whfatal"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )
@@ -25,7 +25,7 @@ func causeKey(ctx context.Context, id int64) *datastore.Key {
 func (c *Cause) Save(ctx context.Context) {
 	k, err := datastore.Put(ctx, causeKey(ctx, c.Id), c)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	c.Id = k.IntID()
 }
@@ -34,7 +34,7 @@ func GetCause(ctx context.Context, id int64) *Cause {
 	cause := Cause{}
 	err := datastore.Get(ctx, causeKey(ctx, id), &cause)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	cause.Id = id
 	return &cause
@@ -44,7 +44,7 @@ func GetCauses(ctx context.Context) []*Cause {
 	causes := make([]*Cause, 0) // so the json doesn't look like `null`
 	keys, err := datastore.NewQuery("Cause").Order("Name").GetAll(ctx, &causes)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	for i, key := range keys {
 		causes[i].Id = key.IntID()

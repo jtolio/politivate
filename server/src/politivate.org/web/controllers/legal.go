@@ -3,13 +3,13 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whmux"
 )
 
 func init() {
-	mux["legal"] = webhelp.DirMux{
-		"tos":     webhelp.Exact(http.HandlerFunc(tos)),
-		"privacy": webhelp.Exact(http.HandlerFunc(privacy)),
+	mux["legal"] = whmux.Dir{
+		"tos":     whmux.Exact(http.HandlerFunc(tos)),
+		"privacy": whmux.Exact(http.HandlerFunc(privacy)),
 	}
 }
 

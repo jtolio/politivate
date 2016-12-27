@@ -3,11 +3,11 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whmux"
 )
 
 func init() {
-	mux[""] = webhelp.RequireGet(http.HandlerFunc(landing))
+	mux[""] = whmux.RequireGet(http.HandlerFunc(landing))
 }
 
 func landing(w http.ResponseWriter, r *http.Request) {

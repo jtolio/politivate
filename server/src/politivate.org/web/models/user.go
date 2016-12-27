@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whfatal"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )
@@ -22,7 +22,7 @@ func userKey(ctx context.Context, id int64) *datastore.Key {
 func (u *User) Save(ctx context.Context) {
 	k, err := datastore.Put(ctx, userKey(ctx, u.Id), u)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	u.Id = k.IntID()
 }
@@ -31,7 +31,7 @@ func GetUser(ctx context.Context, id int64) *User {
 	user := User{}
 	err := datastore.Get(ctx, userKey(ctx, id), &user)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	user.Id = id
 	return &user
@@ -41,7 +41,7 @@ func GetUsers(ctx context.Context) []*User {
 	var users []*User
 	keys, err := datastore.NewQuery("User").GetAll(ctx, &users)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	for i, key := range keys {
 		users[i].Id = key.IntID()

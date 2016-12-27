@@ -1,7 +1,7 @@
 package views
 
 import (
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whtmpl"
 )
 
-var T = webhelp.NewTemplateCollection()
+var T = whtmpl.NewCollection()

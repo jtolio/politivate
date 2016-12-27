@@ -3,13 +3,15 @@ package cause
 import (
 	"net/http"
 
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whcompat"
+	"github.com/jtolds/webhelp/whjson"
+	"github.com/jtolds/webhelp/whmux"
 )
 
 func init() {
-	mux[""] = webhelp.RequireGet(http.HandlerFunc(serveCause))
+	mux[""] = whmux.RequireGet(http.HandlerFunc(serveCause))
 }
 
 func serveCause(w http.ResponseWriter, r *http.Request) {
-	webhelp.RenderJSON(w, r, mustGetCause(webhelp.Context(r)))
+	whjson.Render(w, r, mustGetCause(whcompat.Context(r)))
 }

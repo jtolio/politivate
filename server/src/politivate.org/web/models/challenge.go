@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whfatal"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )
@@ -22,7 +22,7 @@ type Challenge struct {
 
 func (cause *Cause) NewChallenge(ctx context.Context) *Challenge {
 	if cause.Id == 0 {
-		webhelp.FatalError(Error.New("must create Cause first"))
+		whfatal.Error(Error.New("must create Cause first"))
 	}
 
 	return &Challenge{
@@ -33,7 +33,7 @@ func (cause *Cause) NewChallenge(ctx context.Context) *Challenge {
 
 func challengeKey(ctx context.Context, id, causeId int64) *datastore.Key {
 	if causeId == 0 {
-		webhelp.FatalError(Error.New("must create cause first"))
+		whfatal.Error(Error.New("must create cause first"))
 	}
 	return datastore.NewKey(
 		ctx, "Challenge", "", id, causeKey(ctx, causeId))
@@ -42,7 +42,7 @@ func challengeKey(ctx context.Context, id, causeId int64) *datastore.Key {
 func (c *Challenge) Save(ctx context.Context) {
 	k, err := datastore.Put(ctx, challengeKey(ctx, c.Id, c.CauseId), c)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	c.Id = k.IntID()
 }
@@ -51,7 +51,7 @@ func (cause *Cause) GetChallenge(ctx context.Context, id int64) *Challenge {
 	challenge := Challenge{}
 	err := datastore.Get(ctx, challengeKey(ctx, id, cause.Id), &challenge)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	challenge.Id = id
 	challenge.CauseId = cause.Id
@@ -66,7 +66,7 @@ func getChallenges(ctx context.Context, causeId int64) []*Challenge {
 	keys, err := datastore.NewQuery("Challenge").
 		Ancestor(causeKey(ctx, causeId)).GetAll(ctx, &challenges)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	for i, key := range keys {
 		challenges[i].Id = key.IntID()

@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whfatal"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )
@@ -14,13 +14,13 @@ type userCause struct {
 
 func (u *userCause) Save(ctx context.Context) {
 	if u.CauseId == 0 || u.UserId == 0 {
-		webhelp.FatalError(Error.New("incomplete user cause"))
+		whfatal.Error(Error.New("incomplete user cause"))
 	}
 
 	k, err := datastore.Put(ctx,
 		datastore.NewKey(ctx, "userCause", "", u.Id, userKey(ctx, u.UserId)), u)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	u.Id = k.IntID()
 }
@@ -33,7 +33,7 @@ func (u *User) Follow(ctx context.Context, c *Cause) {
 		return nil
 	}, nil)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 }
 
@@ -42,28 +42,28 @@ func (u *User) Unfollow(ctx context.Context, c *Cause) {
 		Ancestor(userKey(ctx, u.Id)).Filter("CauseId =", c.Id).
 		KeysOnly().GetAll(ctx, nil)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	for _, k := range keys {
 		err = datastore.Delete(ctx, k)
 		if err != nil {
-			webhelp.FatalError(wrapErr(err))
+			whfatal.Error(wrapErr(err))
 		}
 	}
 }
 
 func (u *User) IsFollowing(ctx context.Context, c *Cause) bool {
 	if u.Id == 0 {
-		webhelp.FatalError(Error.New("must create User first"))
+		whfatal.Error(Error.New("must create User first"))
 	}
 	if c.Id == 0 {
-		webhelp.FatalError(Error.New("must create Cause first"))
+		whfatal.Error(Error.New("must create Cause first"))
 	}
 
 	count, err := datastore.NewQuery("userCause").
 		Ancestor(userKey(ctx, u.Id)).Filter("CauseId =", c.Id).Count(ctx)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	return count > 0
 }
@@ -73,7 +73,7 @@ func (u *User) CauseIds(ctx context.Context) []int64 {
 	_, err := datastore.NewQuery("userCause").
 		Ancestor(userKey(ctx, u.Id)).GetAll(ctx, &userCauses)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	causes := make([]int64, 0, len(userCauses))
 	for _, uc := range userCauses {
@@ -86,7 +86,7 @@ func (c *Cause) UserCount(ctx context.Context) int64 {
 	count, err := datastore.NewQuery("userCause").
 		Filter("CauseId =", c.Id).Count(ctx)
 	if err != nil {
-		webhelp.FatalError(wrapErr(err))
+		whfatal.Error(wrapErr(err))
 	}
 	return int64(count)
 }

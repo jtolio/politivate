@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whlog"
+	"github.com/jtolds/webhelp/whroute"
 	"github.com/spacemonkeygo/flagfile"
 	"github.com/spacemonkeygo/spacelog/setup"
 
@@ -21,9 +22,9 @@ func main() {
 	setup.MustSetup(os.Args[0])
 	switch flag.Arg(0) {
 	case "serve":
-		panic(webhelp.ListenAndServe(*addr, app.RootHandler))
+		panic(whlog.ListenAndServe(*addr, app.RootHandler))
 	case "routes":
-		webhelp.PrintRoutes(os.Stdout, app.RootHandler)
+		whroute.PrintRoutes(os.Stdout, app.RootHandler)
 	default:
 		fmt.Printf("Usage: %s <serve|routes>\n", os.Args[0])
 	}

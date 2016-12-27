@@ -4,17 +4,20 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/jtolds/webhelp"
+	"github.com/jtolds/webhelp/whcompat"
+	"github.com/jtolds/webhelp/whfatal"
+	"github.com/jtolds/webhelp/whjson"
+	"github.com/jtolds/webhelp/whmux"
 
 	"politivate.org/web/models"
 )
 
 func init() {
-	mux["testing"] = webhelp.Exact(http.HandlerFunc(serveTest))
+	mux["testing"] = whmux.Exact(http.HandlerFunc(serveTest))
 }
 
 func serveTest(w http.ResponseWriter, r *http.Request) {
-	ctx := webhelp.Context(r)
+	ctx := whcompat.Context(r)
 
 	switch r.FormValue("action") {
 	case "filldb":
@@ -31,7 +34,7 @@ func serveTest(w http.ResponseWriter, r *http.Request) {
 		var err error
 		chalSD.Deadline, err = time.Parse(time.RFC822, "19 Dec 16 23:59 PST")
 		if err != nil {
-			webhelp.FatalError(err)
+			whfatal.Error(err)
 		}
 		chalSD.IconURL = "https://cdn2.iconfinder.com/data/icons/the-urban-hustle-and-bustle/60/townhall-256.png"
 		chalSD.Points = 100
@@ -45,12 +48,12 @@ func serveTest(w http.ResponseWriter, r *http.Request) {
 		u := models.GetUsers(ctx)[0]
 		c := models.GetCauses(ctx)[0]
 
-		webhelp.RenderJSON(w, r, map[string]interface{}{
+		whjson.Render(w, r, map[string]interface{}{
 			"user_is_following":   u.CauseIds(ctx),
 			"cause_has_followers": c.UserCount(ctx),
 		})
 		return
 	}
 
-	webhelp.RenderJSON(w, r, "ok")
+	whjson.Render(w, r, "ok")
 }
