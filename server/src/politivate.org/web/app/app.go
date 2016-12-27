@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	RootHandler = whcompat.DoneNotify(whlog.LogRequests(
+	RootHandler = whcompat.DoneNotify(whlog.LogRequests(whlog.Default,
 		whsess.HandlerWithStore(whsess.NewCookieStore(secrets.CookieSecret),
 			whfatal.Catch(controllers.Handler))))
 )

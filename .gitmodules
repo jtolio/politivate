@@ -46,3 +46,6 @@
 [submodule "secrets"]
 	path = secrets
 	url = https://source.developers.google.com/p/politiforce-150719/r/secrets
+[submodule "server/src/github.com/jtolds/gls"]
+	path = server/src/github.com/jtolds/gls
+	url = https://github.com/jtolds/gls
