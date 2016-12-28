@@ -15,5 +15,6 @@ func init() {
 
 func settings(w http.ResponseWriter, r *http.Request) {
 	Render(w, r, "settings", map[string]interface{}{
-		"LogoutURL": auth.LogoutURL("/")})
+		"LogoutURL": auth.LogoutURL("/"),
+	})
 }

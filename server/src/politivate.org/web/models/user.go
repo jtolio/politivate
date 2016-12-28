@@ -1,18 +1,23 @@
 package models
 
 import (
+	"fmt"
+	"strings"
+
+	"github.com/jtolds/webhelp/wherr"
 	"github.com/jtolds/webhelp/whfatal"
+	"github.com/markbates/goth"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )
 
 type User struct {
-	Id   int64  `json:"id" datastore:"-"`
-	Name string `json:"name"`
-}
-
-func NewUser(ctx context.Context) *User {
-	return &User{}
+	Id        int64  `json:"id" datastore:"-"`
+	AuthId    string `json:"-"`
+	Name      string `json:"name"`
+	NickName  string `json:"nick_name"`
+	Email     string `json:"email"`
+	AvatarURL string `json:"avatar_url"`
 }
 
 func userKey(ctx context.Context, id int64) *datastore.Key {
@@ -47,4 +52,32 @@ func GetUsers(ctx context.Context) []*User {
 		users[i].Id = key.IntID()
 	}
 	return users
+}
+
+func FindUser(ctx context.Context, user *goth.User) *User {
+	authid := fmt.Sprintf("%s:%s",
+		strings.Replace(user.Provider, ":", "_", -1),
+		user.UserID)
+	var users []*User
+	keys, err := datastore.NewQuery("User").Filter("AuthId =", authid).
+		GetAll(ctx, &users)
+	if err != nil {
+		whfatal.Error(wrapErr(err))
+	}
+	if len(users) > 1 {
+		whfatal.Error(wherr.InternalServerError.New(
+			"more than one user with same id"))
+	}
+	if len(users) == 1 {
+		users[0].Id = keys[0].IntID()
+		return users[0]
+	}
+	u := &User{
+		AuthId:    authid,
+		Name:      user.Name,
+		NickName:  user.NickName,
+		Email:     user.Email,
+		AvatarURL: user.AvatarURL}
+	u.Save(ctx)
+	return u
 }

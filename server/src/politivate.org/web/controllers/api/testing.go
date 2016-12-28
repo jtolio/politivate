@@ -40,10 +40,6 @@ func serveTest(w http.ResponseWriter, r *http.Request) {
 		chalSD.Points = 100
 		chalSD.Save(ctx)
 
-		user := models.NewUser(ctx)
-		user.Name = "Test User"
-		user.Save(ctx)
-
 	case "followtest":
 		u := models.GetUsers(ctx)[0]
 		c := models.GetCauses(ctx)[0]

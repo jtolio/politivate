@@ -49,3 +49,6 @@
 [submodule "server/src/github.com/jtolds/gls"]
 	path = server/src/github.com/jtolds/gls
 	url = https://github.com/jtolds/gls
+[submodule "server/src/github.com/jtolds/webhelp-whgoth"]
+	path = server/src/github.com/jtolds/webhelp-whgoth
+	url = https://github.com/jtolds/webhelp-whgoth

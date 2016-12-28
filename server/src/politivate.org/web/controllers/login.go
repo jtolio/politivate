@@ -14,8 +14,8 @@ func init() {
 
 func loginPage(w http.ResponseWriter, r *http.Request) {
 	providers := map[string]string{}
-	for name, provider := range auth.Providers() {
-		providers[name] = provider.LoginURL(r.FormValue("redirect_to"), false)
+	for _, provider := range auth.Providers() {
+		providers[provider.Name()] = provider.LoginURL(r.FormValue("redirect_to"))
 	}
 	Render(w, r, "login", map[string]interface{}{
 		"Providers": providers})

@@ -4,7 +4,13 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/jtolds/webhelp-oauth2"
+	"github.com/jtolds/webhelp-whgoth"
+	"github.com/jtolds/webhelp/wherr"
+	"github.com/jtolds/webhelp/whfatal"
+	"github.com/jtolds/webhelp/whredir"
+	"github.com/markbates/goth/providers/facebook"
+	"github.com/markbates/goth/providers/gplus"
+	"github.com/markbates/goth/providers/twitter"
 	"golang.org/x/net/context"
 
 	"politivate.org/web/models"
@@ -12,44 +18,51 @@ import (
 )
 
 var (
-	auth = func() *oauth2.ProviderGroup {
-		group, err := oauth2.NewProviderGroup(
-			"auth", "/auth", oauth2.RedirectURLs{},
-			oauth2.Google(oauth2.Config{
-				ClientID:     secrets.GoogleClientId,
-				ClientSecret: secrets.GoogleClientSecret,
-				Scopes:       []string{"profile", "email"},
-				RedirectURL:  "https://www.politivate.org/auth/google/_cb"}),
-			oauth2.Facebook(oauth2.Config{
-				ClientID:     secrets.FacebookClientId,
-				ClientSecret: secrets.FacebookClientSecret,
-				RedirectURL:  "https://www.politivate.org/auth/facebook/_cb"}))
-		if err != nil {
-			panic(err)
-		}
-		return group
-	}()
+	auth = whgoth.NewAuthProviders(
+		"/auth", "auth",
+		gplus.New(
+			secrets.GoogleClientId,
+			secrets.GoogleClientSecret,
+			"https://www.politivate.org/auth/provider/gplus/callback"),
+		facebook.New(
+			secrets.FacebookClientId,
+			secrets.FacebookClientSecret,
+			"https://www.politivate.org/auth/provider/facebook/callback"),
+		twitter.New(
+			secrets.TwitterClientId,
+			secrets.TwitterClientSecret,
+			"https://www.politivate.org/auth/provider/twitter/callback"),
+	)
 
 	Handler   http.Handler = auth
 	Providers              = auth.Providers
-	LogoutURL              = auth.LogoutAllURL
+
+	LogoutURL = auth.LogoutURL
 )
 
 func WebLoginRequired(h http.Handler) http.Handler {
-	// TODO
-	// 	return Auth.LoginRequired(h, LoginRedirect)
-	return h
+	return auth.RequireUser(h, whredir.RedirectHandlerFunc(
+		func(r *http.Request) string {
+			return LoginRedirect(r.RequestURI)
+		}))
 }
 
 func APILoginRequired(h http.Handler) http.Handler {
-	// TODO
-	// Should return an error if the user isn't logged in
-	return h
+	return auth.RequireUser(h, http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			wherr.Handle(w, r, wherr.Unauthorized.New("login required"))
+		}))
 }
 
 func User(ctx context.Context) *models.User {
-	// TODO
-	return models.GetUsers(ctx)[0]
+	u, err := auth.User(ctx)
+	if err != nil {
+		whfatal.Error(err)
+	}
+	if u == nil {
+		return nil
+	}
+	return models.FindUser(ctx, u)
 }
 
 func LoginRedirect(redirectTo string) string {
