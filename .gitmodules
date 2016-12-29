@@ -30,10 +30,10 @@
 	url = https://github.com/grpc/grpc-go
 [submodule "src/github.com/markbates/goth"]
 	path = server/src/github.com/markbates/goth
-	url = https://github.com/markbates/goth
+	url = https://github.com/jtolds/goth
 [submodule "src/github.com/mrjones/oauth"]
 	path = server/src/github.com/mrjones/oauth
-	url = https://github.com/mrjones/oauth
+	url = https://github.com/jtolds/oauth
 [submodule "src/github.com/jtolds/webhelp"]
 	path = server/src/github.com/jtolds/webhelp
 	url = https://github.com/jtolds/webhelp
