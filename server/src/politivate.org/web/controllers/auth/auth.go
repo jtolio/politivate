@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/jtolds/webhelp-whgoth"
 	"github.com/markbates/goth/providers/facebook"
 	"github.com/markbates/goth/providers/gplus"
 	"github.com/markbates/goth/providers/twitter"
 	"golang.org/x/net/context"
+	"gopkg.in/go-webhelp/whgoth.v1"
 	"gopkg.in/webhelp.v1/wherr"
 	"gopkg.in/webhelp.v1/whfatal"
 	"gopkg.in/webhelp.v1/whredir"

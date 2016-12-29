@@ -34,9 +34,6 @@
 [submodule "src/github.com/mrjones/oauth"]
 	path = server/src/github.com/mrjones/oauth
 	url = https://github.com/jtolds/oauth
-[submodule "src/github.com/jtolds/webhelp-oauth2"]
-	path = server/src/github.com/jtolds/webhelp-oauth2
-	url = https://github.com/jtolds/webhelp-oauth2
 [submodule "server/src/github.com/spacemonkeygo/flagfile"]
 	path = server/src/github.com/spacemonkeygo/flagfile
 	url = https://github.com/spacemonkeygo/flagfile
@@ -46,9 +43,12 @@
 [submodule "server/src/github.com/jtolds/gls"]
 	path = server/src/github.com/jtolds/gls
 	url = https://github.com/jtolds/gls
-[submodule "server/src/github.com/jtolds/webhelp-whgoth"]
-	path = server/src/github.com/jtolds/webhelp-whgoth
-	url = https://github.com/jtolds/webhelp-whgoth
 [submodule "server/src/gopkg.in/webhelp.v1"]
   path = server/src/gopkg.in/webhelp.v1
   url = https://github.com/go-webhelp/webhelp
+[submodule "server/src/gopkg.in/go-webhelp/whgoth.v1"]
+	path = server/src/gopkg.in/go-webhelp/whgoth.v1
+	url = https://github.com/go-webhelp/whgoth
+[submodule "server/src/gopkg.in/go-webhelp/whoauth2.v1"]
+	path = server/src/gopkg.in/go-webhelp/whoauth2.v1
+	url = https://github.com/go-webhelp/whoauth2
