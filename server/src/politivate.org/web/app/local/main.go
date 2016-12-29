@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jtolds/webhelp/whlog"
-	"github.com/jtolds/webhelp/whroute"
+	"gopkg.in/webhelp.v1/whlog"
+	"gopkg.in/webhelp.v1/whroute"
 	"github.com/spacemonkeygo/flagfile"
 	"github.com/spacemonkeygo/spacelog/setup"
 

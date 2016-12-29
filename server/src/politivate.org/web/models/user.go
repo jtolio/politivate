@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jtolds/webhelp/wherr"
-	"github.com/jtolds/webhelp/whfatal"
+	"gopkg.in/webhelp.v1/wherr"
+	"gopkg.in/webhelp.v1/whfatal"
 	"github.com/markbates/goth"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"

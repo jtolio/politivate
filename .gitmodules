@@ -34,9 +34,6 @@
 [submodule "src/github.com/mrjones/oauth"]
 	path = server/src/github.com/mrjones/oauth
 	url = https://github.com/jtolds/oauth
-[submodule "src/github.com/jtolds/webhelp"]
-	path = server/src/github.com/jtolds/webhelp
-	url = https://github.com/jtolds/webhelp
 [submodule "src/github.com/jtolds/webhelp-oauth2"]
 	path = server/src/github.com/jtolds/webhelp-oauth2
 	url = https://github.com/jtolds/webhelp-oauth2
@@ -52,3 +49,6 @@
 [submodule "server/src/github.com/jtolds/webhelp-whgoth"]
 	path = server/src/github.com/jtolds/webhelp-whgoth
 	url = https://github.com/jtolds/webhelp-whgoth
+[submodule "server/src/gopkg.in/webhelp.v1"]
+  path = server/src/gopkg.in/webhelp.v1
+  url = https://github.com/go-webhelp/webhelp

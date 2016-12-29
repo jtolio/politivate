@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/jtolds/webhelp/whfatal"
+	"gopkg.in/webhelp.v1/whfatal"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )

@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/jtolds/webhelp/whcompat"
-	"github.com/jtolds/webhelp/whfatal"
-	"github.com/jtolds/webhelp/whjson"
-	"github.com/jtolds/webhelp/whmux"
+	"gopkg.in/webhelp.v1/whcompat"
+	"gopkg.in/webhelp.v1/whfatal"
+	"gopkg.in/webhelp.v1/whjson"
+	"gopkg.in/webhelp.v1/whmux"
 
 	"politivate.org/web/models"
 )

@@ -1,7 +1,7 @@
 package views
 
 import (
-	"github.com/jtolds/webhelp/whtmpl"
+	"gopkg.in/webhelp.v1/whtmpl"
 )
 
 var T = whtmpl.NewCollection()

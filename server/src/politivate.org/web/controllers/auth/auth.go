@@ -5,13 +5,13 @@ import (
 	"net/url"
 
 	"github.com/jtolds/webhelp-whgoth"
-	"github.com/jtolds/webhelp/wherr"
-	"github.com/jtolds/webhelp/whfatal"
-	"github.com/jtolds/webhelp/whredir"
 	"github.com/markbates/goth/providers/facebook"
 	"github.com/markbates/goth/providers/gplus"
 	"github.com/markbates/goth/providers/twitter"
 	"golang.org/x/net/context"
+	"gopkg.in/webhelp.v1/wherr"
+	"gopkg.in/webhelp.v1/whfatal"
+	"gopkg.in/webhelp.v1/whredir"
 
 	"politivate.org/web/models"
 	"politivate.org/web/secrets"

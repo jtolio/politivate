@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/jtolds/webhelp/whmux"
+	"gopkg.in/webhelp.v1/whmux"
 
 	"politivate.org/web/views"
 )

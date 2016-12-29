@@ -1,10 +1,10 @@
 package app
 
 import (
-	"github.com/jtolds/webhelp/whcompat"
-	"github.com/jtolds/webhelp/whfatal"
-	"github.com/jtolds/webhelp/whlog"
-	"github.com/jtolds/webhelp/whsess"
+	"gopkg.in/webhelp.v1/whcompat"
+	"gopkg.in/webhelp.v1/whfatal"
+	"gopkg.in/webhelp.v1/whlog"
+	"gopkg.in/webhelp.v1/whsess"
 
 	"politivate.org/web/controllers"
 	"politivate.org/web/secrets"

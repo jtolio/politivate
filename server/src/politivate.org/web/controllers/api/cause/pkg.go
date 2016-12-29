@@ -3,10 +3,10 @@ package cause
 import (
 	"net/http"
 
-	"github.com/jtolds/webhelp"
-	"github.com/jtolds/webhelp/whcompat"
-	"github.com/jtolds/webhelp/whmux"
-	"github.com/jtolds/webhelp/whroute"
+	"gopkg.in/webhelp.v1"
+	"gopkg.in/webhelp.v1/whcompat"
+	"gopkg.in/webhelp.v1/whmux"
+	"gopkg.in/webhelp.v1/whroute"
 	"github.com/spacemonkeygo/spacelog"
 	"golang.org/x/net/context"
 

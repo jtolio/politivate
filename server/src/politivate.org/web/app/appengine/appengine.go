@@ -3,8 +3,8 @@ package appengine
 import (
 	"net/http"
 
-	"github.com/jtolds/webhelp/whgls"
-	"github.com/jtolds/webhelp/whredir"
+	"gopkg.in/webhelp.v1/whgls"
+	"gopkg.in/webhelp.v1/whredir"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
 
