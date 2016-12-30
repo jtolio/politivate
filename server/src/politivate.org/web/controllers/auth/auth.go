@@ -9,9 +9,11 @@ import (
 	"github.com/markbates/goth/providers/twitter"
 	"golang.org/x/net/context"
 	"gopkg.in/go-webhelp/whgoth.v1"
+	"gopkg.in/webhelp.v1"
+	"gopkg.in/webhelp.v1/whcompat"
 	"gopkg.in/webhelp.v1/wherr"
 	"gopkg.in/webhelp.v1/whfatal"
-	"gopkg.in/webhelp.v1/whredir"
+	"gopkg.in/webhelp.v1/whroute"
 
 	"politivate.org/web/models"
 	"politivate.org/web/secrets"
@@ -36,33 +38,65 @@ var (
 
 	Handler   http.Handler = auth
 	Providers              = auth.Providers
+	userKey                = webhelp.GenSym()
 
 	LogoutURL = auth.LogoutURL
 )
 
-func WebLoginRequired(h http.Handler) http.Handler {
-	return auth.RequireUser(h, whredir.RedirectHandlerFunc(
-		func(r *http.Request) string {
-			return LoginRedirect(r.RequestURI)
-		}))
-}
-
-func APILoginRequired(h http.Handler) http.Handler {
-	return auth.RequireUser(h, http.HandlerFunc(
-		func(w http.ResponseWriter, r *http.Request) {
-			wherr.Handle(w, r, wherr.Unauthorized.New("login required"))
-		}))
-}
-
-func User(ctx context.Context) *models.User {
-	u, err := auth.User(ctx)
+func getCookieUser(ctx context.Context) *models.User {
+	gu, err := auth.User(ctx)
 	if err != nil {
 		whfatal.Error(err)
 	}
-	if u == nil {
+	if gu == nil {
 		return nil
 	}
-	return models.FindUser(ctx, u)
+	return models.FindUser(ctx, gu)
+}
+
+func getTokenUser(r *http.Request) *models.User {
+	token := r.Header.Get("X-Auth-Token")
+	if token == "" {
+		return nil
+	}
+	return models.GetUserByAuthToken(whcompat.Context(r), token)
+}
+
+func WebLoginRequired(h http.Handler) http.Handler {
+	return whroute.HandlerFunc(h,
+		func(w http.ResponseWriter, r *http.Request) {
+			ctx := whcompat.Context(r)
+			u := getCookieUser(ctx)
+			if u == nil {
+				whfatal.Redirect(LoginRedirect(r.RequestURI))
+			}
+			h.ServeHTTP(w, whcompat.WithContext(r,
+				context.WithValue(ctx, userKey, u)))
+		})
+}
+
+func APILoginRequired(h http.Handler) http.Handler {
+	return whroute.HandlerFunc(h,
+		func(w http.ResponseWriter, r *http.Request) {
+			ctx := whcompat.Context(r)
+			u := getTokenUser(r)
+			if u == nil {
+				u = getCookieUser(ctx)
+			}
+			if u == nil {
+				whfatal.Error(wherr.Unauthorized.New("X-Auth-Token required"))
+			}
+			h.ServeHTTP(w, whcompat.WithContext(r,
+				context.WithValue(ctx, userKey, u)))
+		})
+}
+
+func User(ctx context.Context) *models.User {
+	u, ok := ctx.Value(userKey).(*models.User)
+	if !ok || u == nil {
+		whfatal.Error(wherr.Unauthorized.New("login required"))
+	}
+	return u
 }
 
 func LoginRedirect(redirectTo string) string {

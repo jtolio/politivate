@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	mux["causes"] = whmux.Exact(http.HandlerFunc(serveCauses))
+	authedMux["causes"] = whmux.Exact(http.HandlerFunc(serveCauses))
 }
 
 func serveCauses(w http.ResponseWriter, r *http.Request) {

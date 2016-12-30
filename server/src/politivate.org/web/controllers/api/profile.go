@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	mux["profile"] = whmux.Exact(http.HandlerFunc(serveProfile))
+	authedMux["profile"] = whmux.Exact(http.HandlerFunc(serveProfile))
 }
 
 func serveProfile(w http.ResponseWriter, r *http.Request) {

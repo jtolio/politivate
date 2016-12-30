@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	mux["challenges"] = whmux.Exact(http.HandlerFunc(serveChallenges))
+	authedMux["challenges"] = whmux.Exact(http.HandlerFunc(serveChallenges))
 }
 
 func serveChallenges(w http.ResponseWriter, r *http.Request) {

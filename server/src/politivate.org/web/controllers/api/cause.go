@@ -5,5 +5,5 @@ import (
 )
 
 func init() {
-	mux["cause"] = cause.Handler
+	authedMux["cause"] = cause.Handler
 }

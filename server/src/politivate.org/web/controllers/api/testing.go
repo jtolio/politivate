@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	mux["testing"] = whmux.Exact(http.HandlerFunc(serveTest))
+	authedMux["testing"] = whmux.Exact(http.HandlerFunc(serveTest))
 }
 
 func serveTest(w http.ResponseWriter, r *http.Request) {
