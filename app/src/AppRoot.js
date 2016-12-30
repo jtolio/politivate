@@ -50,30 +50,45 @@ export default class AppRoot extends Component {
     this.logout = this.logout.bind(this);
   }
 
+  async otpLogin() {
+    let initialURL = await Linking.getInitialURL();
+    if (!initialURL || !initialURL.startsWith(REGISTERED_OTP_PREFIX)) {
+      return false;
+    }
+    let otp = initialURL.slice(REGISTERED_OTP_PREFIX.length);
+    let fragmentIndex = otp.indexOf("#");
+    if (fragmentIndex >= 0) {
+      otp = otp.slice(0, fragmentIndex);
+    }
+    if (otp.length == 0) {
+      return false;
+    }
+    let last_otp = await AsyncStorage.getItem("@v1/auth/last_otp");
+    if (last_otp == otp) {
+      return false;
+    }
+    let req = new Request(
+        "https://www.politivate.org/api/v1/login?otp=" + otp);
+    let resp = await fetch(req);
+    if (!resp.ok) {
+      return false;
+    }
+    await AsyncStorage.setItem("@v1/auth/last_otp", otp);
+    let json = await resp.json();
+    let auth_token = json.resp.token;
+    await AsyncStorage.setItem("@v1/auth/token", auth_token);
+    this.setState({
+      loading: false,
+      logged_in: true,
+      error: null,
+      token: auth_token});
+    return true;
+  }
+
   async componentDidMount() {
     try {
-      let initialURL = await Linking.getInitialURL();
-      if (initialURL && initialURL.startsWith(REGISTERED_OTP_PREFIX)) {
-        let token = initialURL.slice(REGISTERED_OTP_PREFIX.length);
-        if (token.indexOf("#") >= 0) {
-          token = token.slice(0, token.indexOf("#"));
-        }
-        if (token.length > 0) {
-          let req = new Request(
-              "https://www.politivate.org/api/v1/login?otp=" + token);
-          let resp = await fetch(req);
-          if (resp.ok) {
-            let json = await resp.json();
-            let auth_token = json.resp.token;
-            await AsyncStorage.setItem("@v1/auth/token", auth_token);
-            this.setState({
-              loading: false,
-              logged_in: true,
-              error: null,
-              token: auth_token});
-            return;
-          }
-        }
+      if (await this.otpLogin()) {
+        return;
       }
 
       let auth_token = await AsyncStorage.getItem("@v1/auth/token");
@@ -87,6 +102,7 @@ export default class AppRoot extends Component {
       }
 
       this.setState({loading: false, logged_in: false});
+
     } catch(err) {
       this.setState({error: err, loading: false});
     }
