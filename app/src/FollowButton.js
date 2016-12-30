@@ -24,20 +24,24 @@ export default class FollowButton extends React.Component {
     this.request("GET");
   }
 
-  request(method) {
-    let req = new Request("https://www.politivate.org/api/v1/cause/" +
-                          this.props.cause.id + "/followers",
-                          {method});
-    fetch(req)
-      .then((resp) => resp.json())
-      .then((json) => this.setState({
-                  loading: false,
-                  error: null,
-                  followers: json.resp.followers,
-                  following: json.resp.following}))
-      .catch((error) => this.setState({
-                  loading: false,
-                  error: error}));
+  async request(method) {
+    try {
+      let req = new Request(
+          "https://www.politivate.org/api/v1/cause/" + this.props.cause.id +
+          "/followers",
+          {method: method,
+           headers: {"X-Auth-Token": this.props.appstate.authtoken}});
+      let json = await (await fetch(req)).json();
+      this.setState({
+        loading: false,
+        error: null,
+        followers: json.resp.followers,
+        following: json.resp.following});
+    } catch(error) {
+      this.setState({
+        loading: false,
+        error: error});
+    }
   }
 
   toggle() {

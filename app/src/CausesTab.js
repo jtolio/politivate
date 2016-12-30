@@ -13,7 +13,9 @@ export default class CausesTab extends React.Component {
   }
 
   renderRow(row) {
-    let followButton = <FollowButton cause={row}/>;
+    let followButton = (
+      <FollowButton cause={row} appstate={this.props.appstate} />
+    );
     return (
       <Card>
         <CardItem header button onPress={() => this
@@ -31,7 +33,8 @@ export default class CausesTab extends React.Component {
   render() {
     return (
       <ListTab url="https://www.politivate.org/api/v1/causes/"
-        header={<H2>Causes</H2>} renderRow={this.renderRow} />
+        header={<H2>Causes</H2>} renderRow={this.renderRow}
+        appstate={this.props.appstate} />
     );
   }
 }

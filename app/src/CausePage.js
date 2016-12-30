@@ -4,7 +4,6 @@ import React from 'react';
 import { Linking } from 'react-native';
 import { Card, CardItem, Text, Thumbnail, Button, View } from 'native-base';
 import Subpage from './Subpage';
-import FollowButton from './FollowButton';
 import { ErrorView, Link } from './common';
 import Icon from 'react-native-vector-icons/Entypo';
 

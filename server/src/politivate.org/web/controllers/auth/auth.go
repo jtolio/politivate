@@ -102,3 +102,10 @@ func User(ctx context.Context) *models.User {
 func LoginRedirect(redirectTo string) string {
 	return "/login?" + url.Values{"redirect_to": {redirectTo}}.Encode()
 }
+
+func Logout(ctx context.Context, w http.ResponseWriter) {
+	err := auth.Logout(ctx, w)
+	if err != nil {
+		whfatal.Error(err)
+	}
+}

@@ -21,23 +21,22 @@ export default class ProfileTab extends Component {
     this.update();
   }
 
-  update() {
-    this.setState({loading: true});
-    let req = new Request("https://www.politivate.org/api/v1/profile");
-    fetch(req)
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({
-          loading: false,
-          profile: json.resp,
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          loading: false,
-          error: error,
-        });
+  async update() {
+    try {
+      this.setState({loading: true});
+      let req = new Request("https://www.politivate.org/api/v1/profile",
+          {headers: {"X-Auth-Token": this.props.appstate.authtoken}});
+      let json = await (await fetch(req)).json();
+      this.setState({
+        loading: false,
+        profile: json.resp,
       });
+    } catch(error) {
+      this.setState({
+        loading: false,
+        error: error,
+      });
+    }
   }
 
   renderLoaded() {
@@ -50,6 +49,9 @@ export default class ProfileTab extends Component {
   }
 
   render() {
+    if (this.state.error) {
+      return <ErrorView msg={this.state.error}/>;
+    }
     return (
       <View>
         <View style={styles.tabheader}>

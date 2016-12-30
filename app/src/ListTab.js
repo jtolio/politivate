@@ -11,7 +11,7 @@ export default class ListTab extends React.Component {
     this.state = {
       loading: true,
       items: [],
-      error: ""
+      error: null
     };
     this.update = this.update.bind(this);
   }
@@ -20,23 +20,22 @@ export default class ListTab extends React.Component {
     this.update();
   }
 
-  update() {
-    this.setState({loading: true});
-    let req = new Request(this.props.url);
-    fetch(req)
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({
-          loading: false,
-          items: json.resp,
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          loading: false,
-          error: error,
-        });
+  async update() {
+    try {
+      this.setState({loading: true});
+      let req = new Request(this.props.url,
+          {headers: {"X-Auth-Token": this.props.appstate.authtoken}});
+      let json = await (await fetch(req)).json();
+      this.setState({
+        loading: false,
+        items: json.resp,
       });
+    } catch(error) {
+      this.setState({
+        loading: false,
+        error: error,
+      });
+    }
   }
 
   render() {
@@ -48,7 +47,7 @@ export default class ListTab extends React.Component {
         <View style={styles.tabheader}>
           {this.props.header}
         </View>
-        {this.state.error.length > 0 ?
+        {this.state.error ?
          (<ErrorView msg={this.state.error}/>) :
          (<ListView refreshControl={
               <RefreshControl refreshing={this.state.loading}
