@@ -7,16 +7,66 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="890.18945"
-   height="361.41602"
+   height="390.49997"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="logos.svg">
+   sodipodi:docname="design.svg">
   <defs
-     id="defs4" />
+     id="defs4">
+    <linearGradient
+       id="linearGradient4049">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0.24561404;"
+         offset="0"
+         id="stop4051" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="1"
+         id="stop4053" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient4023">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop4025" />
+      <stop
+         id="stop4037"
+         offset="0.51111114"
+         style="stop-color:#ffffff;stop-opacity:1;" />
+      <stop
+         style="stop-color:#b0d1fa;stop-opacity:0.32173914;"
+         offset="1"
+         id="stop4027" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4023"
+       id="radialGradient4085"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-5.6244182,-201.35438)"
+       cx="665"
+       cy="777.36218"
+       fx="665"
+       fy="777.36218"
+       r="65.5" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4049"
+       id="radialGradient4087"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.38955053,0,0,0.37591245,406.04207,261.64998)"
+       cx="651.57471"
+       cy="827.50635"
+       fx="651.57471"
+       fy="827.50635"
+       r="154.10924" />
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -24,9 +74,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4642021"
-     inkscape:cx="746.32429"
-     inkscape:cy="179.13907"
+     inkscape:zoom="1.7779596"
+     inkscape:cx="262.82237"
+     inkscape:cy="108.3594"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -34,7 +84,7 @@
      fit-margin-left="20"
      fit-margin-right="20"
      fit-margin-bottom="20"
-     inkscape:window-width="716"
+     inkscape:window-width="1436"
      inkscape:window-height="861"
      inkscape:window-x="0"
      inkscape:window-y="37"
@@ -47,7 +97,7 @@
        enabled="true"
        snapvisiblegridlinesonly="true"
        originx="-160px"
-       originy="-438.58398px" />
+       originy="-409.50002px" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -67,31 +117,31 @@
      id="layer1"
      transform="translate(-160,-252.36218)">
     <g
-       transform="translate(-5,-5.0000044)"
-       id="g3039-7">
+       id="g3975">
       <g
-         id="g3018-3">
+         id="g3871-2"
+         transform="translate(-395,-110)">
         <path
            style="fill:#0075ff;fill-opacity:1;stroke:none"
-           d="m 220,387.36218 -20,100 25,0 5,-25 c 40,0 55,-25 55,-40 0,-15 0,-35 -40,-35 z m 20,25 c 15,10e-6 20,0 20,10 0,10.00001 -10,15.00001 -25,15 z"
-           id="rect3770-6"
-           inkscape:connector-curvature="0"
-           sodipodi:nodetypes="ccccssccscc" />
+           d="m 451,240 -20,100 24,0 5,-25 c 40,0 55,-25 55,-40 0,-15 0,-35 -40,-35 l -24,0 z m 19,25 c 15,10e-6 20,0 20,10 0,10.00001 -10,15.00001 -25,15 l 5,-25 z"
+           transform="translate(160,252.36218)"
+           id="rect3770-2-2-3-1-9"
+           inkscape:connector-curvature="0" />
         <path
            style="fill:#ff4230;fill-opacity:1;stroke:none"
-           d="m 185,387.36218 35,0 -5,25 -30,0 z"
-           id="rect3788-1"
-           inkscape:connector-curvature="0"
-           sodipodi:nodetypes="ccccc" />
+           d="m 415,240 0,25 29,0 5,-25 -34,0 z"
+           transform="translate(160,252.36218)"
+           id="rect3788-7-0-7-2-1"
+           inkscape:connector-curvature="0" />
         <path
            style="fill:#ff4230;fill-opacity:1;stroke:none"
-           d="m 185,437.36218 25,0 -5,25 -20,0 z"
-           id="rect3790-29"
-           inkscape:connector-curvature="0"
-           sodipodi:nodetypes="ccccc" />
+           d="m 415,290 0,25 19,0 5,-25 -24,0 z"
+           transform="translate(160,252.36218)"
+           id="rect3790-2-2-4-7-2"
+           inkscape:connector-curvature="0" />
       </g>
       <flowRoot
-         transform="translate(-13.90625,-54.093983)"
+         transform="translate(-18.90625,-59.093987)"
          style="font-size:13px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
          id="flowRoot3794-3"
          xml:space="preserve"><flowRegion
@@ -104,31 +154,31 @@
            style="font-size:100px;font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-7px;fill:#0075ff;fill-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans Bold Oblique"
            id="flowPara3800-7">OLITIVATE.ORG</flowPara></flowRoot>    </g>
     <g
-       transform="translate(-5,-5.0000044)"
-       id="g3049-8">
+       id="g3925">
       <g
-         id="g3008-4">
+         id="g3871-5"
+         transform="translate(-395,-4.375e-6)">
         <path
            style="fill:#0075ff;fill-opacity:1;stroke:none"
-           d="m 220,497.36218 -20,100 25,0 5,-25 c 40,0 55,-25 55,-40 0,-15 0,-35 -40,-35 z m 20,25 c 15,1e-5 20,0 20,10 0,10.00001 -10,15.00001 -25,15 z"
-           id="rect3770-2-5"
-           inkscape:connector-curvature="0"
-           sodipodi:nodetypes="ccccssccscc" />
+           d="m 451,240 -20,100 24,0 5,-25 c 40,0 55,-25 55,-40 0,-15 0,-35 -40,-35 l -24,0 z m 19,25 c 15,10e-6 20,0 20,10 0,10.00001 -10,15.00001 -25,15 l 5,-25 z"
+           transform="translate(160,252.36218)"
+           id="rect3770-2-2-3-1-3"
+           inkscape:connector-curvature="0" />
         <path
            style="fill:#ff4230;fill-opacity:1;stroke:none"
-           d="m 185,497.36218 35,0 -5,25 -30,0 z"
-           id="rect3788-7-03"
-           inkscape:connector-curvature="0"
-           sodipodi:nodetypes="ccccc" />
+           d="m 415,240 0,25 29,0 5,-25 -34,0 z"
+           transform="translate(160,252.36218)"
+           id="rect3788-7-0-7-2-5"
+           inkscape:connector-curvature="0" />
         <path
            style="fill:#ff4230;fill-opacity:1;stroke:none"
-           d="m 185,547.36218 25,0 -5,25 -20,0 z"
-           id="rect3790-2-6"
-           inkscape:connector-curvature="0"
-           sodipodi:nodetypes="ccccc" />
+           d="m 415,290 0,25 19,0 5,-25 -24,0 z"
+           transform="translate(160,252.36218)"
+           id="rect3790-2-2-4-7-6"
+           inkscape:connector-curvature="0" />
       </g>
       <flowRoot
-         transform="translate(-38.90625,55.906017)"
+         transform="translate(-43.90625,50.906013)"
          style="font-size:13px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
          id="flowRoot3794-0-1"
          xml:space="preserve"><flowRegion
@@ -141,31 +191,31 @@
            style="font-size:100px;font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-7px;fill:#0075ff;fill-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans Bold Oblique"
            id="flowPara3800-1-3">.ORG</flowPara></flowRoot>    </g>
     <g
-       transform="translate(-5,-5.0000044)"
-       id="g3028-2">
+       id="g4010">
       <g
-         id="g3023-0">
+         id="g3871-7"
+         transform="translate(-395,-220)">
         <path
            style="fill:#0075ff;fill-opacity:1;stroke:none"
-           d="m 220,277.36218 -20,100 25,0 5,-25 c 40,0 55,-25 55,-40 0,-15 0,-35 -40,-35 z m 20,25 c 15,10e-6 20,0 20,10 0,10.00001 -10,15.00001 -25,15 z"
-           id="rect3770-9-6"
-           inkscape:connector-curvature="0"
-           sodipodi:nodetypes="ccccssccscc" />
+           d="m 451,240 -20,100 24,0 5,-25 c 40,0 55,-25 55,-40 0,-15 0,-35 -40,-35 l -24,0 z m 19,25 c 15,10e-6 20,0 20,10 0,10.00001 -10,15.00001 -25,15 l 5,-25 z"
+           transform="translate(160,252.36218)"
+           id="rect3770-2-2-3-1-0"
+           inkscape:connector-curvature="0" />
         <path
            style="fill:#ff4230;fill-opacity:1;stroke:none"
-           d="m 185,277.36218 35,0 -5,25 -30,0 z"
-           id="rect3788-4-1"
-           inkscape:connector-curvature="0"
-           sodipodi:nodetypes="ccccc" />
+           d="m 415,240 0,25 29,0 5,-25 -34,0 z"
+           transform="translate(160,252.36218)"
+           id="rect3788-7-0-7-2-9"
+           inkscape:connector-curvature="0" />
         <path
            style="fill:#ff4230;fill-opacity:1;stroke:none"
-           d="m 185,327.36218 25,0 -5,25 -20,0 z"
-           id="rect3790-9-5"
-           inkscape:connector-curvature="0"
-           sodipodi:nodetypes="ccccc" />
+           d="m 415,290 0,25 19,0 5,-25 -24,0 z"
+           transform="translate(160,252.36218)"
+           id="rect3790-2-2-4-7-3"
+           inkscape:connector-curvature="0" />
       </g>
       <flowRoot
-         transform="translate(-13.90625,-164.09397)"
+         transform="translate(-18.90625,-169.09397)"
          style="font-size:13px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
          id="flowRoot3794-9-5"
          xml:space="preserve"><flowRegion
@@ -180,29 +230,46 @@
            id="flowPara3874-5"
            style="font-size:100px;font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;letter-spacing:-7px;fill:#0075ff;fill-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans Bold Oblique" /></flowRoot>    </g>
     <g
-       transform="translate(-5,-5.0000044)"
-       id="g3059-6">
+       id="g4077"
+       transform="translate(-74.375582,-18.6456)">
+      <rect
+         ry="37.874195"
+         y="511.00775"
+         x="594.37555"
+         height="130"
+         width="130"
+         id="rect4021"
+         style="fill:url(#radialGradient4085);fill-opacity:1;stroke:#0075ff;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <g
-         id="g3013-9">
+         transform="translate(34.375582,33.645596)"
+         id="g3871">
         <path
+           inkscape:connector-curvature="0"
            style="fill:#0075ff;fill-opacity:1;stroke:none"
-           d="m 615,497.36218 -20,100 25,0 5,-25 c 40,0 55,-25 55,-40 0,-15 0,-35 -40,-35 z m 20,25 c 15,1e-5 20,0 20,10 0,10.00001 -10,15.00001 -25,15 z"
-           id="rect3770-2-2-3"
-           inkscape:connector-curvature="0"
-           sodipodi:nodetypes="ccccssccscc" />
+           d="m 451,240 -20,100 24,0 5,-25 c 40,0 55,-25 55,-40 0,-15 0,-35 -40,-35 l -24,0 z m 19,25 c 15,10e-6 20,0 20,10 0,10.00001 -10,15.00001 -25,15 l 5,-25 z"
+           transform="translate(160,252.36218)"
+           id="rect3770-2-2-3-1" />
         <path
-           style="fill:#ff4230;fill-opacity:1;stroke:none"
-           d="m 580,497.36218 35,0 -5,25 -30,0 z"
-           id="rect3788-7-0-7"
            inkscape:connector-curvature="0"
-           sodipodi:nodetypes="ccccc" />
+           style="fill:#ff4230;fill-opacity:1;stroke:none"
+           d="m 415,240 0,25 29,0 5,-25 -34,0 z"
+           transform="translate(160,252.36218)"
+           id="rect3788-7-0-7-2" />
         <path
-           style="fill:#ff4230;fill-opacity:1;stroke:none"
-           d="m 580,547.36218 25,0 -5,25 -20,0 z"
-           id="rect3790-2-2-4"
            inkscape:connector-curvature="0"
-           sodipodi:nodetypes="ccccc" />
+           style="fill:#ff4230;fill-opacity:1;stroke:none"
+           d="m 415,290 0,25 19,0 5,-25 -24,0 z"
+           transform="translate(160,252.36218)"
+           id="rect3790-2-2-4-7" />
       </g>
+      <rect
+         ry="12.832376"
+         y="514.78833"
+         x="599.82996"
+         height="115.86314"
+         width="120.06667"
+         id="rect4039"
+         style="fill:url(#radialGradient4087);fill-opacity:1;stroke:none" />
     </g>
   </g>
 </svg>
