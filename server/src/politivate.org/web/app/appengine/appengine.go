@@ -3,10 +3,10 @@ package appengine
 import (
 	"net/http"
 
-	"gopkg.in/webhelp.v1/whgls"
-	"gopkg.in/webhelp.v1/whredir"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
+	"gopkg.in/webhelp.v1/whgls"
+	"gopkg.in/webhelp.v1/whredir"
 
 	"politivate.org/web/app"
 )

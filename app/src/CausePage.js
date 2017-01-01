@@ -19,8 +19,7 @@ export default class Cause extends React.Component {
             <Text>{this.props.cause.name}</Text>
             {this.props.followButton}
           </CardItem>
-          <CardItem onPress={() => Linking
-                .openURL(row.url).catch(err => this.setState({error: err}))}>
+          <CardItem onPress={() => Linking.openURL(row.url).catch(err => {})}>
             <Link>
               {row.url}
             </Link>

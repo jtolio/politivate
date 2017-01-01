@@ -13,7 +13,7 @@ export default class LoginView extends Component {
           <H2>Politivate</H2>
         </View>
         <Button block onPress={() =>
-            Linking.openURL("https://www.politivate.org/app/login")
+            Linking.openURL("https://www.politivate.org/app/login").catch(err => {})
         }>Login</Button>
       </View>
     );
