@@ -10,6 +10,7 @@ import (
 	"golang.org/x/net/context"
 	"gopkg.in/go-webhelp/whgoth.v1"
 	"gopkg.in/webhelp.v1"
+	"gopkg.in/webhelp.v1/whcache"
 	"gopkg.in/webhelp.v1/whcompat"
 	"gopkg.in/webhelp.v1/wherr"
 	"gopkg.in/webhelp.v1/whfatal"
@@ -62,44 +63,40 @@ func getTokenUser(r *http.Request) *models.User {
 	return models.GetUserByAuthToken(whcompat.Context(r), token)
 }
 
+func User(r *http.Request) *models.User {
+	ctx := whcompat.Context(r)
+	if u, ok := whcache.Get(ctx, userKey).(*models.User); ok {
+		return u
+	}
+	u := getTokenUser(r)
+	if u == nil {
+		u = getCookieUser(ctx)
+	}
+	whcache.Set(ctx, userKey, u)
+	return u
+}
+
 func WebLoginRequired(h http.Handler) http.Handler {
 	return whroute.HandlerFunc(h,
 		func(w http.ResponseWriter, r *http.Request) {
-			ctx := whcompat.Context(r)
-			u := getCookieUser(ctx)
-			if u == nil {
-				whfatal.Redirect(LoginRedirect(r.RequestURI))
+			if User(r) == nil {
+				whfatal.Redirect(LoginURL(r.RequestURI))
 			}
-			h.ServeHTTP(w, whcompat.WithContext(r,
-				context.WithValue(ctx, userKey, u)))
+			h.ServeHTTP(w, r)
 		})
 }
 
 func APILoginRequired(h http.Handler) http.Handler {
 	return whroute.HandlerFunc(h,
 		func(w http.ResponseWriter, r *http.Request) {
-			ctx := whcompat.Context(r)
-			u := getTokenUser(r)
-			if u == nil {
-				u = getCookieUser(ctx)
-			}
-			if u == nil {
+			if User(r) == nil {
 				whfatal.Error(wherr.Unauthorized.New("X-Auth-Token required"))
 			}
-			h.ServeHTTP(w, whcompat.WithContext(r,
-				context.WithValue(ctx, userKey, u)))
+			h.ServeHTTP(w, r)
 		})
 }
 
-func User(ctx context.Context) *models.User {
-	u, ok := ctx.Value(userKey).(*models.User)
-	if !ok || u == nil {
-		whfatal.Error(wherr.Unauthorized.New("login required"))
-	}
-	return u
-}
-
-func LoginRedirect(redirectTo string) string {
+func LoginURL(redirectTo string) string {
 	return "/login?" + url.Values{"redirect_to": {redirectTo}}.Encode()
 }
 

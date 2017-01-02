@@ -1,6 +1,6 @@
 package views
 
-var _ = T.MustParse(`{{ template "header" . }}
+var _ = T.MustParse(`{{ template "header" (makepair . "") }}
 <style>
   .flag-jumbotron {
     background: url(/static/images/flag.jpg) no-repeat center;

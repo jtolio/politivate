@@ -1,6 +1,7 @@
 package app
 
 import (
+	"gopkg.in/webhelp.v1/whcache"
 	"gopkg.in/webhelp.v1/whcompat"
 	"gopkg.in/webhelp.v1/whfatal"
 	"gopkg.in/webhelp.v1/whlog"
@@ -11,7 +12,8 @@ import (
 )
 
 var (
-	RootHandler = whcompat.DoneNotify(whlog.LogRequests(whlog.Default,
-		whsess.HandlerWithStore(whsess.NewCookieStore(secrets.CookieSecret),
-			whfatal.Catch(controllers.Handler))))
+	RootHandler = whcache.Register(whcompat.DoneNotify(
+		whlog.LogRequests(whlog.Default,
+			whsess.HandlerWithStore(whsess.NewCookieStore(secrets.CookieSecret),
+				whfatal.Catch(controllers.Handler)))))
 )

@@ -20,19 +20,19 @@ func init() {
 
 func follow(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
-	auth.User(ctx).Follow(ctx, mustGetCause(ctx))
+	auth.User(r).Follow(ctx, mustGetCause(ctx))
 	followers(w, r)
 }
 
 func unfollow(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
-	auth.User(ctx).Unfollow(ctx, mustGetCause(ctx))
+	auth.User(r).Unfollow(ctx, mustGetCause(ctx))
 	followers(w, r)
 }
 
 func followers(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
-	u := auth.User(ctx)
+	u := auth.User(r)
 	c := mustGetCause(ctx)
 	whjson.Render(w, r, map[string]interface{}{
 		"followers": c.UserCount(ctx),

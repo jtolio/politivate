@@ -5,12 +5,44 @@ import (
 
 	"gopkg.in/webhelp.v1/whmux"
 
+	"politivate.org/web/controllers/auth"
+	"politivate.org/web/models"
 	"politivate.org/web/views"
 )
 
 var (
 	mux                  = whmux.Dir{}
 	Handler http.Handler = mux
-
-	Render = views.T.Render
 )
+
+type Page struct {
+	User   *models.User
+	Values interface{}
+	req    *http.Request
+}
+
+func (p *Page) LogoutURL() string {
+	return auth.LogoutURL("/")
+}
+
+func (p *Page) LoginURL() string {
+	return auth.LoginURL(p.req.RequestURI)
+}
+
+func Render(w http.ResponseWriter, r *http.Request, template string,
+	values interface{}) {
+	if values == nil {
+		values = map[string]interface{}{}
+	}
+	views.T.Render(w, r, template, &Page{
+		User:   auth.User(r),
+		Values: values,
+		req:    r})
+}
+
+func simpleHandler(template string) http.Handler {
+	return whmux.Exact(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			Render(w, r, template, nil)
+		}))
+}

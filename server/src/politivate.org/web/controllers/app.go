@@ -20,9 +20,8 @@ func init() {
 }
 
 func appToken(w http.ResponseWriter, r *http.Request) {
-	ctx := whcompat.Context(r)
-	u := auth.User(ctx)
-	otp := u.NewOTP(ctx)
+	u := auth.User(r)
+	otp := u.NewOTP(whcompat.Context(r))
 	whredir.Redirect(w, r,
 		fmt.Sprintf("politivate-org-app://www.politivate.org/api/v1/login/otp/%s",
 			otp.Token))

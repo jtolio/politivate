@@ -1,6 +1,6 @@
 package views
 
-var _ = T.MustParse(`{{ template "header" . }}
+var _ = T.MustParse(`{{ template "header" (makepair . "Settings") }}
 
 <h1>Settings!</h1>
 

@@ -18,5 +18,5 @@ func init() {
 func serveChallenges(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
 	whjson.Render(w, r,
-		models.GetChallenges(ctx, auth.User(ctx).CauseIds(ctx)...))
+		models.GetChallenges(ctx, auth.User(r).CauseIds(ctx)...))
 }

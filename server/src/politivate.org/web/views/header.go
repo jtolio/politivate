@@ -6,7 +6,11 @@ var _ = T.MustParse(`<!DOCTYPE html>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Politivate.org</title>
+    {{ if .Second }}
+      <title>{{ .Second }} - Politivate.org</title>
+    {{ else }}
+      <title>Politivate.org</title>
+    {{ end }}
     <link rel="stylesheet" href="/static/css/bootstrap.css">
     <!--[if lt IE 9]>
       <script src="//oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -40,18 +44,19 @@ var _ = T.MustParse(`<!DOCTYPE html>
             <li><a href="/get">Get the App</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/login">Login</a></li>
-            {{ if false }}
+            {{ if .First.User }}
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                     role="button" aria-haspopup="true"
-                    aria-expanded="false">JT Olds <span class="caret"></span></a>
+                    aria-expanded="false">{{ .First.User.Name }} <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Profile</a></li>
+                  <li><a href="/settings">Profile</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a href="#">Logout</a></li>
+                  <li><a href="{{ .First.LogoutURL }}">Logout</a></li>
                 </ul>
               </li>
+            {{ else }}
+              <li><a href="{{ .First.LoginURL }}">Login</a></li>
             {{ end }}
           </ul>
         </div>
