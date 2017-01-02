@@ -1,8 +1,6 @@
 package views
 
-var _ = T.MustParse(`{{ template "header" (makepair . "Settings") }}
-
-<h1>Settings!</h1>
+var _ = T.MustParse(`{{ template "header" (makepair . "Profile") }}
 
 <p><img src="{{.User.AvatarURL}}" /></p>
 

@@ -50,7 +50,7 @@ var _ = T.MustParse(`<!DOCTYPE html>
                     role="button" aria-haspopup="true"
                     aria-expanded="false">{{ .First.User.Name }} <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><a href="/settings">Profile</a></li>
+                  <li><a href="/profile">Profile</a></li>
                   <li role="separator" class="divider"></li>
                   <li><a href="{{ .First.LogoutURL }}">Logout</a></li>
                 </ul>
