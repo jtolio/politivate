@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	mux["about"] = whmux.RequireGet(http.HandlerFunc(about))
+	mux["about"] = whmux.Exact(http.HandlerFunc(about))
 }
 
 func about(w http.ResponseWriter, r *http.Request) {

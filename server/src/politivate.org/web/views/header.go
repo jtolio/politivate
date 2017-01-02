@@ -37,6 +37,7 @@ var _ = T.MustParse(`<!DOCTYPE html>
           <ul class="nav navbar-nav">
             <li><a href="/causes">Causes</a></li>
             <li><a href="/about">About</a></li>
+            <li><a href="/get">Get the App</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="/login">Login</a></li>

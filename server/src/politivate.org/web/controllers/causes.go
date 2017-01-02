@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	mux["causes"] = whmux.RequireGet(http.HandlerFunc(causes))
+	mux["causes"] = whmux.Exact(http.HandlerFunc(causes))
 }
 
 func causes(w http.ResponseWriter, r *http.Request) {
