@@ -3,7 +3,7 @@ package views
 var _ = T.MustParse(`{{ template "header" . }}
 <style>
   .flag-jumbotron {
-    background: url(/static/images/flag.jpg) no-repeat center center fixed;
+    background: url(/static/images/flag.jpg) no-repeat center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
