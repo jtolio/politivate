@@ -1,22 +1,21 @@
 body {
-  margin: 0 auto;
-  max-width: 50em;
-  font-family: "Georgia", serif;
-  line-height: 1.5;
-  padding: 4em 1em;
-  color: #555;
+  padding-top: 15px;
 }
-h2 {
-  margin-top: 1em;
-  padding-top: 1em;
+
+.navbar-brand {
+  padding: 5px 30px 5px 40px;
 }
-h1, h2, strong {
-  color: #333;
+
+.navbar {
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 0px;
+  margin-bottom: 40px;
 }
-a {
-  color: #0075ff;
-  text-decoration: none;
-}
-a:active, a:hover {
-  color: #ff4230;
+
+@media (min-width: 768px) {
+  .navbar-nav>li>a {
+    padding-top: 30px;
+    padding-bottom: 0px;
+  }
 }

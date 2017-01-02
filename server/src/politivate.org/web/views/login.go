@@ -2,11 +2,8 @@ package views
 
 var _ = T.MustParse(`{{ template "header" . }}
 
-<h1>Login</h1>
-<ul>
-{{ range $name, $login := .Providers }}
-<li><a href="{{$login}}">{{$name}}</a></li>
-{{ end }}
-</ul>
+<p><a class="btn btn-primary btn-lg" href="{{index .Providers "facebook"}}" role="button">Login with Facebook</a></p>
+<p><a class="btn btn-primary btn-lg" href="{{index .Providers "gplus"}}" role="button">Login with Google</a></p>
+<p><a class="btn btn-primary btn-lg" href="{{index .Providers "twitter"}}" role="button">Login with Twitter</a></p>
 
 {{ template "footer" . }}`)
