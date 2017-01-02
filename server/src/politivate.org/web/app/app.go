@@ -13,7 +13,7 @@ import (
 
 var (
 	RootHandler = whcache.Register(whcompat.DoneNotify(
-		whlog.LogRequests(whlog.Default,
+		whlog.LogRequests(whlog.Default, whlog.LogResponses(whlog.Default,
 			whsess.HandlerWithStore(whsess.NewCookieStore(secrets.CookieSecret),
-				whfatal.Catch(controllers.Handler)))))
+				whfatal.Catch(controllers.Handler))))))
 )

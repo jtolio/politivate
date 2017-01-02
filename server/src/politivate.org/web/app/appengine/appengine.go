@@ -16,7 +16,7 @@ func init() {
 	if !appengine.IsDevAppServer() {
 		handler = whredir.RequireHost("www.politivate.org",
 			whredir.RequireHTTPS(handler))
+		whgls.SetLogOutput(log.Infof)
 	}
-	whgls.SetLogOutput(log.Infof)
 	http.Handle("/", whgls.Bind(handler))
 }
