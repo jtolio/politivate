@@ -3,8 +3,10 @@ package controllers
 import (
 	"net/http"
 
+	"gopkg.in/webhelp.v1/whcompat"
 	"gopkg.in/webhelp.v1/whmux"
 
+	"golang.org/x/net/context"
 	"politivate.org/web/controllers/auth"
 	"politivate.org/web/models"
 	"politivate.org/web/views"
@@ -18,7 +20,8 @@ var (
 type Page struct {
 	User   *models.User
 	Values interface{}
-	req    *http.Request
+	Req    *http.Request
+	Ctx    context.Context
 }
 
 func (p *Page) LogoutURL() string {
@@ -26,7 +29,7 @@ func (p *Page) LogoutURL() string {
 }
 
 func (p *Page) LoginURL() string {
-	return auth.LoginURL(p.req.RequestURI)
+	return auth.LoginURL(p.Req.RequestURI)
 }
 
 func Render(w http.ResponseWriter, r *http.Request, template string,
@@ -37,7 +40,8 @@ func Render(w http.ResponseWriter, r *http.Request, template string,
 	views.T.Render(w, r, template, &Page{
 		User:   auth.User(r),
 		Values: values,
-		req:    r})
+		Req:    r,
+		Ctx:    whcompat.Context(r)})
 }
 
 func simpleHandler(template string) http.Handler {

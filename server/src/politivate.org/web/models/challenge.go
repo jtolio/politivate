@@ -3,15 +3,14 @@ package models
 import (
 	"time"
 
-	"gopkg.in/webhelp.v1/whfatal"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
+	"gopkg.in/webhelp.v1/whfatal"
 )
 
 type Challenge struct {
-	Id      int64 `json:"id" datastore:"-"`
-	CauseId int64 `json:"cause_id" datastore:"-"`
-
+	Id        int64     `json:"id" datastore:"-"`
+	CauseId   int64     `json:"cause_id" datastore:"-"`
 	Title     string    `json:"title"`
 	ShortDesc string    `json:"short_desc"`
 	Posted    time.Time `json:"posted_ts"`

@@ -51,6 +51,9 @@ var _ = T.MustParse(`<!DOCTYPE html>
                     aria-expanded="false">{{ .First.User.Name }} <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a href="/profile">Profile</a></li>
+                  {{ if .First.User.CanCreateCause }}
+                    <li><a href="/causes/new">New Cause</a></li>
+                  {{ end }}
                   <li role="separator" class="divider"></li>
                   <li><a href="{{ .First.LogoutURL }}">Logout</a></li>
                 </ul>

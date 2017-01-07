@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"strings"
 
-	"gopkg.in/webhelp.v1/wherr"
-	"gopkg.in/webhelp.v1/whfatal"
 	"github.com/markbates/goth"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
+	"gopkg.in/webhelp.v1/wherr"
+	"gopkg.in/webhelp.v1/whfatal"
 )
 
 type User struct {
@@ -18,6 +18,8 @@ type User struct {
 	NickName  string `json:"nick_name"`
 	Email     string `json:"email"`
 	AvatarURL string `json:"avatar_url"`
+
+	CanCreateCause bool `json:"-"`
 }
 
 func userKey(ctx context.Context, id int64) *datastore.Key {
