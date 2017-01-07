@@ -24,8 +24,7 @@ func SunlightAPIReq(ctx context.Context, path string, vals map[string]string) (
 		query.Add(name, val)
 	}
 	req, err := http.NewRequest("GET",
-		"https://congress.api.sunlightfoundation.com"+path+"?"+query.Encode(),
-		nil)
+		"https://congress.api.sunlightfoundation.com"+path+"?"+query.Encode(), nil)
 	if err != nil {
 		return nil, err
 	}

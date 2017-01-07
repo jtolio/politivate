@@ -13,7 +13,8 @@ var _ = T.MustParse(`{{ template "header" (makepair . "") }}
   }
 </style>
 <div class="jumbotron flag-jumbotron">
-  <p><a class="btn btn-primary btn-lg" href="/about" role="button">Make a difference</a></p>
+  <p><a class="btn btn-primary btn-lg" href="/about"
+        role="button">Make a difference</a></p>
 </div>
 
 {{ template "footer" . }}`)

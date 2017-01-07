@@ -35,5 +35,6 @@ func appLogin(w http.ResponseWriter, r *http.Request) {
 		providers[provider.Name()] = provider.LoginURL("/app/token")
 	}
 	Render(w, r, "login", map[string]interface{}{
-		"Providers": providers})
+		"Providers": providers,
+	})
 }

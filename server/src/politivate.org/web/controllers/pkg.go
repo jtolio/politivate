@@ -41,7 +41,8 @@ func Render(w http.ResponseWriter, r *http.Request, template string,
 		User:   auth.User(r),
 		Values: values,
 		Req:    r,
-		Ctx:    whcompat.Context(r)})
+		Ctx:    whcompat.Context(r),
+	})
 }
 
 func simpleHandler(template string) http.Handler {

@@ -24,7 +24,8 @@ func init() {
 
 func causes(w http.ResponseWriter, r *http.Request) {
 	Render(w, r, "causes", map[string]interface{}{
-		"Causes": models.GetCauses(whcompat.Context(r))})
+		"Causes": models.GetCauses(whcompat.Context(r)),
+	})
 }
 
 func newCauseForm(w http.ResponseWriter, r *http.Request) {

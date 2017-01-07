@@ -48,7 +48,8 @@ var _ = T.MustParse(`<!DOCTYPE html>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                     role="button" aria-haspopup="true"
-                    aria-expanded="false">{{ .First.User.Name }} <span class="caret"></span></a>
+                    aria-expanded="false">{{ .First.User.Name }}
+                    <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a href="/profile">Profile</a></li>
                   {{ if .First.User.CanCreateCause }}

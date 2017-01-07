@@ -12,14 +12,13 @@ import (
 )
 
 type User struct {
-	Id        int64  `json:"id" datastore:"-"`
-	AuthId    string `json:"-"`
-	Name      string `json:"name"`
-	NickName  string `json:"nick_name"`
-	Email     string `json:"email"`
-	AvatarURL string `json:"avatar_url"`
-
-	CanCreateCause bool `json:"-"`
+	Id             int64  `json:"id" datastore:"-"`
+	AuthId         string `json:"-"`
+	Name           string `json:"name"`
+	NickName       string `json:"nick_name"`
+	Email          string `json:"email"`
+	AvatarURL      string `json:"avatar_url"`
+	CanCreateCause bool   `json:"-"`
 }
 
 func userKey(ctx context.Context, id int64) *datastore.Key {
@@ -79,7 +78,8 @@ func FindUser(ctx context.Context, user *goth.User) *User {
 		Name:      user.Name,
 		NickName:  user.NickName,
 		Email:     user.Email,
-		AvatarURL: user.AvatarURL}
+		AvatarURL: user.AvatarURL,
+	}
 	u.Save(ctx)
 	return u
 }

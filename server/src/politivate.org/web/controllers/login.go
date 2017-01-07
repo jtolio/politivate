@@ -22,5 +22,6 @@ func loginPage(w http.ResponseWriter, r *http.Request) {
 		providers[provider.Name()] = provider.LoginURL(redirectTo)
 	}
 	Render(w, r, "login", map[string]interface{}{
-		"Providers": providers})
+		"Providers": providers,
+	})
 }

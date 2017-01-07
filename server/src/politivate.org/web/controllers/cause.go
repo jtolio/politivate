@@ -21,7 +21,10 @@ func init() {
 		"": whmux.Exact(http.HandlerFunc(cause)),
 		"challenges": whmux.Dir{
 			"new": whmux.Method{
-				"GET": http.HandlerFunc(newChallenge)}}})
+				"GET": http.HandlerFunc(newChallenge),
+			},
+		},
+	})
 }
 
 func cause(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +33,8 @@ func cause(w http.ResponseWriter, r *http.Request) {
 	c := models.GetCause(ctx, causeId.MustGet(ctx))
 	Render(w, r, "cause", map[string]interface{}{
 		"IsAdministrating": u.IsAdministrating(ctx, c),
-		"Cause":            c})
+		"Cause":            c,
+	})
 }
 
 func newChallenge(w http.ResponseWriter, r *http.Request) {
