@@ -2,8 +2,19 @@ package views
 
 var _ = T.MustParse(`{{ template "header" (makepair . "Login") }}
 
-<p><a class="btn btn-primary btn-lg" href="{{index .Values.Providers "facebook"}}" role="button">Login with Facebook</a></p>
-<p><a class="btn btn-primary btn-lg" href="{{index .Values.Providers "gplus"}}" role="button">Login with Google</a></p>
-<p><a class="btn btn-primary btn-lg" href="{{index .Values.Providers "twitter"}}" role="button">Login with Twitter</a></p>
+{{ with (index .Values.Providers "facebook") }}
+  <p><a class="btn btn-primary btn-lg" href="{{.}}"
+        role="button">Login with Facebook</a></p>
+{{ end }}
+
+{{ with (index .Values.Providers "gplus") }}
+  <p><a class="btn btn-primary btn-lg" href="{{.}}"
+        role="button">Login with Google</a></p>
+{{ end }}
+
+{{ with (index .Values.Providers "twitter") }}
+  <p><a class="btn btn-primary btn-lg" href="{{.}}"
+        role="button">Login with Twitter</a></p>
+{{ end }}
 
 {{ template "footer" . }}`)

@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 
+	"gopkg.in/webhelp.v1/whfatal"
 	"gopkg.in/webhelp.v1/whmux"
 
 	"politivate.org/web/controllers/auth"
@@ -13,11 +14,14 @@ func init() {
 }
 
 func loginPage(w http.ResponseWriter, r *http.Request) {
-	providers := map[string]string{}
 	redirectTo := r.FormValue("redirect_to")
 	if redirectTo == "" {
 		redirectTo = "/"
 	}
+	if auth.User(r) != nil {
+		whfatal.Redirect(redirectTo)
+	}
+	providers := map[string]string{}
 	for _, provider := range auth.Providers() {
 		providers[provider.Name()] = provider.LoginURL(redirectTo)
 	}

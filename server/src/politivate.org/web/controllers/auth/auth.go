@@ -4,9 +4,6 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/markbates/goth/providers/facebook"
-	"github.com/markbates/goth/providers/gplus"
-	"github.com/markbates/goth/providers/twitter"
 	"golang.org/x/net/context"
 	"gopkg.in/go-webhelp/whgoth.v1"
 	"gopkg.in/webhelp.v1"
@@ -21,21 +18,7 @@ import (
 )
 
 var (
-	auth = whgoth.NewAuthProviders(
-		"/auth", "auth",
-		gplus.New(
-			secrets.GoogleClientId,
-			secrets.GoogleClientSecret,
-			"https://www.politivate.org/auth/provider/gplus/callback"),
-		facebook.New(
-			secrets.FacebookClientId,
-			secrets.FacebookClientSecret,
-			"https://www.politivate.org/auth/provider/facebook/callback"),
-		twitter.New(
-			secrets.TwitterClientId,
-			secrets.TwitterClientSecret,
-			"https://www.politivate.org/auth/provider/twitter/callback"),
-	)
+	auth = whgoth.NewAuthProviders("/auth", "auth", secrets.Providers...)
 
 	Handler   http.Handler = auth
 	Providers              = auth.Providers
