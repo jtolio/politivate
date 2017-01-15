@@ -31,8 +31,12 @@ func cause(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
 	u := auth.User(r)
 	c := models.GetCause(ctx, causeId.MustGet(ctx))
+	isAdministrating := false
+	if u != nil {
+		isAdministrating = u.IsAdministrating(ctx, c)
+	}
 	Render(w, r, "cause", map[string]interface{}{
-		"IsAdministrating": u.IsAdministrating(ctx, c),
+		"IsAdministrating": isAdministrating,
 		"Cause":            c,
 	})
 }
@@ -48,5 +52,6 @@ func newChallenge(w http.ResponseWriter, r *http.Request) {
 
 	Render(w, r, "new_challenge", map[string]interface{}{
 		"Cause": c,
+		"Form":  map[string]interface{}{},
 	})
 }
