@@ -4,109 +4,65 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
 
 <h1>Create a new challenge</h1>
 
-<form name="newchallenge" method="POST">
-  {{ define "input" }}
-    <div class="form-group">
-      <label for="{{.Field}}Input">{{.Display}}</label>
+{{ if .Values.Error }}
+  <div class="alert alert-danger" role="alert">{{ .Values.Error }}</div>
+{{ end }}
+
+{{ define "input" }}
+  <div class="form-group">
+    <label for="{{.Field}}Input">{{.Display}}</label>
+    <input type="{{.Type}}" class="form-control" id="{{.Field}}Input"
+           name="{{.Field}}" placeholder="{{.Placeholder}}"
+           value="{{index .Form .Field}}" />
+  </div>
+{{ end }}
+
+{{ define "optinput" }}
+  <div class="form-group">
+    <label for="{{.Field}}Input">{{.Display}}</label>
+    <div class="input-group">
+      <span class="input-group-addon">
+        <input type="checkbox" id="{{.Field}}OptInput"
+               name="{{.Field}}Enabled"
+               {{if (index .Form (printf "%s%s" .Field "Enabled"))}}checked{{end}} />
+      </span>
       <input type="{{.Type}}" class="form-control" id="{{.Field}}Input"
              name="{{.Field}}" placeholder="{{.Placeholder}}"
              value="{{index .Form .Field}}" />
     </div>
-  {{ end }}
+  </div>
+{{ end }}
 
-  {{ define "textarea" }}
-    <div class="form-group">
-      <label for="{{.Field}}Input">{{.Display}}</label>
-      <textarea class="form-control" id="{{.Field}}Input" rows="3"
-                name="{{.Field}}"
-            >{{index .Form .Field}}</textarea>
-    </div>
-  {{ end }}
+{{ define "textarea" }}
+  <div class="form-group">
+    <label for="{{.Field}}Input">{{.Display}}</label>
+    <textarea class="form-control" id="{{.Field}}Input" rows="{{.Rows}}"
+              name="{{.Field}}"
+          >{{index .Form .Field}}</textarea>
+  </div>
+{{ end }}
 
+<form name="newchallenge" method="POST">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-8">
 
       {{ template "input" (makemap "Field" "title" "Display" "Title" "Type" "text" "Form" .Values.Form) }}
-      {{ template "textarea" (makemap "Field" "description" "Display" "Description" "Form" .Values.Form) }}
       {{ template "input" (makemap "Field" "points" "Display" "Points" "Type" "number" "Placeholder" "10" "Form" .Values.Form) }}
-
-      <div class="row">
-        <div class="col-md-4">
-          <div class="form-group">
-            <label for="typeInput">Challenge type</label><br/>
-            <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-default active">
-                <input type="radio" name="type" id="type-phonecall"
-                       autocomplete="off" value="phonecall" checked
-                       onchange="challengeTypeChange(); return true;">
-                  Phone call
-              </label>
-              <label class="btn btn-default">
-                <input type="radio" name="type" id="type-location"
-                       autocomplete="off" value="location"
-                       onchange="challengeTypeChange(); return true;">
-                  Location
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          {{ template "input" (makemap "Field" "deadline" "Display" "Deadline" "Type" "date" "Form" .Values.Form) }}
-        </div>
-        <div class="col-md-4">
-          {{ template "input" (makemap "Field" "startdate" "Display" "Start date" "Type" "date" "Form" .Values.Form) }}
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-
-      <div id="phoneDatabaseSection" style="display: none;">
-        <div class="form-group">
-          <label for="phoneDatabaseInput">Phone number to call</label>
-          <select class="form-control" id="phoneDatabaseInput"
-                  name="phoneDatabase"
-                  onchange="phoneDatabaseChange(); return true;">
-            <option value="national">Call a local state representative</option>
-            <option value="specific">Call a specific number</option>
-          </select>
-        </div>
-
-        <div id="specificPhoneSection" style="display: none;">
-          {{ template "input" (makemap "Field" "directphone" "Display" "Phone number" "Type" "tel" "Form" .Values.Form) }}
-        </div>
-      </div>
-
-      <div id="locationDatabaseSection" style="display: none;">
-        <div class="form-group">
-          <label for="locationDatabaseInput">Address to visit</label>
-          <select class="form-control" id="locationDatabaseInput"
-                  name="locationDatabase"
-                  onchange="locationDatabaseChange(); return true;">
-            <option value="national">Go to a local state representative's
-                office</option>
-            <option value="specific">Go to a specific address</option>
-          </select>
-        </div>
-
-        <div id="specificLocationSection" style="display: none;">
-          {{ template "textarea" (makemap "Field" "directaddr" "Display" "Address" "Form" .Values.Form) }}
-        </div>
-      </div>
+      {{ template "textarea" (makemap "Field" "description" "Display" "Description" "Form" .Values.Form "Rows" 10) }}
 
       <div class="form-group">
         <label>Restrictions</label>
-        <div id="restrictionList"></div>
         <div class="row">
-          <div class="col-md-3">
+          <div class="col-md-4">
             <select class="form-control" id="restrictionType"
                     onchange="restrictionTypeChange(); return true;">
               <option value="state">State</option>
               <option value="district">District</option>
-              <option value="committee">Committee</option>
+              <option value="housecommittee">House Committee</option>
+              <option value="senatecommittee">Senate Committee</option>
             </select>
           </div>
-          <div class="col-md-5">
+          <div class="col-md-6">
             <select class="form-control" style="display: none;"
                     id="stateRestriction">
               <option>Alabama</option>
@@ -120,19 +76,106 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
               <option>UT-3</option>
             </select>
             <select class="form-control" style="display: none;"
-                    id="committeeRestriction">
-              <option>Ways and Means</option>
-              <option>Science</option>
-              <option>Energy</option>
+                    id="houseCommitteeRestriction">
+              <option>Agriculture</option>
+              <option>Appropriations</option>
+              <option>Budget</option>
+            </select>
+            <select class="form-control" style="display: none;"
+                    id="senateCommitteeRestriction">
+              <option>Aging</option>
+              <option>Appropriations</option>
+              <option>Budget</option>
             </select>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-2">
             <button onclick="addRestriction(); return false;"
                     class="btn btn-default"
-                    type="button">Add Restriction</button>
+                    type="button">+</button>
           </div>
         </div>
+        <div id="restrictionList"></div>
       </div>
+    </div>
+
+    {{ $challengeType := (or (index .Values.Form "type") "") }}
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="typeInput">Challenge type</label><br/>
+        <div class="btn-group" data-toggle="buttons">
+          <label class="btn btn-default{{if (or (not $challengeType) (eq $challengeType "phonecall"))}} active{{end}}">
+            <input type="radio" name="type" id="type-phonecall"
+                   autocomplete="off" value="phonecall"
+                   {{if (or (not $challengeType) (eq $challengeType "phonecall"))}}checked{{end}}
+                   onchange="challengeTypeChange(); return true;">
+              Phone call
+          </label>
+          <label class="btn btn-default{{if (eq $challengeType "location")}} active{{end}}">
+            <input type="radio" name="type" id="type-location"
+                   autocomplete="off" value="location"
+                   {{if (eq $challengeType "location")}}checked{{end}}
+                   onchange="challengeTypeChange(); return true;">
+              Location
+          </label>
+        </div>
+      </div>
+
+      {{ $phoneDatabase := (or (index .Values.Form "phoneDatabase") "") }}
+      <div id="phoneDatabaseSection" style="display: none;">
+        <div class="form-group">
+          <label for="phoneDatabaseInput">Phone number to call</label>
+          <select class="form-control" id="phoneDatabaseInput"
+                  name="phoneDatabase"
+                  onchange="phoneDatabaseChange(); return true;">
+            <option value="us"
+                {{if (eq $phoneDatabase "us")}}selected{{end}}>
+              Call your local legislator in the US House or Senate</option>
+            <option value="ushouse"
+                {{if (eq $phoneDatabase "ushouse")}}selected{{end}}>
+              Call your local legislator in the US House</option>
+            <option value="ussenate"
+                {{if (eq $phoneDatabase "ussenate")}}selected{{end}}>
+              Call your local legislator in the US Senate</option>
+            <option value="direct"
+                {{if (eq $phoneDatabase "direct")}}selected{{end}}>
+              Call a specific number</option>
+          </select>
+        </div>
+
+        <div id="specificPhoneSection" style="display: none;">
+          {{ template "input" (makemap "Field" "directphone" "Display" "Phone number" "Type" "tel" "Form" .Values.Form) }}
+        </div>
+      </div>
+
+      {{ $locationDatabase := (or (index .Values.Form "locationDatabase") "") }}
+      <div id="locationDatabaseSection" style="display: none;">
+        <div class="form-group">
+          <label for="locationDatabaseInput">Address to visit</label>
+          <select class="form-control" id="locationDatabaseInput"
+                  name="locationDatabase"
+                  onchange="locationDatabaseChange(); return true;">
+            <option value="us"
+                {{if (eq $locationDatabase "us")}}selected{{end}}>
+              Go to your local legislator's (US House or Senate) office</option>
+            <option value="ushouse"
+                {{if (eq $locationDatabase "ushouse")}}selected{{end}}>
+              Go to your local legislator's (US House) office</option>
+            <option value="ussenate"
+                {{if (eq $locationDatabase "ussenate")}}selected{{end}}>
+              Go to your local legislator's (US Senate) office</option>
+            <option value="direct"
+                {{if (eq $locationDatabase "direct")}}selected{{end}}>
+              Go to a specific address</option>
+          </select>
+        </div>
+
+        <div id="specificLocationSection" style="display: none;">
+          {{ template "textarea" (makemap "Field" "directaddr" "Display" "Address" "Form" .Values.Form "Rows" 3) }}
+        </div>
+      </div>
+
+      {{ template "optinput" (makemap "Field" "startdate" "Display" "Start date" "Type" "date" "Form" .Values.Form) }}
+      {{ template "optinput" (makemap "Field" "deadline" "Display" "Deadline" "Type" "date" "Form" .Values.Form) }}
     </div>
   </div>
 
@@ -161,50 +204,63 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
 
   function phoneDatabaseChange() {
     fieldChange($("#phoneDatabaseInput").val(), {
-      "specific": "#specificPhoneSection"});
+      "direct": "#specificPhoneSection"});
   }
 
   function locationDatabaseChange() {
     fieldChange($("#locationDatabaseInput").val(), {
-      "specific": "#specificLocationSection"});
+      "direct": "#specificLocationSection"});
   }
 
   var restrictionListMap = {
     "state": "#stateRestriction",
     "district": "#districtRestriction",
-    "committee": "#committeeRestriction"};
+    "housecommittee": "#houseCommitteeRestriction",
+    "senatecommittee": "#senateCommitteeRestriction"};
 
   function restrictionTypeChange() {
     fieldChange($("#restrictionType").val(), restrictionListMap);
   }
 
-  var restrictions = [];
+  var restrictions = [
+    {{ range $i, $e := .Values.Restrictions }}
+    {{if $i}},{{end}}{"type": "{{$e.Type}}", "value": "{{$e.Value}}"}
+    {{ end }}
+  ];
 
   function updateRestrictions() {
     var rl = $("#restrictionList");
+    rl.empty();
+    rl.append($("<input>")
+        .attr("type", "hidden")
+        .attr("name", "restrictionLength")
+        .attr("value", "" + restrictions.length));
+
     if (restrictions.length == 0) {
-      rl.html("<p>No restrictions!</p>");
+      rl.append("<p>No restrictions!</p>");
       return;
     }
-    rl.empty();
+
     for (var i = 0; i < restrictions.length; i++) {
       var p = $("<p>");
       if (i > 0) {
         p.append("OR ");
       }
       p.append(restrictions[i].type + ": " + restrictions[i].value + " (");
-      var a = $("<a>");
-      a.attr("href", "#")
-       .attr("onclick", "removeRestriction(" + i + "); return false;")
-       .append("remove");
-      p.append(a);
+      p.append($("<a>")
+          .attr("href", "#")
+          .attr("onclick", "removeRestriction(" + i + "); return false;")
+          .append("remove"));
       p.append(")");
       rl.append(p);
-      var inp = $("<input>");
-      inp.attr("type", "hidden")
-         .attr("name", "restriction[]")
-         .attr("value", restrictions[i].type + ":" + restrictions[i].value);
-      rl.append(inp);
+      rl.append($("<input>")
+          .attr("type", "hidden")
+          .attr("name", "restrictionType[" + i + "]")
+          .attr("value", restrictions[i].type));
+      rl.append($("<input>")
+          .attr("type", "hidden")
+          .attr("name", "restrictionValue[" + i + "]")
+          .attr("value", restrictions[i].value));
     }
   }
 

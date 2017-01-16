@@ -2,6 +2,8 @@ package views
 
 var _ = T.MustParse(`{{ template "header" (makepair . "New Cause") }}
 
+<h1>Create a new Cause</h1>
+
 {{ if .Values.Error }}
   <div class="alert alert-danger" role="alert">{{ .Values.Error }}</div>
 {{ end }}

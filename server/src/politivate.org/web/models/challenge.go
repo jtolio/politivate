@@ -8,15 +8,26 @@ import (
 	"gopkg.in/webhelp.v1/whfatal"
 )
 
+type ChallengeRestriction struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
+}
+
 type Challenge struct {
-	Id        int64     `json:"id" datastore:"-"`
-	CauseId   int64     `json:"cause_id" datastore:"-"`
-	Title     string    `json:"title"`
-	ShortDesc string    `json:"short_desc"`
-	Posted    time.Time `json:"posted_ts"`
-	Deadline  time.Time `json:"deadline_ts,omitempty"`
-	IconURL   string    `json:"icon_url"`
-	Points    int       `json:"points"`
+	Id      int64     `json:"id" datastore:"-"`
+	CauseId int64     `json:"cause_id" datastore:"-"`
+	Posted  time.Time `json:"posted_ts"`
+
+	Title         string                 `json:"title"`
+	Description   string                 `json:"description"`
+	Points        int                    `json:"points"`
+	Type          string                 `json:"type"`
+	Restrictions  []ChallengeRestriction `json:"restrictions"`
+	Deadline      time.Time              `json:"deadline,omitempty"`
+	Start         time.Time              `json:"start,omitempty"`
+	Database      string                 `json:"database"`
+	DirectPhone   string                 `json:"direct_phone"`
+	DirectAddress string                 `json:"direct_addr"`
 }
 
 func (cause *Cause) NewChallenge(ctx context.Context) *Challenge {
