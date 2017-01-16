@@ -8,6 +8,9 @@ compile: static
 	GOPATH=${PWD} go install -v politivate.org/web/...
 
 run: compile _check_appengine
+	@echo
+	@echo please see https://groups.google.com/d/msg/google-appengine-go/k-r_hJ7W1dw/jRkv8ZCMAgAJ
+	@echo
 	GOPATH=${PWD} ${GO_APPENGINE_ROOT}/goapp serve politivate.org/web/app/appengine
 
 deploy: compile
