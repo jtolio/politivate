@@ -2,6 +2,7 @@ package views
 
 var _ = T.MustParse(`{{ template "header" (makepair . "About") }}
 
-<h1>About</h1>
+<br/><br/><br/>
+<p class="text-center"><img src="/static/images/under-construction.gif" /></p>
 
 {{ template "footer" . }}`)

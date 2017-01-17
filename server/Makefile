@@ -7,7 +7,7 @@ static:
 compile: static
 	GOPATH=${PWD} go install -v politivate.org/web/...
 
-run: compile _check_appengine
+serve: compile _check_appengine
 	@echo
 	@echo please see https://groups.google.com/d/msg/google-appengine-go/k-r_hJ7W1dw/jRkv8ZCMAgAJ
 	@echo
@@ -19,4 +19,4 @@ deploy: compile
 _check_appengine:
 	@if test -z "$$GO_APPENGINE_ROOT"; then /bin/echo -e "\n\nError: please set GO_APPENGINE_ROOT\n"; exit 1; fi
 
-.PHONY: _message _check_appengine static compile run deploy
+.PHONY: _message _check_appengine static compile serve deploy

@@ -39,7 +39,9 @@ var _ = T.MustParse(`<!DOCTYPE html>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-region">
           <ul class="nav navbar-nav">
-            <li><a href="/causes">Causes</a></li>
+            {{ if .First.User }}{{ if .First.User.CanCreateCause }}
+              <li><a href="/causes">Causes</a></li>
+            {{ end }}{{ end }}
             <li><a href="/about">About</a></li>
             <li><a href="/get">Get the App</a></li>
           </ul>
