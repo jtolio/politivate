@@ -72,7 +72,7 @@ func newChallengeCreate(w http.ResponseWriter, r *http.Request) {
 	chal.Description = r.FormValue("description")
 	points, err := strconv.Atoi(r.FormValue("points"))
 	if err != nil {
-		whfatal.Error(wherr.BadRequest.Wrap(err))
+		points = -1
 	}
 	chal.Points = points
 	chal.Type = r.FormValue("type")

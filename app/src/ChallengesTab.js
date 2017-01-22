@@ -21,7 +21,7 @@ export default class ChallengesTab extends React.Component {
           <Text>{row.title}</Text>
         </CardItem>
         <CardItem>
-          <Text>{row.short_desc}</Text>
+          <Text>{row.description}</Text>
         </CardItem>
       </Card>
     );

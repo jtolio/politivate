@@ -26,6 +26,14 @@ export default class ListTab extends React.Component {
       let req = new Request(this.props.url,
           {headers: {"X-Auth-Token": this.props.appstate.authtoken}});
       let json = await (await fetch(req)).json();
+      console.log(json);
+      if (json.err) {
+        this.setState({
+          loading: false,
+          error: json.err,
+        });
+        return;
+      }
       this.setState({
         loading: false,
         items: json.resp,
