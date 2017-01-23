@@ -1,3 +1,7 @@
+install
+
+  python-pyscss
+
 after initial clone and after any changes to the static
 resources directory:
 
