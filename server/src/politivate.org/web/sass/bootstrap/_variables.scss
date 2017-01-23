@@ -49,7 +49,7 @@ $font-family-serif:       Georgia, "Times New Roman", Times, serif !default;
 $font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace !default;
 $font-family-base:        $font-family-serif !default;
 
-$font-size-base:          14px !default;
+$font-size-base:          18px !default;
 $font-size-large:         ceil(($font-size-base * 1.25)) !default; // ~18px
 $font-size-small:         ceil(($font-size-base * 0.85)) !default; // ~12px
 
@@ -375,8 +375,8 @@ $navbar-default-border:            $brand-primary !default;
 
 // Navbar links
 $navbar-default-link-color:                $brand-primary !default;
-$navbar-default-link-hover-color:          $brand-warning !default;
-$navbar-default-link-hover-bg:             transparent !default;
+$navbar-default-link-hover-color:          $body-bg !default;
+$navbar-default-link-hover-bg:             $brand-primary !default;
 $navbar-default-link-active-color:         $body-bg !default;
 $navbar-default-link-active-bg:            $brand-primary !default;
 $navbar-default-link-disabled-color:       #ccc !default;

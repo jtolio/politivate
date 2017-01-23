@@ -15,7 +15,8 @@ body {
 
 @media (min-width: 768px) {
   .navbar-nav>li>a {
-    padding-top: 30px;
+    margin-top: 26px;
+    padding-top: 4px;
     padding-bottom: 0px;
   }
 }
