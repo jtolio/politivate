@@ -1,5 +1,5 @@
 _message:
-	@echo "available targets: static compile run deploy"
+	@echo "available targets: static compile run deploy rollback"
 
 static:
 	GOPATH=${PWD} go generate politivate.org/web/...
@@ -16,7 +16,10 @@ serve: compile _check_appengine
 deploy: compile
 	GOPATH=${PWD} ${GO_APPENGINE_ROOT}/goapp deploy politivate.org/web/app/appengine
 
+rollback:
+	${GO_APPENGINE_ROOT}/appcfg.py rollback src/politivate.org/web/app/appengine
+
 _check_appengine:
 	@if test -z "$$GO_APPENGINE_ROOT"; then /bin/echo -e "\n\nError: please set GO_APPENGINE_ROOT\n"; exit 1; fi
 
-.PHONY: _message _check_appengine static compile serve deploy
+.PHONY: _message _check_appengine static compile serve deploy rollback
