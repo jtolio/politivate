@@ -9,6 +9,7 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -16,7 +17,7 @@ import (
 	"time"
 
 	"google.golang.org/appengine/datastore"
-	"google.golang.org/appengine/user"
+	"gopkg.in/webhelp.v1/whauth"
 	"gopkg.in/webhelp.v1/whcompat"
 
 	"politivate.org/web/controllers/static"
@@ -56,14 +57,14 @@ func main(w http.ResponseWriter, r *http.Request) {
 		bytes.NewReader(static.MustAsset("static/tiddly.html")))
 }
 
+var (
+	authT = template.Must(template.New("tiddly").Parse(
+		"<html>\nYou are logged in as {{.}}.\n\n<a ref=\"/wiki/\">Main page</a>.\n"))
+)
+
 func auth(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
-	u := user.Current(ctx)
-	name := "GUEST"
-	if u != nil {
-		name = u.String()
-	}
-	fmt.Fprintf(w, "<html>\nYou are logged in as %s.\n\n<a href=\"/\">Main page</a>.\n", name)
+	authT.Execute(w, ctx.Value(whauth.BasicAuthUser).(string))
 }
 
 func status(w http.ResponseWriter, r *http.Request) {
@@ -73,12 +74,9 @@ func status(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx := whcompat.Context(r)
 	w.Header().Set("Content-Type", "application/json")
-	u := user.Current(ctx)
-	name := "GUEST"
-	if u != nil {
-		name = u.String()
-	}
-	w.Write([]byte(`{"username": "` + name + `", "space": {"recipe": "all"}}`))
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"username": ctx.Value(whauth.BasicAuthUser).(string),
+		"space":    map[string]string{"recipe": "all"}})
 }
 
 func tiddlerList(w http.ResponseWriter, r *http.Request) {
