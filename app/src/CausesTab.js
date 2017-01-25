@@ -1,7 +1,8 @@
 "use strict";
 
 import React from 'react';
-import { H2, Text, Card, CardItem, Thumbnail } from 'native-base';
+import { Text } from 'react-native';
+import { Card, CardItem, Thumbnail } from 'native-base';
 import ListTab from './ListTab';
 import CausePage from './CausePage';
 import FollowButton from './FollowButton';
@@ -33,7 +34,7 @@ export default class CausesTab extends React.Component {
   render() {
     return (
       <ListTab url="https://www.politivate.org/api/v1/causes/"
-        header={<H2>Causes</H2>} renderRow={this.renderRow}
+        header={<Text>Causes</Text>} renderRow={this.renderRow}
         appstate={this.props.appstate} />
     );
   }

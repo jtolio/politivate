@@ -1,7 +1,8 @@
 "use strict";
 
 import React from 'react';
-import { Card, CardItem, Text, Thumbnail } from 'native-base';
+import { Text } from 'react-native';
+import { Card, CardItem, Thumbnail } from 'native-base';
 import Subpage from './Subpage';
 
 export default class ChallengePage extends React.Component {

@@ -1,8 +1,7 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { ScrollView, RefreshControl } from 'react-native';
-import { H2, View, Text } from 'native-base';
+import { ScrollView, RefreshControl, View, Text } from 'react-native';
 import { styles, ErrorView } from './common';
 
 export default class ProfileTab extends Component {
@@ -55,7 +54,7 @@ export default class ProfileTab extends Component {
     return (
       <View>
         <View style={styles.tabheader}>
-          <H2>Profile</H2>
+          <Text>Profile</Text>
         </View>
         <ScrollView refreshControl={
             <RefreshControl refreshing={this.state.loading}

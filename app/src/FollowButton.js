@@ -1,8 +1,8 @@
 "use strict";
 
 import React from 'react';
-import { Linking, ActivityIndicator } from 'react-native';
-import { Card, CardItem, Text, Thumbnail, Button, View } from 'native-base';
+import { Linking, ActivityIndicator, View, Text } from 'react-native';
+import { Card, CardItem, Thumbnail, Button } from 'native-base';
 import Subpage from './Subpage';
 import { ErrorView, Link } from './common';
 import Icon from 'react-native-vector-icons/Entypo';

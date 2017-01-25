@@ -1,8 +1,8 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { ScrollView, RefreshControl, Linking } from 'react-native';
-import { H2, View, Text, Button } from 'native-base';
+import { ScrollView, RefreshControl, Linking, View, Text } from 'react-native';
+import { Button } from 'native-base';
 import { styles, ErrorView } from './common';
 
 export default class LoginView extends Component {
@@ -10,7 +10,7 @@ export default class LoginView extends Component {
     return (
       <View>
         <View style={styles.tabheader}>
-          <H2>Politivate</H2>
+          <Text>Politivate</Text>
         </View>
         <Button block onPress={() =>
             Linking.openURL("https://www.politivate.org/app/login").catch(err => {})

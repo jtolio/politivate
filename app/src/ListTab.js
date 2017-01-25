@@ -1,8 +1,8 @@
 "use strict";
 
 import React from 'react';
-import { ListView, RefreshControl } from 'react-native';
-import { H2, View, Text, Card, CardItem, Thumbnail } from 'native-base';
+import { ListView, RefreshControl, View, Text } from 'react-native';
+import { Card, CardItem, Thumbnail } from 'native-base';
 import { styles, ErrorView } from './common';
 
 export default class ListTab extends React.Component {
@@ -26,7 +26,6 @@ export default class ListTab extends React.Component {
       let req = new Request(this.props.url,
           {headers: {"X-Auth-Token": this.props.appstate.authtoken}});
       let json = await (await fetch(req)).json();
-      console.log(json);
       if (json.err) {
         this.setState({
           loading: false,
@@ -51,7 +50,7 @@ export default class ListTab extends React.Component {
       rowHasChanged: (r1, r2) => r1.id !== r2.id});
     let dataSource = ds.cloneWithRows(this.state.items);
     return (
-      <View>
+      <View style={{flex:1}}>
         <View style={styles.tabheader}>
           {this.props.header}
         </View>

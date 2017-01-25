@@ -1,7 +1,8 @@
 "use strict";
 
 import React from 'react';
-import { H2, Text, Card, CardItem, Thumbnail } from 'native-base';
+import { Text } from 'react-native';
+import { Card, CardItem, Thumbnail } from 'native-base';
 import ChallengePage from './ChallengePage';
 import ListTab from './ListTab';
 
@@ -30,7 +31,7 @@ export default class ChallengesTab extends React.Component {
   render() {
     return (
       <ListTab url="https://www.politivate.org/api/v1/challenges/"
-        header={<H2>Challenges</H2>} renderRow={this.renderRow}
+        header={<Text>Challenges</Text>} renderRow={this.renderRow}
         appstate={this.props.appstate} />
     );
   }

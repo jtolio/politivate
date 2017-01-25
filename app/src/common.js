@@ -1,8 +1,7 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
-import { Text, View } from 'native-base';
+import { StyleSheet, View, Text } from 'react-native';
 import lightTheme from 'native-base/Components/Themes/light';
 
 var theme = lightTheme;

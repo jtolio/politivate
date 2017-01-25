@@ -1,8 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { Text } from 'react-native';
-import { View } from 'native-base';
+import { Text, View } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import DefaultTabBar from 'react-native-scrollable-tab-view/DefaultTabBar';
 import Button from 'react-native-scrollable-tab-view/Button';
@@ -49,7 +48,7 @@ export default class Tabs extends React.Component {
 
   render() {
     return (
-      <View>
+      <View style={{flex:1}}>
         <View style={styles.appheader} alignItems="center">
           <Text style={styles.appheadertext}>Politivate</Text>
         </View>

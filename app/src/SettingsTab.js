@@ -1,8 +1,8 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { ScrollView, RefreshControl } from 'react-native';
-import { H2, View, Text, Button } from 'native-base';
+import { ScrollView, RefreshControl, View, Text } from 'react-native';
+import { Button } from 'native-base';
 import { styles, ErrorView } from './common';
 
 export default class SettingsTab extends Component {
@@ -10,7 +10,7 @@ export default class SettingsTab extends Component {
     return (
       <View>
         <View style={styles.tabheader}>
-          <H2>Settings</H2>
+          <Text>Settings</Text>
         </View>
         <Button block onPress={this.props.appstate.logout}>Log out</Button>
       </View>
