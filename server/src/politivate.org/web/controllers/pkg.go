@@ -5,6 +5,7 @@ import (
 
 	"gopkg.in/webhelp.v1/whcompat"
 	"gopkg.in/webhelp.v1/whmux"
+	"gopkg.in/webhelp.v1/whredir"
 
 	"golang.org/x/net/context"
 	"politivate.org/web/controllers/auth"
@@ -13,7 +14,9 @@ import (
 )
 
 var (
-	mux                  = whmux.Dir{}
+	mux = whmux.Dir{
+		"favicon.ico": whredir.RedirectHandler("/static/favicon.ico"),
+	}
 	Handler http.Handler = mux
 )
 
