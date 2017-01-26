@@ -7,6 +7,7 @@ import { ErrorView, Link, colors } from './common';
 import Icon from 'react-native-vector-icons/Entypo';
 
 export default class FollowButton extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {error: null, following: false, loading: true, followers: 0};
