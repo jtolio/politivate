@@ -1,8 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { Linking, ActivityIndicator, View, Text } from 'react-native';
-import { Card, CardItem, Thumbnail, Button } from 'native-base';
+import { Linking, ActivityIndicator, View, Text, TouchableOpacity } from 'react-native';
 import Subpage from './Subpage';
 import { ErrorView, Link } from './common';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -56,7 +55,7 @@ export default class FollowButton extends React.Component {
     if (this.state.error) {
       return <ErrorView msg={this.state.error}/>;
     }
-    return (<Button transparent onPress={this.toggle}>
+    return (<TouchableOpacity onPress={this.toggle}>
               { (this.state.loading ?
                 (<Text>
                   <Icon name="hour-glass" size={30} />
@@ -71,6 +70,6 @@ export default class FollowButton extends React.Component {
                   <Icon name="heart-outlined" size={30} />
                   {this.state.followers}
                 </Text>)) }
-            </Button>);
+            </TouchableOpacity>);
   }
 }

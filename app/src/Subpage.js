@@ -1,22 +1,23 @@
 "use strict";
 
 import React from 'react';
-import { Container, Header, Button, Title, Content, Icon } from 'native-base';
+import { View, TouchableOpacity, Text } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class Subpage extends React.Component {
   render() {
     return (
-      <Container>
-        <Header>
-          <Button transparent onPress={this.props.backPress}>
+      <View>
+        <View>
+          <TouchableOpacity onPress={this.props.backPress}>
             <Icon name='ios-arrow-back' />
-          </Button>
-          <Title>{this.props.title}</Title>
-        </Header>
-        <Content>
+          </TouchableOpacity>
+          <Text>{this.props.title}</Text>
+        </View>
+        <View>
           {this.props.children}
-        </Content>
-      </Container>
+        </View>
+      </View>
     );
   }
 }

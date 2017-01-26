@@ -1,8 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { Text } from 'react-native';
-import { Card, CardItem, Thumbnail } from 'native-base';
+import { Text, Image, TouchableOpacity, View } from 'react-native';
 import ChallengePage from './ChallengePage';
 import ListTab from './ListTab';
 
@@ -14,17 +13,15 @@ export default class ChallengesTab extends React.Component {
 
   renderRow(row) {
     return (
-      <Card>
-        <CardItem button header onPress={() => this.props.navigator.push({
+      <TouchableOpacity onPress={() => this.props.navigator.push({
               component: ChallengePage, passProps: {challenge: row}})}>
+        <View>
           {(row.icon_url != "") ?
-            <Thumbnail source={{uri: row.icon_url}} /> : null}
+            <Image source={{uri: row.icon_url}} /> : null}
           <Text>{row.title}</Text>
-        </CardItem>
-        <CardItem>
           <Text>{row.description}</Text>
-        </CardItem>
-      </Card>
+        </View>
+      </TouchableOpacity>
     );
   }
 

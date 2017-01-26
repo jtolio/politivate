@@ -9,7 +9,7 @@ import CausesTab from './CausesTab';
 import ChallengesTab from './ChallengesTab';
 import ProfileTab from './ProfileTab';
 import SettingsTab from './SettingsTab';
-import { styles, theme } from './common';
+import { styles } from './common';
 import Icon from 'react-native-vector-icons/Entypo';
 
 export default class Tabs extends React.Component {
@@ -25,7 +25,7 @@ export default class Tabs extends React.Component {
 
   renderTab(name, page, isTabActive, onPressHandler) {
     const textColor = (isTabActive ?
-        theme.topTabBarActiveTextColor : theme.topTabBarTextColor);
+        "green" : "red");
     const fontWeight = (isTabActive ? "bold" : "normal");
     return (<Button
                 style={{flex: 1}}
@@ -41,7 +41,7 @@ export default class Tabs extends React.Component {
                            paddingBottom: 10,
                            paddingTop: 5}, styles.tabBar]}>
                 <Icon name={this.icons[name]} size={30}
-                  style={[{color: textColor}, theme.tabBarText]}/>
+                  style={[{color: textColor}]}/>
               </View>
             </Button>);
   }
@@ -50,7 +50,7 @@ export default class Tabs extends React.Component {
     return (
       <View style={{flex:1}}>
         <View style={styles.appheader} alignItems="center">
-          <Text style={styles.appheadertext}>Politivate</Text>
+          <Text>Politivate</Text>
         </View>
         <ScrollableTabView
             tabBarPosition="bottom"
@@ -58,9 +58,9 @@ export default class Tabs extends React.Component {
             renderTabBar={(props) => <DefaultTabBar
                     renderTab={this.renderTab} {...props}/>}
             tabBarUnderlineStyle={styles.tabBarUnderline}
-            tabBarBackgroundColor={theme.tabDefaultBg}
-            tabBarActiveTextColor={theme.topTabBarActiveTextColor}
-            tabBarInactiveTextColor={theme.topTabBarTextColor}
+            tabBarBackgroundColor={"white"}
+            tabBarActiveTextColor={"black"}
+            tabBarInactiveTextColor={"grey"}
             tabBarTextStyle={styles.tabBarText}
             style={styles.tabBar}>
           <ChallengesTab

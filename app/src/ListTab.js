@@ -1,8 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { ListView, RefreshControl, View, Text } from 'react-native';
-import { Card, CardItem, Thumbnail } from 'native-base';
+import { ListView, RefreshControl, View } from 'react-native';
 import { styles, ErrorView } from './common';
 
 export default class ListTab extends React.Component {

@@ -2,25 +2,16 @@
 
 import React, { Component } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import lightTheme from 'native-base/Components/Themes/light';
-
-var theme = lightTheme;
 
 var styles = StyleSheet.create({
   appheader: {
     padding: 10,
-    backgroundColor: theme.toolbarDefaultBg,
-  },
-  appheadertext: {
-    color: theme.toolbarTextColor,
-    fontSize: theme.fontSizeH1,
   },
   tabheader: {
     padding: 10,
   },
   tabBarText: {},
   tabBarUnderline: {
-    backgroundColor: theme.topTabBarActiveTextColor,
   },
   tabBar: {
     borderWidth: 0,
@@ -75,5 +66,5 @@ class Link extends Component {
 }
 
 module.exports = {
-  styles, LoadingView, ErrorView, theme, Link
+  styles, LoadingView, ErrorView, Link
 }

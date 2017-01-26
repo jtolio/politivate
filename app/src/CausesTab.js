@@ -1,8 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { Text } from 'react-native';
-import { Card, CardItem, Thumbnail } from 'native-base';
+import { Text, Image, View, TouchableOpacity } from 'react-native';
 import ListTab from './ListTab';
 import CausePage from './CausePage';
 import FollowButton from './FollowButton';
@@ -18,16 +17,16 @@ export default class CausesTab extends React.Component {
       <FollowButton cause={row} appstate={this.props.appstate} />
     );
     return (
-      <Card>
-        <CardItem header button onPress={() => this
+      <TouchableOpacity onPress={() => this
           .props.navigator.push({component: CausePage, passProps: {
               cause: row, followButton: followButton}})}>
+        <View>
           {(row.icon_url != "") ?
-            <Thumbnail source={{uri: row.icon_url}} /> : null}
+            <Image source={{uri: row.icon_url}} /> : null}
           <Text>{row.name}</Text>
           {followButton}
-        </CardItem>
-      </Card>
+        </View>
+      </TouchableOpacity>
     );
   }
 

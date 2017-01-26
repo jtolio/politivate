@@ -1,8 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { Text } from 'react-native';
-import { Card, CardItem, Thumbnail } from 'native-base';
+import { Text, Image, View } from 'react-native';
 import Subpage from './Subpage';
 
 export default class ChallengePage extends React.Component {
@@ -10,16 +9,12 @@ export default class ChallengePage extends React.Component {
     let row = this.props.challenge;
     return (
       <Subpage backPress={this.props.backPress} title={row.title}>
-        <Card style={{flex:1}}>
-          <CardItem header>
+        <View style={{flex:1}}>
             {(row.icon_url != "") ?
-              <Thumbnail source={{uri: row.icon_url}} /> : null}
+              <Image source={{uri: row.icon_url}} /> : null}
             <Text>{row.title}</Text>
-          </CardItem>
-          <CardItem>
             <Text>{row.description}</Text>
-          </CardItem>
-        </Card>
+        </View>
       </Subpage>
     );
   }
