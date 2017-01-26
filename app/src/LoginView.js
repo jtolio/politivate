@@ -1,15 +1,18 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { ScrollView, RefreshControl, Linking, View, Text, Button } from 'react-native';
-import { styles, ErrorView } from './common';
+import {
+  ScrollView, RefreshControl, Linking, View, Text, Image
+} from 'react-native';
+import { ErrorView, TabHeader, styles, Button } from './common';
 
 export default class LoginView extends Component {
   render() {
     return (
-      <View>
-        <View style={styles.tabheader}>
-          <Text>Politivate</Text>
+      <View style={{flex: 1, flexDirection: "column"}}>
+        <View style={[styles.appheader, {flex: 1}]}>
+          <Image source={require("../images/header.png")}
+                 style={styles.applogo} />
         </View>
         <Button
           onPress={() => Linking.openURL("https://www.politivate.org/app/login").catch(err => {})}

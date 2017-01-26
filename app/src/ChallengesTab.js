@@ -28,7 +28,7 @@ export default class ChallengesTab extends React.Component {
   render() {
     return (
       <ListTab url="https://www.politivate.org/api/v1/challenges/"
-        header={<Text>Challenges</Text>} renderRow={this.renderRow}
+        header="Challenges" renderRow={this.renderRow}
         appstate={this.props.appstate} />
     );
   }

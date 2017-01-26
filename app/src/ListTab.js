@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ListView, RefreshControl, View } from 'react-native';
-import { styles, ErrorView } from './common';
+import { ErrorView, TabHeader } from './common';
 
 export default class ListTab extends React.Component {
   constructor(props) {
@@ -50,9 +50,9 @@ export default class ListTab extends React.Component {
     let dataSource = ds.cloneWithRows(this.state.items);
     return (
       <View style={{flex:1}}>
-        <View style={styles.tabheader}>
+        <TabHeader>
           {this.props.header}
-        </View>
+        </TabHeader>
         {this.state.error ?
          (<ErrorView msg={this.state.error}/>) :
          (<ListView refreshControl={

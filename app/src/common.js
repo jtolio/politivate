@@ -1,20 +1,40 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Button } from 'react-native';
+
+var colors = {
+  blue: "rgb(0, 117, 255)",
+  red: "rgb(255, 66, 48)"
+};
 
 var styles = StyleSheet.create({
   appheader: {
-    padding: 10,
+    flexDirection: "row",
+    padding: 5,
+  },
+  applogo: {
+    resizeMode: "contain",
+    flex: 1,
+    width: null,
+    height: 30,
+    borderWidth: 0
   },
   tabheader: {
     padding: 10,
+    fontWeight: "bold",
+    fontSize: 20
   },
   tabBarText: {},
   tabBarUnderline: {
+    backgroundColor: colors.red
   },
   tabBar: {
-    borderWidth: 0,
+    borderWidth: 1,
+    borderBottomWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderColor: colors.blue
   },
 });
 
@@ -59,12 +79,33 @@ class ErrorView extends Component {
 
 class Link extends Component {
   render() {
-    return (<Text style={{color: "blue"}} onPress={this.props.onPress}>
+    return (<Text style={{color: colors.blue}} onPress={this.props.onPress}>
       {this.props.children}
     </Text>);
   }
 }
 
+class TabHeader extends Component {
+  render() {
+    return (
+      <View>
+        <Text style={styles.tabheader}>
+          {this.props.children}
+        </Text>
+      </View>);
+  }
+}
+
+class StyledButton extends Component {
+  render() {
+    return (
+      <Button onPress={this.props.onPress} title={this.props.title}
+              color={colors.blue} />
+    );
+  }
+}
+
 module.exports = {
-  styles, LoadingView, ErrorView, Link
+  styles, LoadingView, ErrorView, Link, TabHeader, colors,
+  Button: StyledButton
 }

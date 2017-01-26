@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, Image } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import DefaultTabBar from 'react-native-scrollable-tab-view/DefaultTabBar';
 import Button from 'react-native-scrollable-tab-view/Button';
@@ -9,7 +9,7 @@ import CausesTab from './CausesTab';
 import ChallengesTab from './ChallengesTab';
 import ProfileTab from './ProfileTab';
 import SettingsTab from './SettingsTab';
-import { styles } from './common';
+import { styles, colors } from './common';
 import Icon from 'react-native-vector-icons/Entypo';
 
 export default class Tabs extends React.Component {
@@ -25,7 +25,7 @@ export default class Tabs extends React.Component {
 
   renderTab(name, page, isTabActive, onPressHandler) {
     const textColor = (isTabActive ?
-        "green" : "red");
+        colors.red : colors.blue);
     const fontWeight = (isTabActive ? "bold" : "normal");
     return (<Button
                 style={{flex: 1}}
@@ -41,16 +41,17 @@ export default class Tabs extends React.Component {
                            paddingBottom: 10,
                            paddingTop: 5}, styles.tabBar]}>
                 <Icon name={this.icons[name]} size={30}
-                  style={[{color: textColor}]}/>
+                    style={[{color: textColor}]}/>
               </View>
             </Button>);
   }
 
   render() {
     return (
-      <View style={{flex:1}}>
-        <View style={styles.appheader} alignItems="center">
-          <Text>Politivate</Text>
+      <View style={{flex:1, backgroundColor: "white"}}>
+        <View style={styles.appheader}>
+          <Image source={require("../images/header.png")}
+                 style={styles.applogo} />
         </View>
         <ScrollableTabView
             tabBarPosition="bottom"
@@ -58,9 +59,6 @@ export default class Tabs extends React.Component {
             renderTabBar={(props) => <DefaultTabBar
                     renderTab={this.renderTab} {...props}/>}
             tabBarUnderlineStyle={styles.tabBarUnderline}
-            tabBarBackgroundColor={"white"}
-            tabBarActiveTextColor={"black"}
-            tabBarInactiveTextColor={"grey"}
             tabBarTextStyle={styles.tabBarText}
             style={styles.tabBar}>
           <ChallengesTab

@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { ScrollView, RefreshControl, View, Text } from 'react-native';
-import { styles, ErrorView } from './common';
+import { ErrorView, TabHeader } from './common';
 
 export default class ProfileTab extends Component {
   constructor(props) {
@@ -53,9 +53,7 @@ export default class ProfileTab extends Component {
     }
     return (
       <View>
-        <View style={styles.tabheader}>
-          <Text>Profile</Text>
-        </View>
+        <TabHeader>Profile</TabHeader>
         <ScrollView refreshControl={
             <RefreshControl refreshing={this.state.loading}
                             onRefresh={this.update}/>}>

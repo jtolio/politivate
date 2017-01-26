@@ -33,7 +33,7 @@ export default class CausesTab extends React.Component {
   render() {
     return (
       <ListTab url="https://www.politivate.org/api/v1/causes/"
-        header={<Text>Causes</Text>} renderRow={this.renderRow}
+        header="Causes" renderRow={this.renderRow}
         appstate={this.props.appstate} />
     );
   }
