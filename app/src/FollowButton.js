@@ -3,7 +3,7 @@
 import React from 'react';
 import { Linking, ActivityIndicator, View, Text, TouchableOpacity } from 'react-native';
 import Subpage from './Subpage';
-import { ErrorView, Link } from './common';
+import { ErrorView, Link, colors } from './common';
 import Icon from 'react-native-vector-icons/Entypo';
 
 export default class FollowButton extends React.Component {
@@ -62,12 +62,12 @@ export default class FollowButton extends React.Component {
                   .
                  </Text>) :
                 (this.state.following ?
-                <Text>
-                  <Icon name="heart" size={30} />
+                <Text style={{color: colors.red}}>
+                  <Icon name="heart" size={30} style={{color: colors.red}}/>
                   {this.state.followers}
                 </Text>
                 : <Text>
-                  <Icon name="heart-outlined" size={30} />
+                  <Icon name="heart-outlined" size={30}/>
                   {this.state.followers}
                 </Text>)) }
             </TouchableOpacity>);
