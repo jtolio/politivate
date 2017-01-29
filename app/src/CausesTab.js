@@ -17,8 +17,8 @@ export default class CausesTab extends React.Component {
       <FollowButton cause={row} appstate={this.props.appstate} />
     );
     return (
-      <TouchableOpacity onPress={() => this
-          .props.navigator.push({component: CausePage, passProps: {
+      <TouchableOpacity onPress={() => this.props.appstate
+          .navigator.push({component: CausePage, passProps: {
               cause: row, followButton: followButton}})}>
         <View>
           {(row.icon_url != "") ?
@@ -32,9 +32,8 @@ export default class CausesTab extends React.Component {
 
   render() {
     return (
-      <ListTab url="https://www.politivate.org/api/v1/causes/"
-        header="Causes" renderRow={this.renderRow}
-        appstate={this.props.appstate} />
+      <ListTab resource="/v1/causes/" header="Causes"
+        renderRow={this.renderRow} appstate={this.props.appstate} />
     );
   }
 }

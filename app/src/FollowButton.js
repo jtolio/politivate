@@ -26,21 +26,15 @@ export default class FollowButton extends React.Component {
 
   async request(method) {
     try {
-      let req = new Request(
-          "https://www.politivate.org/api/v1/cause/" + this.props.cause.id +
-          "/followers",
-          {method: method,
-           headers: {"X-Auth-Token": this.props.appstate.authtoken}});
-      let json = await (await fetch(req)).json();
+      this.setState({loading: true, error: null});
+      let resp = await this.props.appstate.request(
+          method, "/v1/cause/" + this.props.cause.id + "/followers");
       this.setState({
         loading: false,
-        error: null,
-        followers: json.resp.followers,
-        following: json.resp.following});
+        followers: resp.followers,
+        following: resp.following});
     } catch(error) {
-      this.setState({
-        loading: false,
-        error: error});
+      this.setState({loading: false, error});
     }
   }
 
@@ -63,8 +57,8 @@ export default class FollowButton extends React.Component {
                   .
                  </Text>) :
                 (this.state.following ?
-                <Text style={{color: colors.red}}>
-                  <Icon name="heart" size={30} style={{color: colors.red}}/>
+                <Text style={{color: colors.heart.val}}>
+                  <Icon name="heart" size={30} style={{color: colors.heart.val}}/>
                   {this.state.followers}
                 </Text>
                 : <Text>

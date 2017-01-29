@@ -1,12 +1,44 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { Navigator, BackAndroid, AsyncStorage, Linking } from 'react-native';
+import {
+  Navigator, BackAndroid, AsyncStorage, Linking, View
+} from 'react-native';
 import Tabs from './Tabs';
 import LoginView from './LoginView';
-import { LoadingView, ErrorView } from './common';
+import { LoadingView, ErrorView, colors } from './common';
 
 const REGISTERED_OTP_PREFIX = "politivate-org-app://www.politivate.org/api/v1/login/otp/";
+
+class AppState {
+  constructor(logout, authtoken, navigator) {
+    this.logout = logout;
+    this.authtoken = authtoken;
+    this.navigator = navigator;
+  }
+
+  async request(method, resource) {
+    let req = new Request("https://www.politivate.org/api" + resource,
+        {method, headers: {"X-Auth-Token": this.authtoken}});
+    let resp = await fetch(req)
+    if (!resp.ok) {
+      try {
+        let json = await resp.json();
+        if (!json.err) {
+          throw resp.statusText;
+        }
+        throw json.err;
+      } catch(err) {
+        throw resp.statusText;
+      }
+    }
+    let json = await resp.json();
+    if (json.err) {
+      throw json.err;
+    }
+    return json.resp;
+  }
+}
 
 class BackHandler extends Component {
   constructor(props) {
@@ -18,7 +50,7 @@ class BackHandler extends Component {
     if (this.props.route.hasOwnProperty("_isRoot")) {
       return false;
     }
-    this.props.navigator.pop();
+    this.props.appstate.navigator.pop();
     return true;
   }
 
@@ -31,9 +63,12 @@ class BackHandler extends Component {
   }
 
   render() {
-    return (<this.props.route.component navigator={this.props.navigator}
-               appstate={this.props.appstate} backPress={this.backPress}
-               {...this.props.route.passProps}/>);
+    return (
+      <View style={{backgroundColor: colors.background.val, flex: 1}}>
+        <this.props.route.component appstate={this.props.appstate}
+            backPress={this.backPress} {...this.props.route.passProps}/>
+      </View>
+    );
   }
 }
 
@@ -109,11 +144,8 @@ export default class AppRoot extends Component {
   }
 
   renderScene(route, navigator) {
-    let appstate = {
-      logout: this.logout,
-      authtoken: this.state.token};
-    return (<BackHandler route={route} navigator={navigator}
-                         appstate={appstate} />)
+    let appstate = new AppState(this.logout, this.state.token, navigator);
+    return (<BackHandler route={route} appstate={appstate} />)
   }
 
   async logout() {

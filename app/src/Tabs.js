@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, StyleSheet } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import DefaultTabBar from 'react-native-scrollable-tab-view/DefaultTabBar';
 import Button from 'react-native-scrollable-tab-view/Button';
@@ -9,7 +9,7 @@ import CausesTab from './CausesTab';
 import ChallengesTab from './ChallengesTab';
 import ProfileTab from './ProfileTab';
 import SettingsTab from './SettingsTab';
-import { styles, colors } from './common';
+import { colors, AppHeader, Separator } from './common';
 import Icon from 'react-native-vector-icons/Entypo';
 
 export default class Tabs extends React.Component {
@@ -25,7 +25,7 @@ export default class Tabs extends React.Component {
 
   renderTab(name, page, isTabActive, onPressHandler) {
     const textColor = (isTabActive ?
-        colors.red : colors.blue);
+        colors.secondary.val : colors.primary.val);
     const fontWeight = (isTabActive ? "bold" : "normal");
     return (<Button
                 style={{flex: 1}}
@@ -34,12 +34,7 @@ export default class Tabs extends React.Component {
                 accessibilityLabel={name}
                 accessibilityTraits="button"
                 onPress={() => onPressHandler(page)}>
-              <View
-                  style={[{flex: 1,
-                           alignItems: "center",
-                           justifyContent: "center",
-                           paddingBottom: 10,
-                           paddingTop: 5}, styles.tabBar]}>
+              <View style={styles.tabBar}>
                 <Icon name={this.icons[name]} size={30}
                     style={[{color: textColor}]}/>
               </View>
@@ -48,33 +43,43 @@ export default class Tabs extends React.Component {
 
   render() {
     return (
-      <View style={{flex:1, backgroundColor: "white"}}>
-        <View style={styles.appheader}>
-          <Image source={require("../images/header.png")}
-                 style={styles.applogo} />
-        </View>
+      <View style={{flex:1}}>
+        <AppHeader/>
+        <Separator/>
         <ScrollableTabView
             tabBarPosition="bottom"
             locked={true}
             renderTabBar={(props) => <DefaultTabBar
                     renderTab={this.renderTab} {...props}/>}
-            tabBarUnderlineStyle={styles.tabBarUnderline}
-            tabBarTextStyle={styles.tabBarText}
-            style={styles.tabBar}>
+            tabBarUnderlineStyle={styles.tabBarUnderline}>
           <ChallengesTab
-              tabLabel="Challenges" appstate={this.props.appstate}
-              navigator={this.props.navigator}/>
+              tabLabel="Challenges" appstate={this.props.appstate}/>
           <CausesTab
-              tabLabel="Causes" appstate={this.props.appstate}
-              navigator={this.props.navigator}/>
+              tabLabel="Causes" appstate={this.props.appstate}/>
           <ProfileTab
-              tabLabel="Profile" appstate={this.props.appstate}
-              navigator={this.props.navigator}/>
+              tabLabel="Profile" appstate={this.props.appstate}/>
           <SettingsTab
-              tabLabel="Settings" appstate={this.props.appstate}
-              navigator={this.props.navigator}/>
+              tabLabel="Settings" appstate={this.props.appstate}/>
         </ScrollableTabView>
       </View>
     );
   }
 }
+
+var styles = StyleSheet.create({
+  tabBarUnderline: {
+    backgroundColor: colors.secondary.val,
+  },
+  tabBar: {
+    borderWidth: 1,
+    borderBottomWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderColor: colors.primary.val,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: 10,
+    paddingTop: 5,
+  },
+});

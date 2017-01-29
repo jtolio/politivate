@@ -1,42 +1,44 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Button } from 'react-native';
+import { View, Text, Button, Image } from 'react-native';
 
-var colors = {
-  blue: "rgb(0, 117, 255)",
-  red: "rgb(255, 66, 48)"
+class Color {
+  constructor(hue, saturation, lightness) {
+    this.hue = hue;
+    this.saturation = saturation;
+    this.lightness = lightness;
+  }
+
+  alpha(amount) {
+    return "hsla(" + this.hue + ", " +
+        (100 * this.saturation) + "%, " +
+        (100 * this.lightness) + "%, " +
+        amount + ")";
+  }
+
+  get val() {
+    return this.alpha(1.0);
+  }
+
+  get faint() {
+    return this.alpha(0.1);
+  }
+}
+
+var palette = {
+  red: new Color(5, 1.0, 0.594),
+  white: new Color(0, 0.0, 1.0),
+  blue: new Color(212, 1.0, 0.5),
 };
 
-var styles = StyleSheet.create({
-  appheader: {
-    flexDirection: "row",
-    padding: 5,
-  },
-  applogo: {
-    resizeMode: "contain",
-    flex: 1,
-    width: null,
-    height: 30,
-    borderWidth: 0
-  },
-  tabheader: {
-    padding: 10,
-    fontWeight: "bold",
-    fontSize: 20
-  },
-  tabBarText: {},
-  tabBarUnderline: {
-    backgroundColor: colors.red
-  },
-  tabBar: {
-    borderWidth: 1,
-    borderBottomWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderColor: colors.blue
-  },
-});
+var colors = {
+  link: palette.blue,
+  heart: palette.red,
+  background: palette.white,
+  primary: palette.blue,
+  secondary: palette.red,
+}
 
 class LoadingView extends Component {
   constructor(props) {
@@ -79,7 +81,7 @@ class ErrorView extends Component {
 
 class Link extends Component {
   render() {
-    return (<Text style={{color: colors.blue}} onPress={this.props.onPress}>
+    return (<Text style={{color: colors.link.val}} onPress={this.props.onPress}>
       {this.props.children}
     </Text>);
   }
@@ -89,10 +91,38 @@ class TabHeader extends Component {
   render() {
     return (
       <View>
-        <Text style={styles.tabheader}>
+        <Text style={{
+          padding: 10,
+          fontWeight: "bold",
+          color: colors.primary.val,
+          fontSize: 20
+        }}>
           {this.props.children}
         </Text>
       </View>);
+  }
+}
+
+class AppHeader extends Component {
+  render() {
+    return (
+      <View style={{flexDirection: "row", padding: 10}}>
+        <Image source={require("../images/header.png")} style={{
+          resizeMode: "contain",
+          flex: 1,
+          width: null,
+          height: 30,
+          borderWidth: 0,
+        }}/>
+      </View>);
+  }
+}
+
+class Separator extends Component {
+  render() {
+    return (
+      <View style={{borderBottomWidth: 1,
+                    borderColor: colors.primary.val}}/>);
   }
 }
 
@@ -100,12 +130,12 @@ class StyledButton extends Component {
   render() {
     return (
       <Button onPress={this.props.onPress} title={this.props.title}
-              color={colors.blue} />
+              color={colors.primary.val} />
     );
   }
 }
 
 module.exports = {
-  styles, LoadingView, ErrorView, Link, TabHeader, colors,
+  AppHeader, LoadingView, ErrorView, Link, TabHeader, colors, Separator,
   Button: StyledButton
 }

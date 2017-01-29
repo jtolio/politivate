@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { ScrollView, RefreshControl, View, Text } from 'react-native';
+import { ScrollView, RefreshControl, View, Text, Image } from 'react-native';
 import { ErrorView, TabHeader } from './common';
 
 export default class ProfileTab extends Component {
@@ -22,27 +22,33 @@ export default class ProfileTab extends Component {
 
   async update() {
     try {
-      this.setState({loading: true});
-      let req = new Request("https://www.politivate.org/api/v1/profile",
-          {headers: {"X-Auth-Token": this.props.appstate.authtoken}});
-      let json = await (await fetch(req)).json();
-      this.setState({
-        loading: false,
-        profile: json.resp,
-      });
+      this.setState({loading: true, error: null});
+      let profile = await this.props.appstate.request("GET", "/v1/profile");
+      this.setState({loading: false, profile});
     } catch(error) {
-      this.setState({
-        loading: false,
-        error: error,
-      });
+      this.setState({loading: false, error});
     }
   }
 
   renderLoaded() {
     return (
-      <View>
-        <Text>Id: {this.state.profile.id}</Text>
-        <Text>Name: {this.state.profile.name}</Text>
+      <View style={{
+          padding: 20,
+          paddingTop: 5,
+          paddingBottom: 5
+        }}>
+        <View style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingBottom: 10}}>
+          <Image
+            source={{uri: this.state.profile.avatar_url}}
+            style={{width: 50, height: 50, borderRadius: 10}}/>
+          <View style={{paddingLeft: 10}}>
+            <Text style={{fontWeight: "bold"}}>{this.state.profile.name}</Text>
+          </View>
+        </View>
+        <Text>Profile info</Text>
       </View>
     );
   }
@@ -52,7 +58,7 @@ export default class ProfileTab extends Component {
       return <ErrorView msg={this.state.error}/>;
     }
     return (
-      <View>
+      <View style={{flex: 1}}>
         <TabHeader>Profile</TabHeader>
         <ScrollView refreshControl={
             <RefreshControl refreshing={this.state.loading}
