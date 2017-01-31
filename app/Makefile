@@ -1,5 +1,5 @@
 _message:
-	@echo "available targets: setup deploy run log flow"
+	@echo "available targets: setup deploy run log flow avd"
 
 setup:
 	npm install
@@ -12,6 +12,9 @@ run:
 
 flow:
 	node_modules/.bin/flow
+
+avd:
+	android avd
 
 log:
 	node_modules/.bin/react-native log-android
