@@ -25,10 +25,6 @@
 .*/Libraries/react-native/ReactNative.js
 .*/node_modules/jest-runtime/build/__tests__/.*
 
-# Ignore native base
-.*/node_modules/react-native-easy-grid/.*
-.*/node_modules/react-native-keyboard-aware-scroll-view/.*
-
 [include]
 
 [libs]
