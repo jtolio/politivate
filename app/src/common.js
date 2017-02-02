@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import { View, Text, Button, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/Entypo';
 
 class Color {
   constructor(hue, saturation, lightness) {
@@ -40,7 +41,7 @@ var colors = {
   secondary: palette.red,
 }
 
-class LoadingView extends Component {
+class TextLoadingView extends Component {
   constructor(props) {
     super(props);
     this.state = {counter: 0};
@@ -69,7 +70,27 @@ class LoadingView extends Component {
     for (let i = dots.length; i < 4; i++) {
       dots += " ";
     }
-    return <View alignItems="center"><Text>Loading{dots}</Text></View>;
+    return (
+      <View style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center"}}>
+        <Text>Loading{dots}</Text>
+      </View>
+    );
+  }
+}
+
+class LoadingView extends Component {
+  render() {
+    return (
+      <View style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center"}}>
+        <Icon name="hour-glass" size={30} />
+      </View>
+    );
   }
 }
 

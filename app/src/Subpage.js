@@ -16,7 +16,7 @@ export default class Subpage extends React.Component {
               justifyContent: "center",
               borderBottomWidth: 1,
               borderColor: colors.primary.val}}>
-          <TouchableOpacity onPress={this.props.backPress}
+          <TouchableOpacity onPress={this.props.appstate.backPress}
               style={{
                   position: "absolute",
                   top: 0, left: 0, bottom: 0,

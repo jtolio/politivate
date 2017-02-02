@@ -1,8 +1,10 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { ScrollView, RefreshControl, View, Text, Image } from 'react-native';
-import { ErrorView, TabHeader } from './common';
+import {
+  ScrollView, RefreshControl, View, Text, Image, TouchableOpacity
+} from 'react-native';
+import { ErrorView, TabHeader, Link, colors } from './common';
 
 export default class ProfileTab extends Component {
   constructor(props) {
@@ -46,9 +48,80 @@ export default class ProfileTab extends Component {
             style={{width: 50, height: 50, borderRadius: 10}}/>
           <View style={{paddingLeft: 10}}>
             <Text style={{fontWeight: "bold"}}>{this.state.profile.name}</Text>
+            <Text>I'm just this guy, you know?</Text>
           </View>
         </View>
-        <Text>Profile info</Text>
+        <View style={{paddingTop: 20}}/>
+        <View style={{borderWidth: 1, borderColor: colors.primary.val, borderRadius: 10, padding: 10, paddingTop: 6}}>
+          <Text style={{fontWeight: "bold", fontSize: 30, color: colors.primary.val}}>Points this month</Text>
+          <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
+          <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>ACLU</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>70</Text>
+          </View>
+          <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
+          <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Sierra Club</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>110</Text>
+          </View>
+        </View>
+        <View style={{paddingTop: 20}}/>
+        <View style={{borderWidth: 1, borderColor: colors.primary.val, borderRadius: 10, padding: 10, paddingTop: 6}}>
+          <Text style={{fontWeight: "bold", fontSize: 30, color: colors.primary.val}}>Achievements</Text>
+          <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
+          <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Longest streak</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>8 days</Text>
+          </View>
+          <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
+          <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Phone calls</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>18</Text>
+          </View>
+          <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
+          <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Top supporter</Text>
+            <Text/>
+          </View>
+          <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+            <Text/>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Sierra Club, SLC, January</Text>
+          </View>
+          <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+            <Text/>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Sierra Club, SLC, November</Text>
+          </View>
+          <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
+          <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Rallies attended</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>5</Text>
+          </View>
+          <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
+          <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Active days</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>37</Text>
+          </View>
+        </View>
+        <View style={{paddingTop: 20}}/>
+        <View style={{borderWidth: 1, borderColor: colors.primary.val, borderRadius: 10, padding: 10, paddingTop: 6}}>
+          <Text style={{fontWeight: "bold", fontSize: 30, color: colors.primary.val}}>Total Points</Text>
+          <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
+          <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>ACLU</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>350</Text>
+          </View>
+          <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
+          <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Sierra Club</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>620</Text>
+          </View>
+          <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
+          <View style={{justifyContent: "space-between", flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Immigrant Defense Project</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>70</Text>
+          </View>
+        </View>
+        <View style={{paddingTop: 20}}/>
       </View>
     );
   }

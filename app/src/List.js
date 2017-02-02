@@ -1,10 +1,10 @@
 "use strict";
 
 import React from 'react';
-import { ListView, RefreshControl, View } from 'react-native';
-import { ErrorView, TabHeader, colors } from './common';
+import { ListView, RefreshControl, View, ScrollView } from 'react-native';
+import { ErrorView, colors } from './common';
 
-export default class ListTab extends React.Component {
+export default class List extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,24 +49,29 @@ export default class ListTab extends React.Component {
   }
 
   render() {
+    if (this.state.error) {
+      return <ErrorView msg={this.state.error}/>;
+    }
+    if (this.props.children && !this.state.loading &&
+        this.state.items.length == 0) {
+      return (
+        <ScrollView style={{flex: 1}} refreshControl={
+            <RefreshControl onRefresh={this.update} refreshing={false}/>}>
+          {this.props.children}
+        </ScrollView>
+      );
+    }
     const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1.id !== r2.id});
     let dataSource = ds.cloneWithRows(this.state.items);
     return (
-      <View style={{flex:1}}>
-        <TabHeader>
-          {this.props.header}
-        </TabHeader>
-        {this.state.error ?
-         (<ErrorView msg={this.state.error}/>) :
-         (<ListView refreshControl={
-              <RefreshControl refreshing={this.state.loading}
-                              onRefresh={this.update}/>}
-             enableEmptySections={true}
-             dataSource={dataSource}
-             renderRow={this.renderRow}
-             renderSeparator={this.renderSeparator}/>)}
-      </View>
+        <ListView refreshControl={
+            <RefreshControl refreshing={this.state.loading}
+                            onRefresh={this.update}/>}
+           enableEmptySections={true}
+           dataSource={dataSource}
+           renderRow={this.renderRow}
+           renderSeparator={this.renderSeparator}/>
     );
   }
 }

@@ -54,16 +54,13 @@ export default class FollowButton extends React.Component {
               { (this.state.loading ?
                 (<Text>
                   <Icon name="hour-glass" size={30} />
-                  .
                  </Text>) :
                 (this.state.following ?
                 <Text style={{color: colors.heart.val}}>
                   <Icon name="heart" size={30} style={{color: colors.heart.val}}/>
-                  {this.state.followers}
                 </Text>
                 : <Text>
                   <Icon name="heart-outlined" size={30}/>
-                  {this.state.followers}
                 </Text>)) }
             </TouchableOpacity>);
   }

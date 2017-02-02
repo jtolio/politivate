@@ -10,36 +10,6 @@ import { LoadingView, ErrorView, colors } from './common';
 
 const REGISTERED_OTP_PREFIX = "politivate-org-app://www.politivate.org/api/v1/login/otp/";
 
-class AppState {
-  constructor(logout, authtoken, navigator) {
-    this.logout = logout;
-    this.authtoken = authtoken;
-    this.navigator = navigator;
-  }
-
-  async request(method, resource) {
-    let req = new Request("https://www.politivate.org/api" + resource,
-        {method, headers: {"X-Auth-Token": this.authtoken}});
-    let resp = await fetch(req)
-    if (!resp.ok) {
-      try {
-        let json = await resp.json();
-        if (!json.err) {
-          throw resp.statusText;
-        }
-        throw json.err;
-      } catch(err) {
-        throw resp.statusText;
-      }
-    }
-    let json = await resp.json();
-    if (json.err) {
-      throw json.err;
-    }
-    return json.resp;
-  }
-}
-
 class BackHandler extends Component {
   constructor(props) {
     super(props);
@@ -65,8 +35,9 @@ class BackHandler extends Component {
   render() {
     return (
       <View style={{backgroundColor: colors.background.val, flex: 1}}>
-        <this.props.route.component appstate={this.props.appstate}
-            backPress={this.backPress} {...this.props.route.passProps}/>
+        <this.props.route.component
+            appstate={{backPress: this.backPress, ...this.props.appstate}}
+            {...this.props.route.passProps}/>
       </View>
     );
   }
@@ -144,7 +115,34 @@ export default class AppRoot extends Component {
   }
 
   renderScene(route, navigator) {
-    let appstate = new AppState(this.logout, this.state.token, navigator);
+    let appstate = {
+      logout: this.logout,
+      authtoken: this.state.token,
+      navigator: navigator,
+    };
+
+    appstate.request = async function(method, resource) {
+      let req = new Request("https://www.politivate.org/api" + resource,
+          {method, headers: {"X-Auth-Token": appstate.authtoken}});
+      let resp = await fetch(req)
+      if (!resp.ok) {
+        try {
+          let json = await resp.json();
+          if (!json.err) {
+            throw resp.statusText;
+          }
+          throw json.err;
+        } catch(err) {
+          throw resp.statusText;
+        }
+      }
+      let json = await resp.json();
+      if (json.err) {
+        throw json.err;
+      }
+      return json.resp;
+    };
+
     return (<BackHandler route={route} appstate={appstate} />)
   }
 
