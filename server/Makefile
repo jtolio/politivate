@@ -1,5 +1,5 @@
 _message:
-	@echo "available targets: static compile run deploy rollback"
+	@echo "available targets: static compile serve deploy rollback"
 
 static:
 	GOPATH=${PWD} go generate politivate.org/web/...

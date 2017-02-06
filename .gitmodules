@@ -37,15 +37,12 @@
 [submodule "server/src/github.com/spacemonkeygo/flagfile"]
 	path = server/src/github.com/spacemonkeygo/flagfile
 	url = https://github.com/spacemonkeygo/flagfile
-[submodule "secrets"]
-	path = secrets
-	url = https://source.developers.google.com/p/politiforce-150719/r/secrets
 [submodule "server/src/github.com/jtolds/gls"]
 	path = server/src/github.com/jtolds/gls
 	url = https://github.com/jtolds/gls
 [submodule "server/src/gopkg.in/webhelp.v1"]
-  path = server/src/gopkg.in/webhelp.v1
-  url = https://github.com/go-webhelp/webhelp
+	path = server/src/gopkg.in/webhelp.v1
+	url = https://github.com/go-webhelp/webhelp
 [submodule "server/src/gopkg.in/go-webhelp/whgoth.v1"]
 	path = server/src/gopkg.in/go-webhelp/whgoth.v1
 	url = https://github.com/go-webhelp/whgoth

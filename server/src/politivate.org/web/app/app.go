@@ -14,6 +14,6 @@ import (
 var (
 	RootHandler = whcache.Register(whcompat.DoneNotify(
 		whlog.LogRequests(whlog.Default, whlog.LogResponses(whlog.Default,
-			whsess.HandlerWithStore(whsess.NewCookieStore(secrets.CookieSecret),
+			whsess.HandlerWithStore(whsess.NewLazyCookieStore(secrets.CookieSecret),
 				whfatal.Catch(controllers.Handler))))))
 )

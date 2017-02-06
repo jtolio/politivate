@@ -18,13 +18,12 @@ import (
 )
 
 var (
-	auth = whgoth.NewAuthProviders("/auth", "auth", secrets.Providers...)
-
+	auth = whgoth.NewLazyAuthProviders("/auth", "auth",
+		secrets.Providers)
 	Handler   http.Handler = auth
 	Providers              = auth.Providers
 	userKey                = webhelp.GenSym()
-
-	LogoutURL = auth.LogoutURL
+	LogoutURL              = auth.LogoutURL
 )
 
 func getCookieUser(ctx context.Context) *models.User {
