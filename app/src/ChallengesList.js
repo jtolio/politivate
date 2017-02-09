@@ -7,6 +7,10 @@ import List from './List';
 import { LoadingView, ErrorView, colors, TabHeader } from './common';
 import Icon from 'react-native-vector-icons/Entypo';
 
+var RFC3339 = /^(\d{4})-(\d{1,2})-(\d{1,2})T(\d{1,2}):(\d{2}):(\d{2})(|\.(\d+))(Z|([+-]\d{1,2}):(\d{2}))$/;
+var MONTHS = [0, "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP",
+              "OCT", "NOV", "DEC"];
+
 class ChallengeStat extends React.Component {
   render() {
     return (
@@ -60,19 +64,21 @@ class ChallengeStatPoints extends React.Component {
 class ChallengeStatDeadline extends React.Component {
   render() {
     if (!this.props.deadline) {
-      // TODO
       return null;
     }
-    // TODO
+    var m = RFC3339.exec(this.props.deadline);
+    if (!m) {
+      return null;
+    }
     return (
       <ChallengeStat>
         <Text style={{
             fontSize: 15, lineHeight: 13, color: colors.secondary.val}}>
-          FEB
+          {MONTHS[+m[2]]}
         </Text>
         <Text style={{
             fontSize: 25, lineHeight: 25, color: colors.secondary.val}}>
-          5
+          {+m[3]}
         </Text>
       </ChallengeStat>
     );
