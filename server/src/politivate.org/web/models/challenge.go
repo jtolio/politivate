@@ -8,26 +8,48 @@ import (
 	"gopkg.in/webhelp.v1/whfatal"
 )
 
+type NullableTime struct {
+	Time time.Time
+}
+
+func (t NullableTime) MarshalJSON() ([]byte, error) {
+	if t.Time.IsZero() {
+		return []byte("null"), nil
+	}
+	return t.Time.MarshalJSON()
+}
+
 type ChallengeRestriction struct {
 	Type  string `json:"type"`
 	Value string `json:"value"`
 }
 
 type Challenge struct {
-	Id      int64     `json:"id" datastore:"-"`
-	CauseId int64     `json:"cause_id" datastore:"-"`
-	Posted  time.Time `json:"posted_ts"`
+	Id      int64        `json:"id" datastore:"-"`
+	CauseId int64        `json:"cause_id" datastore:"-"`
+	Posted  NullableTime `json:"posted"`
 
-	Title         string                 `json:"title"`
-	Description   string                 `json:"description"`
-	Points        int                    `json:"points"`
-	Type          string                 `json:"type"`
-	Restrictions  []ChallengeRestriction `json:"restrictions"`
-	Deadline      time.Time              `json:"deadline,omitempty"`
-	Start         time.Time              `json:"start,omitempty"`
-	Database      string                 `json:"database"`
-	DirectPhone   string                 `json:"direct_phone"`
-	DirectAddress string                 `json:"direct_addr"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Points      int    `json:"points"`
+
+	// Type can be "phonecall" or "location"
+	Type string `json:"type"`
+
+	Restrictions []ChallengeRestriction `json:"restrictions"`
+
+	// If neither EventStart or EventEnd are set, there's no timeframe for the
+	// challenge.
+	// If just EventEnd is set, the challenge has a deadline.
+	// If both EventStart and EventEnd are set, then the challenge has a specific
+	// timeframe.
+	// It doesn't currently make sense to set EventStart only.
+	EventStart NullableTime `json:"event_start"`
+	EventEnd   NullableTime `json:"event_end"`
+
+	Database      string `json:"database"`
+	DirectPhone   string `json:"direct_phone"`
+	DirectAddress string `json:"direct_addr"`
 }
 
 func (cause *Cause) NewChallenge(ctx context.Context) *Challenge {
@@ -37,7 +59,7 @@ func (cause *Cause) NewChallenge(ctx context.Context) *Challenge {
 
 	return &Challenge{
 		CauseId: cause.Id,
-		Posted:  time.Now(),
+		Posted:  NullableTime{Time: time.Now()},
 	}
 }
 

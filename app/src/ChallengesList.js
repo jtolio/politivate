@@ -59,7 +59,7 @@ class ChallengeStatPoints extends React.Component {
 
 class ChallengeStatDeadline extends React.Component {
   render() {
-    if (this.props.deadline == "0001-01-01T00:00:00Z") {
+    if (!this.props.deadline) {
       // TODO
       return null;
     }
@@ -137,7 +137,7 @@ class ChallengeEntry extends React.Component {
           </View>
           <ChallengeStatType icon={this.typeIcon}/>
           <ChallengeStatPoints points={chal.points}/>
-          <ChallengeStatDeadline deadline={chal.deadline}/>
+          <ChallengeStatDeadline deadline={chal.event_end}/>
         </View>
       </TouchableOpacity>
     );

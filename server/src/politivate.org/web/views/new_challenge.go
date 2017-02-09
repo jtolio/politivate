@@ -98,10 +98,10 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
       </div>
     </div>
 
-    {{ $challengeType := (or (index .Values.Form "type") "") }}
     <div class="col-md-4">
+      {{ $challengeType := (or (index .Values.Form "type") "") }}
       <div class="form-group">
-        <label for="typeInput">Challenge type</label><br/>
+        <label>Challenge type</label><br/>
         <div class="btn-group" data-toggle="buttons">
           <label class="btn btn-default{{if (or (not $challengeType) (eq $challengeType "phonecall"))}} active{{end}}">
             <input type="radio" name="type" id="type-phonecall"
@@ -174,8 +174,40 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
         </div>
       </div>
 
-      {{ template "optinput" (makemap "Field" "startdate" "Display" "Start date" "Type" "date" "Form" .Values.Form) }}
-      {{ template "optinput" (makemap "Field" "deadline" "Display" "Deadline" "Type" "date" "Form" .Values.Form) }}
+      {{ $dateType := (or (index .Values.Form "dateType") "") }}
+      <div class="form-group">
+        <label>Date type</label><br/>
+        <div class="btn-group" data-toggle="buttons">
+          <label class="btn btn-default{{if (or (not $dateType) (eq $dateType "none"))}} active{{end}}">
+            <input type="radio" name="dateType" id="dateType-none"
+                   autocomplete="off" value="none"
+                   {{if (or (not $dateType) (eq $dateType "none"))}}checked{{end}}
+                   onchange="dateTypeChange(); return true;">
+              None
+          </label>
+          <label class="btn btn-default{{if (eq $dateType "deadline")}} active{{end}}">
+            <input type="radio" name="dateType" id="dateType-deadline"
+                   autocomplete="off" value="deadline"
+                   {{if (eq $dateType "deadline")}}checked{{end}}
+                   onchange="dateTypeChange(); return true;">
+              Deadline
+          </label>
+          <label class="btn btn-default{{if (eq $dateType "event")}} active{{end}}">
+            <input type="radio" name="dateType" id="dateType-event"
+                   autocomplete="off" value="event"
+                   {{if (eq $dateType "event")}}checked{{end}}
+                   onchange="dateTypeChange(); return true;">
+              Event
+          </label>
+        </div>
+      </div>
+
+      <div id="eventStartSection" style="display: none;">
+        {{ template "input" (makemap "Field" "eventStart" "Display" "Start time" "Type" "datetime-local" "Form" .Values.Form) }}
+      </div>
+      <div id="eventEndSection" style="display: none;">
+        {{ template "input" (makemap "Field" "eventEnd" "Display" (safehtml "<div id=\"eventEndLabel\">End time</div>") "Type" "datetime-local" "Form" .Values.Form) }}
+      </div>
     </div>
   </div>
 
@@ -200,6 +232,26 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
     fieldChange(document.forms["newchallenge"]["type"].value, {
       "phonecall": "#phoneDatabaseSection",
       "location": "#locationDatabaseSection"});
+  }
+
+  function dateTypeChange() {
+    switch (document.forms["newchallenge"]["dateType"].value) {
+      case "deadline":
+        $("#eventStartSection").hide();
+        $("#eventEndSection").show();
+        $("#eventEndLabel").text("Deadline");
+        showEnd = true;
+        break;
+      case "event":
+        $("#eventStartSection").show();
+        $("#eventEndSection").show();
+        $("#eventEndLabel").text("End time");
+        break;
+      default:
+        $("#eventStartSection").hide();
+        $("#eventEndSection").hide();
+        break;
+    }
   }
 
   function phoneDatabaseChange() {
@@ -282,6 +334,7 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
   }
 
   $(challengeTypeChange);
+  $(dateTypeChange);
   $(phoneDatabaseChange);
   $(locationDatabaseChange);
   $(restrictionTypeChange);

@@ -126,15 +126,16 @@ export default class AppRoot extends Component {
           {method, headers: {"X-Auth-Token": appstate.authtoken}});
       let resp = await fetch(req)
       if (!resp.ok) {
+        let json = null;
         try {
-          let json = await resp.json();
-          if (!json.err) {
-            throw resp.statusText;
-          }
-          throw json.err;
+          json = await resp.json();
         } catch(err) {
           throw resp.statusText;
         }
+        if (!json.err) {
+          throw resp.statusText;
+        }
+        throw json.err;
       }
       let json = await resp.json();
       if (json.err) {

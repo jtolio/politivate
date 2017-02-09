@@ -98,20 +98,26 @@ func newChallengeCreate(w http.ResponseWriter, r *http.Request) {
 				Value: r.FormValue(fmt.Sprintf("restrictionValue[%d]", i))})
 	}
 
-	if r.FormValue("deadlineEnabled") != "" {
-		tz, err := time.Parse("2006-01-02", r.FormValue("deadline"))
+	switch r.FormValue("dateType") {
+	case "none":
+	case "event":
+		tz, err := time.Parse("2006-01-02T15:04 MST",
+			r.FormValue("eventStart")+" EST")
 		if err != nil {
 			whfatal.Error(wherr.BadRequest.Wrap(err))
 		}
-		chal.Deadline = tz
-	}
-
-	if r.FormValue("startdateEnabled") != "" {
-		tz, err := time.Parse("2006-01-02", r.FormValue("startdate"))
+		chal.EventStart = models.NullableTime{Time: tz}
+		fallthrough
+	case "deadline":
+		tz, err := time.Parse("2006-01-02T15:04 MST",
+			r.FormValue("eventEnd")+" EST")
 		if err != nil {
 			whfatal.Error(wherr.BadRequest.Wrap(err))
 		}
-		chal.Start = tz
+		chal.EventEnd = models.NullableTime{Time: tz}
+	default:
+		whfatal.Error(wherr.BadRequest.New("bad date type: %s",
+			r.FormValue("dateType")))
 	}
 
 	if chal.Title == "" || chal.Description == "" || chal.Points < 0 || chal.Database == "" ||
@@ -120,7 +126,7 @@ func newChallengeCreate(w http.ResponseWriter, r *http.Request) {
 		formVals := map[string]string{}
 		for _, name := range []string{"title", "description", "points", "type",
 			"phoneDatabase", "locationDatabase", "directphone", "directaddr",
-			"deadlineEnabled", "deadline", "startdateEnabled", "startdate"} {
+			"dateType", "eventStart", "eventEnd"} {
 			formVals[name] = r.FormValue(name)
 		}
 		Render(w, r, "new_challenge", map[string]interface{}{
