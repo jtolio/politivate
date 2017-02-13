@@ -19,6 +19,10 @@ type User struct {
 	Email          string `json:"email"`
 	AvatarURL      string `json:"avatar_url"`
 	CanCreateCause bool   `json:"-"`
+
+	LocationSet bool    `json:"location_set"`
+	Latitude    float64 `json:"latitude"`
+	Longitude   float64 `json:"longitude"`
 }
 
 func userKey(ctx context.Context, id int64) *datastore.Key {

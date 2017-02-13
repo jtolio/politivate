@@ -61,6 +61,20 @@ func User(r *http.Request) *models.User {
 func WebLoginRequired(h http.Handler) http.Handler {
 	return whroute.HandlerFunc(h,
 		func(w http.ResponseWriter, r *http.Request) {
+			u := User(r)
+			if u == nil {
+				whfatal.Redirect(LoginURL(r.RequestURI))
+			}
+			if !u.LocationSet {
+				whfatal.Redirect(LoginLocationURL(r.RequestURI))
+			}
+			h.ServeHTTP(w, r)
+		})
+}
+
+func WebLoginRequiredNoLocation(h http.Handler) http.Handler {
+	return whroute.HandlerFunc(h,
+		func(w http.ResponseWriter, r *http.Request) {
 			if User(r) == nil {
 				whfatal.Redirect(LoginURL(r.RequestURI))
 			}
@@ -71,7 +85,7 @@ func WebLoginRequired(h http.Handler) http.Handler {
 func APILoginRequired(h http.Handler) http.Handler {
 	return whroute.HandlerFunc(h,
 		func(w http.ResponseWriter, r *http.Request) {
-			if User(r) == nil {
+			if u := User(r); u == nil || !u.LocationSet {
 				whfatal.Error(wherr.Unauthorized.New("X-Auth-Token required"))
 			}
 			h.ServeHTTP(w, r)
@@ -80,6 +94,11 @@ func APILoginRequired(h http.Handler) http.Handler {
 
 func LoginURL(redirectTo string) string {
 	return "/login?" + url.Values{"redirect_to": {redirectTo}}.Encode()
+}
+
+func LoginLocationURL(redirectTo string) string {
+	return "/login/location?" +
+		url.Values{"redirect_to": {redirectTo}}.Encode()
 }
 
 func Logout(ctx context.Context, w http.ResponseWriter) {
