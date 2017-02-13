@@ -52,12 +52,12 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
 
       <div class="form-group">
         <label>Restrictions</label>
+        <div id="restrictionList"></div>
         <div class="row">
           <div class="col-md-4">
             <select class="form-control" id="restrictionType"
                     onchange="restrictionTypeChange(); return true;">
               <option value="state">State</option>
-              <option value="district">District</option>
               <option value="housecommittee">House Committee</option>
               <option value="senatecommittee">Senate Committee</option>
             </select>
@@ -67,25 +67,116 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
                     id="stateRestriction">
               <option>Alabama</option>
               <option>Alaska</option>
+              <option>American Samoa</option>
+              <option>Arizona</option>
               <option>Arkansas</option>
-            </select>
-            <select class="form-control" style="display: none;"
-                    id="districtRestriction">
-              <option>UT-1</option>
-              <option>UT-2</option>
-              <option>UT-3</option>
+              <option>California</option>
+              <option>Colorado</option>
+              <option>Connecticut</option>
+              <option>Delaware</option>
+              <option>District of Columbia</option>
+              <option>Florida</option>
+              <option>Georgia</option>
+              <option>Guam</option>
+              <option>Hawaii</option>
+              <option>Idaho</option>
+              <option>Illinois</option>
+              <option>Indiana</option>
+              <option>Iowa</option>
+              <option>Kansas</option>
+              <option>Kentucky</option>
+              <option>Louisiana</option>
+              <option>Maine</option>
+              <option>Maryland</option>
+              <option>Massachusetts</option>
+              <option>Michigan</option>
+              <option>Minnesota</option>
+              <option>Mississippi</option>
+              <option>Missouri</option>
+              <option>Montana</option>
+              <option>Nebraska</option>
+              <option>Nevada</option>
+              <option>New Hampshire</option>
+              <option>New Jersey</option>
+              <option>New Mexico</option>
+              <option>New York</option>
+              <option>North Carolina</option>
+              <option>North Dakota</option>
+              <option>Northern Mariana Islands</option>
+              <option>Ohio</option>
+              <option>Oklahoma</option>
+              <option>Oregon</option>
+              <option>Pennsylvania</option>
+              <option>Philippines</option>
+              <option>Puerto Rico</option>
+              <option>Rhode Island</option>
+              <option>South Carolina</option>
+              <option>South Dakota</option>
+              <option>Tennessee</option>
+              <option>Texas</option>
+              <option>U.S. Virgin Islands</option>
+              <option>Utah</option>
+              <option>Vermont</option>
+              <option>Virginia</option>
+              <option>Washington</option>
+              <option>West Virginia</option>
+              <option>Wisconsin</option>
+              <option>Wyoming</option>
             </select>
             <select class="form-control" style="display: none;"
                     id="houseCommitteeRestriction">
-              <option>Agriculture</option>
+                            <option>Agriculture</option>
               <option>Appropriations</option>
+              <option>Armed Services</option>
               <option>Budget</option>
+              <option>Economic</option>
+              <option>Education and the Workforce</option>
+              <option>Energy and Commerce</option>
+              <option>Ethics</option>
+              <option>Financial Services</option>
+              <option>Foreign Affairs</option>
+              <option>Homeland Security</option>
+              <option>House Administration</option>
+              <option>Intelligence</option>
+              <option>Judiciary</option>
+              <option>Library</option>
+              <option>Natural Resources</option>
+              <option>Oversight and Government Reform</option>
+              <option>Printing</option>
+              <option>Rules</option>
+              <option>Science, Space, and Technology</option>
+              <option>Small Business</option>
+              <option>Taxation</option>
+              <option>Transportation and Infrastructure</option>
+              <option>Veterans' Affairs</option>
+              <option>Ways and Means</option>
             </select>
             <select class="form-control" style="display: none;"
                     id="senateCommitteeRestriction">
               <option>Aging</option>
+              <option>Agriculture, Nutrition, and Forestry</option>
               <option>Appropriations</option>
+              <option>Armed Services</option>
+              <option>Banking, Housing, and Urban Affairs</option>
               <option>Budget</option>
+              <option>Commerce, Science, and Transportation</option>
+              <option>Economic</option>
+              <option>Energy and Natural Resources</option>
+              <option>Environment and Public Works</option>
+              <option>Ethics</option>
+              <option>Finance</option>
+              <option>Foreign Relations</option>
+              <option>Health, Education, Labor, and Pensions</option>
+              <option>Homeland Security and Governmental Affairs</option>
+              <option>Indian Affairs</option>
+              <option>Intelligence</option>
+              <option>Judiciary</option>
+              <option>Library</option>
+              <option>Printing</option>
+              <option>Rules and Administration</option>
+              <option>Small Business and Entrepreneurship</option>
+              <option>Taxation</option>
+              <option>Veterans' Affairs</option>
             </select>
           </div>
           <div class="col-md-2">
@@ -94,7 +185,6 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
                     type="button">+</button>
           </div>
         </div>
-        <div id="restrictionList"></div>
       </div>
     </div>
 
@@ -266,7 +356,6 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
 
   var restrictionListMap = {
     "state": "#stateRestriction",
-    "district": "#districtRestriction",
     "housecommittee": "#houseCommitteeRestriction",
     "senatecommittee": "#senateCommitteeRestriction"};
 
@@ -279,6 +368,12 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
     {{if $i}},{{end}}{"type": "{{$e.Type}}", "value": "{{$e.Value}}"}
     {{ end }}
   ];
+
+  var restrictionTypeName = {
+    "housecommittee": "House Committee",
+    "senatecommittee": "Senate Committee",
+    "state": "State"
+  }
 
   function updateRestrictions() {
     var rl = $("#restrictionList");
@@ -293,27 +388,30 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
       return;
     }
 
+    var list = $("<ul>");
     for (var i = 0; i < restrictions.length; i++) {
-      var p = $("<p>");
+      var item = $("<li>");
       if (i > 0) {
-        p.append("OR ");
+        item.append("OR ");
       }
-      p.append(restrictions[i].type + ": " + restrictions[i].value + " (");
-      p.append($("<a>")
+      item.append(restrictionTypeName[restrictions[i].type] + ": " +
+                  restrictions[i].value + " (");
+      item.append($("<a>")
           .attr("href", "#")
           .attr("onclick", "removeRestriction(" + i + "); return false;")
           .append("remove"));
-      p.append(")");
-      rl.append(p);
-      rl.append($("<input>")
+      item.append(")");
+      item.append($("<input>")
           .attr("type", "hidden")
           .attr("name", "restrictionType[" + i + "]")
           .attr("value", restrictions[i].type));
-      rl.append($("<input>")
+      item.append($("<input>")
           .attr("type", "hidden")
           .attr("name", "restrictionValue[" + i + "]")
           .attr("value", restrictions[i].value));
+      list.append(item);
     }
+    rl.append(list);
   }
 
   function addRestriction() {
