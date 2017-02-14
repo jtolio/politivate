@@ -13,6 +13,9 @@ var (
 )
 
 func wrapErr(err error) error {
+	if Error.Contains(err) {
+		return err
+	}
 	if err == datastore.ErrNoSuchEntity {
 		return NotFound.Wrap(err)
 	}
