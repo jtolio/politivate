@@ -7,7 +7,7 @@ var _ = T.MustParse(`{{ template "header" (makepair . "Set your district") }}
 <p>We use this information solely to figure out what state and national
 districts you're in.</p>
 
-<form class="form-horizontal" method="POST">
+<form class="form-horizontal" method="POST" name="location">
   <div class="form-group">
     <label for="inputLatitude" class="col-sm-2 control-label">Latitude</label>
     <div class="col-sm-10">
@@ -29,4 +29,13 @@ districts you're in.</p>
   </div>
 </form>
 
-{{ template "footer" . }}`)
+{{ template "footerscripts" . }}
+<script>
+$(function() {
+  navigator.geolocation.getCurrentPosition(function(location) {
+    document.forms["location"].elements["longitude"].value = location.coords.longitude;
+    document.forms["location"].elements["latitude"].value = location.coords.latitude;
+  });
+})
+</script>
+{{ template "footerdoc" . }}`)
