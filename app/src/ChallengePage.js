@@ -3,7 +3,7 @@
 
 import React from 'react';
 import {
-  Text, Image, View, ScrollView, TouchableOpacity, Button
+  Text, Image, View, ScrollView, TouchableOpacity, Button, Linking
 } from 'react-native';
 import Subpage from './Subpage';
 import { Link, ErrorView, LoadingView } from './common';
@@ -33,8 +33,14 @@ class ChallengeActions extends React.Component {
       let message = title + " " + name + ": " + action;
       result.push(<View key={"view-" + legislator.votesmart_id}
                       style={{paddingTop: 10}}/>);
+      let onPress = () => {};
+      if (info.type == "phonecall") {
+        onPress = () => {
+          Linking.openURL("tel:" + legislator.phone);
+        };
+      }
       result.push(<Button key={"button-" + legislator.votesmart_id}
-                      title={message} onPress={() => {}}/>);
+                      title={message} onPress={onPress}/>);
     }
     return <View>{result}</View>;
   }
