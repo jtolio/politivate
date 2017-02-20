@@ -48,7 +48,7 @@ export default class ProfileTab extends Component {
             style={{width: 50, height: 50, borderRadius: 10}}/>
           <View style={{paddingLeft: 10}}>
             <Text style={{fontWeight: "bold"}}>{this.state.profile.name}</Text>
-            <Text>I'm just this guy, you know?</Text>
+            <Text>Profile text!</Text>
           </View>
         </View>
         <View style={{paddingTop: 20}}/>
@@ -56,12 +56,12 @@ export default class ProfileTab extends Component {
           <Text style={{fontWeight: "bold", fontSize: 30, color: colors.primary.val}}>Points this month</Text>
           <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
           <View style={{justifyContent: "space-between", flexDirection: "row"}}>
-            <Text style={{fontWeight: "bold", fontSize: 20}}>ACLU</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Cause 1</Text>
             <Text style={{fontWeight: "bold", fontSize: 20}}>70</Text>
           </View>
           <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
           <View style={{justifyContent: "space-between", flexDirection: "row"}}>
-            <Text style={{fontWeight: "bold", fontSize: 20}}>Sierra Club</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Cause 2</Text>
             <Text style={{fontWeight: "bold", fontSize: 20}}>110</Text>
           </View>
         </View>
@@ -85,11 +85,11 @@ export default class ProfileTab extends Component {
           </View>
           <View style={{justifyContent: "space-between", flexDirection: "row"}}>
             <Text/>
-            <Text style={{fontWeight: "bold", fontSize: 20}}>Sierra Club, SLC, January</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Cause 1, City, Month 1</Text>
           </View>
           <View style={{justifyContent: "space-between", flexDirection: "row"}}>
             <Text/>
-            <Text style={{fontWeight: "bold", fontSize: 20}}>Sierra Club, SLC, November</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Cause 2, City, Month 2</Text>
           </View>
           <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
           <View style={{justifyContent: "space-between", flexDirection: "row"}}>
@@ -107,17 +107,17 @@ export default class ProfileTab extends Component {
           <Text style={{fontWeight: "bold", fontSize: 30, color: colors.primary.val}}>Total Points</Text>
           <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
           <View style={{justifyContent: "space-between", flexDirection: "row"}}>
-            <Text style={{fontWeight: "bold", fontSize: 20}}>ACLU</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Cause 1</Text>
             <Text style={{fontWeight: "bold", fontSize: 20}}>350</Text>
           </View>
           <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
           <View style={{justifyContent: "space-between", flexDirection: "row"}}>
-            <Text style={{fontWeight: "bold", fontSize: 20}}>Sierra Club</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Cause 2</Text>
             <Text style={{fontWeight: "bold", fontSize: 20}}>620</Text>
           </View>
           <View style={{borderBottomWidth: 1, borderColor: colors.primary.val}}/>
           <View style={{justifyContent: "space-between", flexDirection: "row"}}>
-            <Text style={{fontWeight: "bold", fontSize: 20}}>Immigrant Defense Project</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>Cause 3</Text>
             <Text style={{fontWeight: "bold", fontSize: 20}}>70</Text>
           </View>
         </View>
