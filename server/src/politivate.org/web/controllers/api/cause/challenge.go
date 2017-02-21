@@ -23,9 +23,7 @@ func init() {
 func serveChallenge(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
 	challenge := mustGetCause(ctx).GetChallenge(ctx, challengeId.MustGet(ctx))
-	resp := map[string]interface{}{
-		"challenge": challenge,
-	}
+	m := challenge.JSON()
 	if challenge.Data.Database != "direct" {
 		u := auth.User(r)
 		legislators := make([]*gov.Legislator, 0)
@@ -42,8 +40,8 @@ func serveChallenge(w http.ResponseWriter, r *http.Request) {
 					gov.SenatorsByDistrict(ctx, district)...)
 			}
 		}
-		resp["legislators"] = legislators
+		m["legislators"] = legislators
 	}
 
-	whjson.Render(w, r, resp)
+	whjson.Render(w, r, m)
 }

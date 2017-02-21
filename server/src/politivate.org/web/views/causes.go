@@ -7,8 +7,7 @@ var _ = T.MustParse(`{{ template "header" (makepair . "Causes") }}
 <ul>
 {{ range $c := .Values.Causes }}
   <li><a href="/cause/{{ $c.Id }}"
-      ><img width=24 height=24 src="{{ $c.IconURL }}" /> {{ $c.Name }}</a><br/>
-    {{ $c.Description }}</li>
+      ><img width=24 height=24 src="{{ $c.Info.IconURL }}" /> {{ $c.Info.Name }}</a></li>
 {{ end }}
 </ul>
 

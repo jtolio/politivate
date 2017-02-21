@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"reflect"
 	"sort"
 	"time"
@@ -27,41 +28,10 @@ type ChallengeRestriction struct {
 }
 
 type Challenge struct {
-	Id      int64          `json:"id"`
-	CauseId int64          `json:"cause_id"`
-	Info    ChallengeInfo  `json:"info"`
-	Data    *ChallengeData `json:"data,omitempty"`
-}
-
-type ChallengeInfo struct {
-	Posted NullableTime `json:"posted"`
-
-	Title  string `json:"title"`
-	Points int    `json:"points"`
-
-	// Type can be "phonecall" or "location"
-	Type string `json:"type"`
-
-	Restrictions []ChallengeRestriction `json:"restrictions"`
-
-	// If neither EventStart or EventEnd are set, there's no timeframe for the
-	// challenge.
-	// If just EventEnd is set, the challenge has a deadline.
-	// If both EventStart and EventEnd are set, then the challenge has a specific
-	// timeframe.
-	// It doesn't currently make sense to set EventStart only.
-	EventStart NullableTime `json:"event_start"`
-	EventEnd   NullableTime `json:"event_end"`
-}
-
-type ChallengeData struct {
-	Description string `json:"description"`
-
-	// Database can currently be "direct", "us", "ushouse", or "ussenate"
-	Database string `json:"database"`
-
-	DirectPhone   string `json:"direct_phone"`
-	DirectAddress string `json:"direct_addr"`
+	Id      int64
+	CauseId int64
+	Info    ChallengeHeader
+	Data    *ChallengeData
 }
 
 func (cause *Cause) NewChallenge(ctx context.Context) *Challenge {
@@ -71,19 +41,74 @@ func (cause *Cause) NewChallenge(ctx context.Context) *Challenge {
 
 	return &Challenge{
 		CauseId: cause.Id,
-		Info: ChallengeInfo{
+		Info: ChallengeHeader{
 			Posted: NullableTime{Time: time.Now()},
 		},
 		Data: &ChallengeData{},
 	}
 }
 
-func challengeInfoKey(ctx context.Context, id, causeId int64) *datastore.Key {
+func (c *Challenge) JSON() map[string]interface{} {
+	vals := map[string]interface{}{
+		"id":           c.Id,
+		"cause_id":     c.CauseId,
+		"posted":       c.Info.Posted,
+		"title":        c.Info.Title,
+		"points":       c.Info.Points,
+		"type":         c.Info.Type,
+		"restrictions": c.Info.Restrictions,
+		"event_start":  c.Info.EventStart,
+		"event_end":    c.Info.EventEnd,
+	}
+	if c.Data != nil {
+		vals["description"] = c.Data.Description
+		vals["database"] = c.Data.Database
+		vals["direct_phone"] = c.Data.DirectPhone
+		vals["direct_address"] = c.Data.DirectAddress
+	}
+	return vals
+}
+
+func (c *Challenge) MarshalJSON() ([]byte, error) {
+	return json.Marshal(c.JSON())
+}
+
+type ChallengeHeader struct {
+	Posted NullableTime
+
+	Title  string
+	Points int
+
+	// Type can be "phonecall" or "location"
+	Type string
+
+	Restrictions []ChallengeRestriction `datastore:",noindex"`
+
+	// If neither EventStart or EventEnd are set, there's no timeframe for the
+	// challenge.
+	// If just EventEnd is set, the challenge has a deadline.
+	// If both EventStart and EventEnd are set, then the challenge has a specific
+	// timeframe.
+	// It doesn't currently make sense to set EventStart only.
+	EventStart NullableTime
+	EventEnd   NullableTime
+}
+
+type ChallengeData struct {
+	Description string `datastore:",noindex"`
+
+	// Database can currently be "direct", "us", "ushouse", or "ussenate"
+	Database string
+
+	DirectPhone   string
+	DirectAddress string
+}
+
+func challengeKey(ctx context.Context, id, causeId int64) *datastore.Key {
 	if causeId == 0 {
 		whfatal.Error(Error.New("must create cause first"))
 	}
-	return datastore.NewKey(
-		ctx, "ChallengeInfo", "", id, causeKey(ctx, causeId))
+	return datastore.NewKey(ctx, "Challenge", "", id, causeKey(ctx, causeId))
 }
 
 func challengeDataKey(ctx context.Context, id, causeId int64) *datastore.Key {
@@ -91,15 +116,14 @@ func challengeDataKey(ctx context.Context, id, causeId int64) *datastore.Key {
 		whfatal.Error(Error.New("must create cause first"))
 	}
 	if id == 0 {
-		whfatal.Error(Error.New("must create challenge info to get id"))
+		whfatal.Error(Error.New("must create challenge to get id"))
 	}
-	return datastore.NewKey(
-		ctx, "ChallengeData", "", id, causeKey(ctx, causeId))
+	return datastore.NewKey(ctx, "ChallengeData", "", id, causeKey(ctx, causeId))
 }
 
 func (c *Challenge) Save(ctx context.Context) {
 	err := datastore.RunInTransaction(ctx, func(ctx context.Context) error {
-		k, err := datastore.Put(ctx, challengeInfoKey(ctx, c.Id, c.CauseId),
+		k, err := datastore.Put(ctx, challengeKey(ctx, c.Id, c.CauseId),
 			&c.Info)
 		if err != nil {
 			return err
@@ -122,17 +146,13 @@ func (c *Challenge) Save(ctx context.Context) {
 func (cause *Cause) GetChallenge(ctx context.Context, id int64) *Challenge {
 	challenge := Challenge{Data: &ChallengeData{}}
 	err := datastore.RunInTransaction(ctx, func(ctx context.Context) error {
-		err := datastore.Get(ctx, challengeInfoKey(ctx, id, cause.Id),
+		err := datastore.Get(ctx, challengeKey(ctx, id, cause.Id),
 			&challenge.Info)
 		if err != nil {
 			return err
 		}
-		err = datastore.Get(ctx, challengeDataKey(ctx, id, cause.Id),
+		return datastore.Get(ctx, challengeDataKey(ctx, id, cause.Id),
 			challenge.Data)
-		if err != nil {
-			return err
-		}
-		return nil
 	}, nil)
 	if err != nil {
 		whfatal.Error(wrapErr(err))
@@ -153,16 +173,17 @@ func structFields(val interface{}) []string {
 
 func getChallengesHelper(ctx context.Context, causeId int64,
 	mod func(q *datastore.Query) *datastore.Query) []*Challenge {
-	var challengeInfos []*ChallengeInfo
+	var challengeHeaders []*ChallengeHeader
 	if causeId == 0 {
 		// use make so the json doesn't look like `null`
 		return make([]*Challenge, 0)
 	}
-	q := datastore.NewQuery("ChallengeInfo").Ancestor(causeKey(ctx, causeId))
+	q := datastore.NewQuery("Challenge").Ancestor(
+		causeKey(ctx, causeId))
 	if mod != nil {
 		q = mod(q)
 	}
-	keys, err := q.GetAll(ctx, &challengeInfos)
+	keys, err := q.GetAll(ctx, &challengeHeaders)
 	if err != nil {
 		whfatal.Error(wrapErr(err))
 	}
@@ -171,7 +192,7 @@ func getChallengesHelper(ctx context.Context, causeId int64,
 		challenges[i] = &Challenge{
 			Id:      key.IntID(),
 			CauseId: causeId,
-			Info:    *challengeInfos[i],
+			Info:    *challengeHeaders[i],
 		}
 	}
 	return challenges
