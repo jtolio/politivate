@@ -11,10 +11,9 @@ import FollowButton from './FollowButton';
 
 class ChallengeActions extends React.Component {
   render() {
-    let info = this.props.data.challenge.info;
-    let data = this.props.data.challenge.data;
-    if (data.database == "direct") {
-      let action = {"phonecall": "Call", "location": "Check In"}[info.type];
+    let chal = this.props.challenge;
+    if (chal.database == "direct") {
+      let action = {"phonecall": "Call", "location": "Check In"}[chal.type];
       return (
         <View>
           <View style={{paddingTop: 10}}/>
@@ -23,18 +22,18 @@ class ChallengeActions extends React.Component {
       );
     }
     let result = [];
-    for (var legislator of this.props.data.legislators) {
+    for (var legislator of chal.legislators) {
       let action = {
           "phonecall": "Call " + legislator.phone,
           "location": "Check In",
-        }[info.type];
+        }[chal.type];
       let title = {"senate": "Sen.", "house": "Rep."}[legislator.chamber];
       let name = legislator.first_name + " " + legislator.last_name;
       let message = title + " " + name + ": " + action;
       result.push(<View key={"view-" + legislator.votesmart_id}
                       style={{paddingTop: 10}}/>);
       let onPress = () => {};
-      if (info.type == "phonecall") {
+      if (chal.type == "phonecall") {
         onPress = () => {
           Linking.openURL("tel:" + legislator.phone);
         };
@@ -51,7 +50,7 @@ export default class ChallengePage extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      data: null,
+      challenge: null,
       error: null
     };
     this.update = this.update.bind(this);
@@ -64,10 +63,10 @@ export default class ChallengePage extends React.Component {
   async update() {
     try {
       this.setState({loading: true, error: null});
-      let data = await this.props.appstate.request("GET",
+      let challenge = await this.props.appstate.request("GET",
           "/v1/cause/" + this.props.challenge.cause_id +
           "/challenge/" + this.props.challenge.id);
-      this.setState({loading: false, data});
+      this.setState({loading: false, challenge});
     } catch(error) {
       this.setState({loading: false, error});
     }
@@ -80,9 +79,9 @@ export default class ChallengePage extends React.Component {
     if (this.state.error) {
       return <ErrorView msg={this.state.error}/>;
     }
-    let chal = this.state.data.challenge;
+    let chal = this.state.challenge;
     return (
-      <Subpage appstate={this.props.appstate} title={chal.info.title}>
+      <Subpage appstate={this.props.appstate} title={chal.title}>
         <ScrollView>
           <View style={{
               padding: 20
@@ -106,9 +105,9 @@ export default class ChallengePage extends React.Component {
               <FollowButton cause={this.props.cause}
                     appstate={this.props.appstate} />
             </View>
-            <Text>{chal.data.description}</Text>
+            <Text>{chal.description}</Text>
             <View style={{paddingTop: 10}}/>
-            <ChallengeActions data={this.state.data}/>
+            <ChallengeActions challenge={this.state.challenge}/>
           </View>
         </ScrollView>
       </Subpage>

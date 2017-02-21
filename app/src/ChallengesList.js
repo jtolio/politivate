@@ -96,7 +96,7 @@ class ChallengeEntry extends React.Component {
     this.typeIcon = {
                       "phonecall": "phone",
                       "location": "location-pin",
-                    }[this.props.challenge.info.type];
+                    }[this.props.challenge.type];
     this.update = this.update.bind(this);
   }
 
@@ -141,11 +141,11 @@ class ChallengeEntry extends React.Component {
                           color: colors.background.val,
                           borderRadius: 10}}/> }
           <View style={{paddingLeft: 10, flex: 1}}>
-            <Text style={{fontWeight: "bold"}}>{chal.info.title}</Text>
+            <Text style={{fontWeight: "bold"}}>{chal.title}</Text>
           </View>
           <ChallengeStatType icon={this.typeIcon}/>
-          <ChallengeStatPoints points={chal.info.points}/>
-          <ChallengeStatDeadline deadline={chal.info.event_end}/>
+          <ChallengeStatPoints points={chal.points}/>
+          <ChallengeStatDeadline deadline={chal.event_end}/>
         </View>
       </TouchableOpacity>
     );
