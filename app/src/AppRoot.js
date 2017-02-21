@@ -126,6 +126,11 @@ export default class AppRoot extends Component {
           {method, headers: {"X-Auth-Token": appstate.authtoken}});
       let resp = await fetch(req)
       if (!resp.ok) {
+        if (resp.status == 401) {
+          // TODO: this causes warnings cause it causes logic to happen on
+          //  unmounted components.
+          appstate.logout();
+        }
         let json = null;
         try {
           json = await resp.json();
