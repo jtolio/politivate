@@ -15,7 +15,7 @@ import (
 
 var (
 	mux = whmux.Dir{
-		"favicon.ico": whredir.RedirectHandler("/static/favicon.ico"),
+		"favicon.ico": whmux.Exact(whredir.RedirectHandler("/static/favicon.ico")),
 	}
 	Handler http.Handler = mux
 )

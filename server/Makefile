@@ -1,11 +1,14 @@
 _message:
-	@echo "available targets: static compile serve deploy rollback"
+	@echo "available targets: static compile serve deploy rollback routes"
 
 static:
 	GOPATH=${PWD} go generate politivate.org/web/...
 
 compile: static
 	GOPATH=${PWD} go install -v politivate.org/web/...
+
+routes: compile
+	bin/local routes
 
 serve: compile _check_appengine
 	@echo

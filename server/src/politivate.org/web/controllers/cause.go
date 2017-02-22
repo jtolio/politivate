@@ -23,10 +23,10 @@ func init() {
 	mux["cause"] = causeId.Shift(whmux.Dir{
 		"": whmux.Exact(http.HandlerFunc(cause)),
 		"challenges": whmux.Dir{
-			"new": whmux.Method{
+			"new": whmux.ExactPath(whmux.Method{
 				"GET":  http.HandlerFunc(newChallengeForm),
 				"POST": http.HandlerFunc(newChallengeCreate),
-			},
+			}),
 		},
 	})
 }

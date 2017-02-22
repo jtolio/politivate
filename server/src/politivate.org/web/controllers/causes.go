@@ -15,10 +15,10 @@ import (
 func init() {
 	mux["causes"] = whmux.Dir{
 		"": whmux.Exact(http.HandlerFunc(causes)),
-		"new": whmux.Method{
+		"new": whmux.ExactPath(whmux.Method{
 			"GET":  http.HandlerFunc(newCauseForm),
 			"POST": http.HandlerFunc(newCauseCreation),
-		},
+		}),
 	}
 }
 
