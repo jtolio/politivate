@@ -143,6 +143,19 @@ func (c *Challenge) Save(ctx context.Context) {
 	}
 }
 
+func (c *Challenge) Delete(ctx context.Context) {
+	err := datastore.RunInTransaction(ctx, func(ctx context.Context) error {
+		err := datastore.Delete(ctx, challengeKey(ctx, c.Id, c.CauseId))
+		if err != nil {
+			return err
+		}
+		return datastore.Delete(ctx, challengeDataKey(ctx, c.Id, c.CauseId))
+	}, nil)
+	if err != nil {
+		whfatal.Error(wrapErr(err))
+	}
+}
+
 func (cause *Cause) GetChallenge(ctx context.Context, id int64) *Challenge {
 	challenge := Challenge{Data: &ChallengeData{}}
 	err := datastore.RunInTransaction(ctx, func(ctx context.Context) error {

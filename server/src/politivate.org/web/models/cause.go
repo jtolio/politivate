@@ -108,3 +108,38 @@ func GetCauses(ctx context.Context) []*Cause {
 	}
 	return causes
 }
+
+func (c *Cause) Delete(ctx context.Context) {
+	// first, remove all followers
+	// can't remove all followers in a transaction since they have different
+	// ancestor keys.
+	deleteAll(ctx, func() *datastore.Query {
+		return datastore.NewQuery("userCause").Filter("CauseId =", c.Id)
+	})
+
+	// everything remaining has this cause as an ancestor
+	err := datastore.RunInTransaction(ctx, func(ctx context.Context) error {
+		// remove all challenges
+		deleteAll(ctx, func() *datastore.Query {
+			return datastore.NewQuery("Challenge").Ancestor(causeKey(ctx, c.Id))
+		})
+		deleteAll(ctx, func() *datastore.Query {
+			return datastore.NewQuery("ChallengeData").Ancestor(causeKey(ctx, c.Id))
+		})
+
+		// remove all admins
+		deleteAll(ctx, func() *datastore.Query {
+			return datastore.NewQuery("causeAdmin").Ancestor(causeKey(ctx, c.Id))
+		})
+
+		// remove the cause
+		err := datastore.Delete(ctx, causeDataKey(ctx, c.Id))
+		if err != nil {
+			return err
+		}
+		return datastore.Delete(ctx, causeKey(ctx, c.Id))
+	}, nil)
+	if err != nil {
+		whfatal.Error(wrapErr(err))
+	}
+}

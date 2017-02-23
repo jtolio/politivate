@@ -1,8 +1,6 @@
 package models
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"time"
 
 	"golang.org/x/net/context"
@@ -22,21 +20,15 @@ func (u *User) NewOTP(ctx context.Context) *OTP {
 		whfatal.Error(Error.New("incomplete user"))
 	}
 
-	var token [32]byte
-	_, err := rand.Read(token[:])
-	if err != nil {
-		whfatal.Error(err)
-	}
-
 	// TODO: store auth session information so we can double check that the
 	//       user is still good later.
 	o := &OTP{
 		UserId:   u.Id,
-		Token:    hex.EncodeToString(token[:]),
+		Token:    token(),
 		Creation: time.Now(),
 	}
 
-	_, err = datastore.Put(ctx,
+	_, err := datastore.Put(ctx,
 		datastore.NewKey(ctx, "OTP", "", 0, userKey(ctx, u.Id)), o)
 	if err != nil {
 		whfatal.Error(wrapErr(err))
@@ -46,6 +38,7 @@ func (u *User) NewOTP(ctx context.Context) *OTP {
 }
 
 func CreateAuthTokenByOTP(ctx context.Context, otpToken string) *AuthToken {
+	// TODO: constant-time compare somehow
 	var otps []*OTP
 	keys, err := datastore.NewQuery("OTP").Filter("Token =", otpToken).
 		GetAll(ctx, &otps)

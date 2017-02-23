@@ -1,9 +1,9 @@
 package models
 
 import (
-	"gopkg.in/webhelp.v1/whfatal"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
+	"gopkg.in/webhelp.v1/whfatal"
 )
 
 type userCause struct {
@@ -38,18 +38,10 @@ func (u *User) Follow(ctx context.Context, c *Cause) {
 }
 
 func (u *User) Unfollow(ctx context.Context, c *Cause) {
-	keys, err := datastore.NewQuery("userCause").
-		Ancestor(userKey(ctx, u.Id)).Filter("CauseId =", c.Id).
-		KeysOnly().GetAll(ctx, nil)
-	if err != nil {
-		whfatal.Error(wrapErr(err))
-	}
-	for _, k := range keys {
-		err = datastore.Delete(ctx, k)
-		if err != nil {
-			whfatal.Error(wrapErr(err))
-		}
-	}
+	deleteAll(ctx, func() *datastore.Query {
+		return datastore.NewQuery("userCause").Ancestor(userKey(ctx, u.Id)).
+			Filter("CauseId =", c.Id)
+	})
 }
 
 func (u *User) IsFollowing(ctx context.Context, c *Cause) bool {

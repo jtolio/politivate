@@ -38,18 +38,10 @@ func (u *User) Administrate(ctx context.Context, c *Cause) {
 }
 
 func (u *User) Unadministrate(ctx context.Context, c *Cause) {
-	keys, err := datastore.NewQuery("causeAdmin").
-		Ancestor(causeKey(ctx, c.Id)).Filter("UserId =", u.Id).
-		KeysOnly().GetAll(ctx, nil)
-	if err != nil {
-		whfatal.Error(wrapErr(err))
-	}
-	for _, k := range keys {
-		err = datastore.Delete(ctx, k)
-		if err != nil {
-			whfatal.Error(wrapErr(err))
-		}
-	}
+	deleteAll(ctx, func() *datastore.Query {
+		return datastore.NewQuery("causeAdmin").Ancestor(causeKey(ctx, c.Id)).
+			Filter("UserId =", u.Id)
+	})
 }
 
 func (u *User) IsAdministrating(ctx context.Context, c *Cause) bool {
