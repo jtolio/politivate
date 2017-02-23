@@ -20,7 +20,7 @@ var (
 func init() {
 	mux["admin"] = whmux.Dir{
 		"invite": inviteToken.ShiftOpt(
-			whmux.Exact(http.HandlerFunc(useInvite)),
+			auth.WebLoginRequired(whmux.Exact(http.HandlerFunc(useInvite))),
 			whmux.Exact(http.HandlerFunc(newInvite))),
 	}
 }
@@ -35,10 +35,7 @@ func newInvite(w http.ResponseWriter, r *http.Request) {
 
 func useInvite(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
-	u := auth.User(r)
 	c := models.GetCause(ctx, causeId.MustGet(ctx))
-	if u != nil {
-		c.UseAdminInvite(ctx, inviteToken.Get(ctx), u)
-	}
+	c.UseAdminInvite(ctx, inviteToken.Get(ctx), auth.User(r))
 	whfatal.Redirect(fmt.Sprintf("/cause/%d", c.Id))
 }
