@@ -6,6 +6,7 @@ import {
   Text, Image, View, ScrollView, TouchableOpacity, Button, Linking
 } from 'react-native';
 import Subpage from './Subpage';
+import LoadablePage from './LoadablePage';
 import { Link, ErrorView, LoadingView } from './common';
 import FollowButton from './FollowButton';
 
@@ -46,70 +47,49 @@ class ChallengeActions extends React.Component {
 }
 
 export default class ChallengePage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true,
-      challenge: null,
-      error: null
-    };
-    this.update = this.update.bind(this);
+  resourceURL() {
+    return "/v1/cause/" + this.props.challenge.cause_id +
+           "/challenge/" + this.props.challenge.id;
   }
 
-  componentDidMount() {
-    this.update();
-  }
-
-  async update() {
-    try {
-      this.setState({loading: true, error: null});
-      let challenge = await this.props.appstate.request("GET",
-          "/v1/cause/" + this.props.challenge.cause_id +
-          "/challenge/" + this.props.challenge.id);
-      this.setState({loading: false, challenge});
-    } catch(error) {
-      this.setState({loading: false, error});
-    }
+  renderLoaded(chal) {
+    return (
+      <View style={{
+          padding: 20
+        }}>
+        <View style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingBottom: 10}}>
+          <Image
+            source={{uri: this.props.cause.icon_url}}
+            style={{width: 50, height: 50, borderRadius: 10}}/>
+          <View style={{paddingLeft: 10, flex: 1}}>
+            <Text style={{fontWeight: "bold"}}>{this.props.cause.name}</Text>
+            <TouchableOpacity onPress={() => Linking.openURL(
+                this.props.cause.url).catch(err => {})}>
+              <Link>
+                {this.props.cause.url}
+              </Link>
+            </TouchableOpacity>
+          </View>
+          <FollowButton cause={this.props.cause}
+                appstate={this.props.appstate} />
+        </View>
+        <Text>{chal.description}</Text>
+        <View style={{paddingTop: 10}}/>
+        <ChallengeActions challenge={chal}/>
+      </View>
+    );
   }
 
   render() {
-    if (this.state.loading) {
-      return <LoadingView/>;
-    }
-    if (this.state.error) {
-      return <ErrorView msg={this.state.error}/>;
-    }
-    let chal = this.state.challenge;
     return (
-      <Subpage appstate={this.props.appstate} title={chal.title}>
-        <ScrollView>
-          <View style={{
-              padding: 20
-            }}>
-            <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-                paddingBottom: 10}}>
-              <Image
-                source={{uri: this.props.cause.icon_url}}
-                style={{width: 50, height: 50, borderRadius: 10}}/>
-              <View style={{paddingLeft: 10, flex: 1}}>
-                <Text style={{fontWeight: "bold"}}>{this.props.cause.name}</Text>
-                <TouchableOpacity onPress={() => Linking.openURL(
-                    this.props.cause.url).catch(err => {})}>
-                  <Link>
-                    {this.props.cause.url}
-                  </Link>
-                </TouchableOpacity>
-              </View>
-              <FollowButton cause={this.props.cause}
-                    appstate={this.props.appstate} />
-            </View>
-            <Text>{chal.description}</Text>
-            <View style={{paddingTop: 10}}/>
-            <ChallengeActions challenge={this.state.challenge}/>
-          </View>
-        </ScrollView>
+      <Subpage appstate={this.props.appstate}
+               title={this.props.challenge.title}>
+        <LoadablePage renderLoaded={this.renderLoaded.bind(this)}
+                      resourceURL={this.resourceURL()}
+                      appstate={this.props.appstate}/>
       </Subpage>
     );
   }
