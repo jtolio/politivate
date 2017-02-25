@@ -29,12 +29,13 @@ class ChallengeActions extends React.Component {
         }[chal.type];
       let title = {"senate": "Sen.", "house": "Rep."}[legislator.chamber];
       let name = legislator.first_name + " " + legislator.last_name;
-      let message = title + " " + name + ": " + action;
+      let who = title + " " + name;
+      let message = who + ": " + action;
       result.push(<View key={"view-" + legislator.votesmart_id}
                       style={{paddingTop: 10}}/>);
       let onPress = () => {};
       if (chal.type == "phonecall") {
-        onPress = () => { phonecall(phonenumber); };
+        onPress = () => { phonecall(who, phonenumber); };
       }
       result.push(<Button key={"button-" + legislator.votesmart_id}
                       title={message} onPress={onPress}/>);
