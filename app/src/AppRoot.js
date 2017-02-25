@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import {
-  Navigator, BackAndroid, AsyncStorage, Linking, View
+  Navigator, BackAndroid, AsyncStorage, Linking, View, NativeModules
 } from 'react-native';
 import Tabs from './Tabs';
 import LoginView from './LoginView';

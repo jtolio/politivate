@@ -2,10 +2,10 @@
 "use strict";
 
 import React from 'react';
-import { Text, Image, View, ScrollView, Button, Linking } from 'react-native';
+import { Text, Image, View, ScrollView, Button } from 'react-native';
 import Subpage from './Subpage';
 import LoadablePage from './LoadablePage';
-import { Link, ErrorView, LoadingView } from './common';
+import { Link, ErrorView, LoadingView, phonecall } from './common';
 import FollowButton from './FollowButton';
 
 class ChallengeActions extends React.Component {
@@ -22,8 +22,9 @@ class ChallengeActions extends React.Component {
     }
     let result = [];
     for (var legislator of chal.legislators) {
+      let phonenumber = legislator.phone;
       let action = {
-          "phonecall": "Call " + legislator.phone,
+          "phonecall": "Call " + phonenumber,
           "location": "Check In",
         }[chal.type];
       let title = {"senate": "Sen.", "house": "Rep."}[legislator.chamber];
@@ -33,9 +34,7 @@ class ChallengeActions extends React.Component {
                       style={{paddingTop: 10}}/>);
       let onPress = () => {};
       if (chal.type == "phonecall") {
-        onPress = () => {
-          Linking.openURL("tel:" + legislator.phone);
-        };
+        onPress = () => { phonecall(phonenumber); };
       }
       result.push(<Button key={"button-" + legislator.votesmart_id}
                       title={message} onPress={onPress}/>);

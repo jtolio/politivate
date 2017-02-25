@@ -1,7 +1,9 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { View, Text, Button, Image, TouchableOpacity } from 'react-native';
+import {
+  View, Text, Button, Image, TouchableOpacity, NativeModules, Linking
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
 class Color {
@@ -25,6 +27,30 @@ class Color {
   get faint() {
     return this.alpha(0.1);
   }
+}
+
+async function phonecall(number) {
+  if (NativeModules.CallAndroid) {
+    NativeModules.CallAndroid.call(number);
+    return true;
+  }
+  // TODO: this is all just a guess about iOS. actually test it.
+  let url = "telprompt:" + number;
+  if (!await Linking.canOpenURL(url)) {
+    url = "tel:" + number;
+  }
+  if (await Linking.canOpenURL(url)) {
+    return false;
+  }
+  try {
+    await Linking.openURL(url)
+  } catch(err) {
+    if (url.startsWith("telprompt:")) {
+      return false;
+    }
+    throw err;
+  }
+  return true;
 }
 
 var palette = {
@@ -163,5 +189,6 @@ class StyledButton extends Component {
 
 module.exports = {
   AppHeader, LoadingView, ErrorView, Link, TabHeader, colors, Separator,
+  phonecall,
   Button: StyledButton
 }
