@@ -2,8 +2,7 @@
 "use strict";
 
 import React from 'react';
-import {
-  Linking, View, Text, Image, TouchableOpacity, Button } from 'react-native';
+import { Linking, View, Text, Image, Button } from 'react-native';
 import Subpage from './Subpage';
 import LoadablePage from './LoadablePage';
 import ChallengesList from './ChallengesList';
@@ -27,11 +26,9 @@ export default class Cause extends React.Component {
             style={{width: 50, height: 50, borderRadius: 10}}/>
           <View style={{paddingLeft: 10, flex: 1}}>
             <Text style={{fontWeight: "bold"}}>{cause.name}</Text>
-            <TouchableOpacity onPress={() => Linking.openURL(cause.url).catch(err => {})}>
-              <Link>
-                {cause.url}
-              </Link>
-            </TouchableOpacity>
+            <Link url={cause.url}>
+              {cause.url}
+            </Link>
           </View>
           {this.props.followButton}
         </View>

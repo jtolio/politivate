@@ -1,9 +1,8 @@
 "use strict";
 
 import React from 'react';
-import { Linking, ActivityIndicator, View, Text, TouchableOpacity } from 'react-native';
-import Subpage from './Subpage';
-import { ErrorView, Link, colors } from './common';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { ErrorView, colors } from './common';
 import Icon from 'react-native-vector-icons/Entypo';
 
 export default class FollowButton extends React.Component {

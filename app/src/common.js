@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { Component } from 'react';
-import { View, Text, Button, Image } from 'react-native';
+import { View, Text, Button, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
 class Color {
@@ -102,9 +102,14 @@ class ErrorView extends Component {
 
 class Link extends Component {
   render() {
-    return (<Text style={{color: colors.link.val}} onPress={this.props.onPress}>
-      {this.props.children}
-    </Text>);
+    return (
+      <TouchableOpacity onPress={() =>
+          Linking.openURL(this.props.url).catch(err => {})}>
+        <Text style={{color: colors.link.val}}>
+          {this.props.children}
+        </Text>
+      </TouchableOpacity>
+    );
   }
 }
 

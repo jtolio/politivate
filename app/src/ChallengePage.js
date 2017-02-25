@@ -2,9 +2,7 @@
 "use strict";
 
 import React from 'react';
-import {
-  Text, Image, View, ScrollView, TouchableOpacity, Button, Linking
-} from 'react-native';
+import { Text, Image, View, ScrollView, Button, Linking } from 'react-native';
 import Subpage from './Subpage';
 import LoadablePage from './LoadablePage';
 import { Link, ErrorView, LoadingView } from './common';
@@ -66,12 +64,9 @@ export default class ChallengePage extends React.Component {
             style={{width: 50, height: 50, borderRadius: 10}}/>
           <View style={{paddingLeft: 10, flex: 1}}>
             <Text style={{fontWeight: "bold"}}>{this.props.cause.name}</Text>
-            <TouchableOpacity onPress={() => Linking.openURL(
-                this.props.cause.url).catch(err => {})}>
-              <Link>
-                {this.props.cause.url}
-              </Link>
-            </TouchableOpacity>
+            <Link url={this.props.cause.url}>
+              {this.props.cause.url}
+            </Link>
           </View>
           <FollowButton cause={this.props.cause}
                 appstate={this.props.appstate} />
