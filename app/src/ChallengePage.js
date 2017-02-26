@@ -27,7 +27,17 @@ function haversine(lat1, lon1, lat2, lon2) {
   return EARTH_RADIUS * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
-class ChallengeLocationAction extends React.Component {
+function euclidean(lat1, lon1, lat2, lon2) {
+  let latr1 = lat1 * Math.PI / 180;
+  let latr2 = lat2 * Math.PI / 180;
+  let lonr1 = lon1 * Math.PI / 180;
+  let lonr2 = lon2 * Math.PI / 180;
+  var x = (lonr2 - lonr1) * Math.cos((latr1 + latr2)/2);
+  var y = (latr2 - latr1);
+  return Math.sqrt(square(x) + square(y)) * EARTH_RADIUS;
+}
+
+class ChallengeLocationMap extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -122,22 +132,6 @@ class ChallengeLocationAction extends React.Component {
 
     return (
       <View>
-        { chal.event_start ? (
-          <View style={{flexDirection: "row"}}>
-            <Text style={{fontWeight: "bold", paddingRight: 10, width: 100}}>Start:</Text>
-            <Text>{(new Date(chal.event_start)).toLocaleString()}</Text>
-          </View>
-        ) : null }
-        { chal.event_end ? (
-          <View style={{flexDirection: "row"}}>
-            <Text style={{fontWeight: "bold", paddingRight: 10, width: 100}}>End:</Text>
-            <Text>{(new Date(chal.event_end)).toLocaleString()}</Text>
-          </View>
-        ) : null }
-        <View style={{flexDirection: "row", paddingBottom: 20}}>
-          <Text style={{fontWeight: "bold", paddingRight: 10, width: 100}}>Address:</Text>
-          <Text>{chal.direct_address.replace(",", "\n").replace(",", "\n")}</Text>
-        </View>
         <MapView style={{height: 200}} showUserLocation={false}
             rotateEnabled={false} pitchEnabled={false} loadingEnabled={true}
             initialRegion={initialRegion}>
@@ -152,10 +146,40 @@ class ChallengeLocationAction extends React.Component {
           <MapView.Circle radius={chal.direct_radius} center={{
               latitude: chal.direct_latitude,
               longitude: chal.direct_longitude,
-            }} strokeWidth={0} fillColor="#ff000033" />
+            }} strokeWidth={0} fillColor="#ff000033" geodesic={true}/>
         </MapView>
         <View style={{paddingTop: 10}}/>
         {button}
+      </View>
+    );
+  }
+}
+
+class ChallengeLocationAction extends React.Component {
+  render() {
+    let chal = this.props.challenge;
+    if (chal.database != "direct") {
+      return <ErrorView msg="Unknown challenge type!"/>;
+    }
+    return (
+      <View>
+        { chal.event_start ? (
+          <View style={{flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", paddingRight: 10, width: 100}}>Start:</Text>
+            <Text>{(new Date(chal.event_start)).toLocaleString()}</Text>
+          </View>
+        ) : null }
+        { chal.event_end ? (
+          <View style={{flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", paddingRight: 10, width: 100}}>End:</Text>
+            <Text>{(new Date(chal.event_end)).toLocaleString()}</Text>
+          </View>
+        ) : null }
+        <View style={{flexDirection: "row", paddingBottom: 20}}>
+          <Text style={{fontWeight: "bold", paddingRight: 10, width: 100}}>Address:</Text>
+          <Text>{chal.direct_address.replace(", ", "\n").replace(", ", "\n")}</Text>
+        </View>
+        <ChallengeLocationMap challenge={chal}/>
       </View>
     );
   }
