@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 	"gopkg.in/webhelp.v1/wherr"
@@ -10,9 +8,9 @@ import (
 )
 
 type AuthToken struct {
-	UserId   int64     `datastore:"-" json:"user_id"`
-	Token    string    `json:"token"`
-	Creation time.Time `json:"creation"`
+	UserId   int64  `datastore:"-" json:"user_id"`
+	Token    string `json:"token"`
+	Creation Time   `json:"creation"`
 }
 
 func (u *User) newAuthToken(ctx context.Context) *AuthToken {
@@ -25,7 +23,7 @@ func (u *User) newAuthToken(ctx context.Context) *AuthToken {
 	at := &AuthToken{
 		UserId:   u.Id,
 		Token:    token(),
-		Creation: time.Now(),
+		Creation: TimeNow(),
 	}
 
 	_, err := datastore.Put(ctx,

@@ -100,7 +100,7 @@ func newChallengeCreate(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			whfatal.Error(wherr.BadRequest.Wrap(err))
 		}
-		chal.Info.EventStart = models.NullableTime{Time: tz}
+		chal.Info.EventStart = models.Time{Time: tz}
 		fallthrough
 	case "deadline":
 		tz, err := time.Parse("2006-01-02T15:04 MST",
@@ -108,7 +108,7 @@ func newChallengeCreate(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			whfatal.Error(wherr.BadRequest.Wrap(err))
 		}
-		chal.Info.EventEnd = models.NullableTime{Time: tz}
+		chal.Info.EventEnd = models.Time{Time: tz}
 	default:
 		whfatal.Error(wherr.BadRequest.New("bad date type: %s",
 			r.FormValue("dateType")))

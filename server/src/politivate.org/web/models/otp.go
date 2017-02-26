@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 	"gopkg.in/webhelp.v1/wherr"
@@ -12,7 +10,7 @@ import (
 type OTP struct {
 	UserId   int64 `datastore:"-"`
 	Token    string
-	Creation time.Time
+	Creation Time
 }
 
 func (u *User) NewOTP(ctx context.Context) *OTP {
@@ -25,7 +23,7 @@ func (u *User) NewOTP(ctx context.Context) *OTP {
 	o := &OTP{
 		UserId:   u.Id,
 		Token:    token(),
-		Creation: time.Now(),
+		Creation: TimeNow(),
 	}
 
 	_, err := datastore.Put(ctx,

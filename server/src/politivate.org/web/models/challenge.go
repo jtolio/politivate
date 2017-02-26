@@ -11,17 +11,6 @@ import (
 	"gopkg.in/webhelp.v1/whfatal"
 )
 
-type NullableTime struct {
-	Time time.Time
-}
-
-func (t NullableTime) MarshalJSON() ([]byte, error) {
-	if t.Time.IsZero() {
-		return []byte("null"), nil
-	}
-	return t.Time.MarshalJSON()
-}
-
 type ChallengeRestriction struct {
 	Type  string `json:"type"`
 	Value string `json:"value"`
@@ -42,7 +31,7 @@ func (cause *Cause) NewChallenge(ctx context.Context) *Challenge {
 	return &Challenge{
 		CauseId: cause.Id,
 		Info: ChallengeHeader{
-			Posted: NullableTime{Time: time.Now()},
+			Posted: TimeNow(),
 		},
 		Data: &ChallengeData{},
 	}
@@ -77,7 +66,7 @@ func (c *Challenge) MarshalJSON() ([]byte, error) {
 }
 
 type ChallengeHeader struct {
-	Posted NullableTime
+	Posted Time
 
 	Title  string
 	Points int
@@ -93,8 +82,8 @@ type ChallengeHeader struct {
 	// If both EventStart and EventEnd are set, then the challenge has a specific
 	// timeframe.
 	// It doesn't currently make sense to set EventStart only.
-	EventStart NullableTime
-	EventEnd   NullableTime
+	EventStart Time
+	EventEnd   Time
 }
 
 type ChallengeData struct {

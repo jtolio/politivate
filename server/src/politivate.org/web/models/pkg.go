@@ -3,6 +3,8 @@ package models
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"encoding/json"
+	"time"
 
 	"github.com/spacemonkeygo/errors"
 	"github.com/spacemonkeygo/errors/errhttp"
@@ -48,4 +50,19 @@ func deleteAll(ctx context.Context, q func() *datastore.Query) {
 	if err != nil {
 		whfatal.Error(wrapErr(err))
 	}
+}
+
+type Time struct {
+	Time time.Time
+}
+
+func TimeNow() Time {
+	return Time{Time: time.Now()}
+}
+
+func (t Time) MarshalJSON() ([]byte, error) {
+	if t.Time.IsZero() {
+		return []byte("null"), nil
+	}
+	return json.Marshal(t.Time.UnixNano() / 1000000)
 }

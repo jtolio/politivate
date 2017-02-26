@@ -1,22 +1,20 @@
 package models
 
 import (
-	"time"
-
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 	"gopkg.in/webhelp.v1/whfatal"
 )
 
 type CauseAdminInvite struct {
-	Token    string    `json:"token"`
-	Creation time.Time `json:"creation"`
+	Token    string `json:"token"`
+	Creation Time   `json:"creation"`
 }
 
 func (c *Cause) CreateAdminInvite(ctx context.Context) *CauseAdminInvite {
 	invite := &CauseAdminInvite{
 		Token:    token(),
-		Creation: time.Now(),
+		Creation: TimeNow(),
 	}
 	_, err := datastore.Put(ctx, datastore.NewKey(
 		ctx, "CauseAdminInvite", "", 0, causeKey(ctx, c.Id)), invite)
