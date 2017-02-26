@@ -88,6 +88,15 @@ class ChallengeLocationAction extends React.Component {
         pos.coords.latitude, pos.coords.longitude,
         chal.direct_latitude, chal.direct_longitude);
     let in_range = distance <= chal.direct_radius;
+    let now = Date.now();
+    let in_time = true;
+    if (chal.event_start && now < chal.event_start) {
+      in_time = false;
+    }
+    if (chal.event_end && now > chal.event_end) {
+      in_time = false;
+    }
+    let valid = in_range && in_time;
     return (
       <View>
         <Text>Position: {JSON.stringify(this.state.position)}</Text>
@@ -95,7 +104,9 @@ class ChallengeLocationAction extends React.Component {
         <Text>Error: {JSON.stringify(this.state.error)}</Text>
         <Text>Calls: {this.state.failure_calls}</Text>
         <Text>Distance: {distance}</Text>
-        <Text>In range: {distance <= chal.direct_radius ? "True" : "False"}</Text>
+        <Text>In range: {in_range ? "True" : "False"}</Text>
+        <Text>In time: {in_time ? "True" : "False"}</Text>
+        <Text>Valid: {valid ? "True" : "False"}</Text>
       </View>
     );
   }
