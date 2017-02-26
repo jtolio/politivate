@@ -97,16 +97,10 @@ class ChallengeLocationAction extends React.Component {
       in_time = false;
     }
     let valid = in_range && in_time;
+    console.log({state: this.state, distance, in_range, in_time, valid});
     return (
       <View>
-        <Text>Position: {JSON.stringify(this.state.position)}</Text>
-        <Text>Calls: {this.state.success_calls}</Text>
-        <Text>Error: {JSON.stringify(this.state.error)}</Text>
-        <Text>Calls: {this.state.failure_calls}</Text>
-        <Text>Distance: {distance}</Text>
-        <Text>In range: {in_range ? "True" : "False"}</Text>
-        <Text>In time: {in_time ? "True" : "False"}</Text>
-        <Text>Valid: {valid ? "True" : "False"}</Text>
+        <Text>Coming soon</Text>
       </View>
     );
   }
