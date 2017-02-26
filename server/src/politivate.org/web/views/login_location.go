@@ -7,34 +7,53 @@ var _ = T.MustParse(`{{ template "header" (makepair . "Set your district") }}
 <p>We use this information solely to figure out what state and national
 districts you're in.</p>
 
+<br/>
+
 <form class="form-horizontal" method="POST" name="location">
-  <div class="form-group">
-    <label for="inputLatitude" class="col-sm-2 control-label">Latitude</label>
-    <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputLatitude"
-             name="latitude">
-    </div>
-  </div>
-  <div class="form-group">
-    <label for="inputLongitude" class="col-sm-2 control-label">Longitude</label>
-    <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputLongitude"
-             name="longitude">
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default">Set</button>
+  <input type="hidden" id="inputLatitude" name="latitude">
+  <input type="hidden" id="inputLongitude" name="longitude">
+
+  <div class="col-sm-offset-2 col-sm-10">
+    <div style="width: 500px;">
+      <div class="input-group">
+        <input type="text" class="form-control" id="inputAddress" name="address">
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="submit">Set</button>
+        </span>
+      </div>
+
+      <div class="panel panel-default">
+        <div id="placepicker" style="height: 200px;" class="panel-body"></div>
+      </div>
     </div>
   </div>
 </form>
 
+
 {{ template "footerscripts" . }}
+<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=` + mapsAPIKey + `&libraries=places"></script>
+<script src="/static/js/locationpicker.jquery.min.js"></script>
 <script>
 $(function() {
+  $("#placepicker").locationpicker({
+    location: {
+      latitude: 0,
+      longitude: 0
+    },
+    radius: 0,
+    enableAutocomplete: true,
+    addressFormat: "address",
+    inputBinding: {
+      latitudeInput: $('#inputLatitude'),
+      longitudeInput: $('#inputLongitude'),
+      locationNameInput: $('#inputAddress')
+    }
+  });
   navigator.geolocation.getCurrentPosition(function(location) {
-    document.forms["location"].elements["longitude"].value = location.coords.longitude;
-    document.forms["location"].elements["latitude"].value = location.coords.latitude;
+    $("#placepicker").locationpicker("location", {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude
+    });
   });
 })
 </script>

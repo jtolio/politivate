@@ -14,6 +14,8 @@ import (
 
 var (
 	T = whtmpl.NewCollection()
+
+	mapsAPIKey = `AIzaSyDIh-CmiVPYkNzJ0AVC2RcJZk5JJYCpqqA`
 )
 
 type Page struct {

@@ -239,11 +239,14 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
 
       {{ $locationDatabase := (or (index .Values.Form "locationDatabase") "") }}
       <div id="locationDatabaseSection" style="display: none;">
-        <div class="form-group">
+        <div class="form-group" style="display: none;">
           <label for="locationDatabaseInput">Address to visit</label>
           <select class="form-control" id="locationDatabaseInput"
                   name="locationDatabase"
                   onchange="locationDatabaseChange(); return true;">
+            <option value="direct"
+                {{if (eq $locationDatabase "direct")}}selected{{end}}>
+              Go to a specific address</option>
             <option value="us"
                 {{if (eq $locationDatabase "us")}}selected{{end}}>
               Go to your local legislator's (US House or Senate) office</option>
@@ -253,14 +256,22 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
             <option value="ussenate"
                 {{if (eq $locationDatabase "ussenate")}}selected{{end}}>
               Go to your local legislator's (US Senate) office</option>
-            <option value="direct"
-                {{if (eq $locationDatabase "direct")}}selected{{end}}>
-              Go to a specific address</option>
           </select>
         </div>
 
         <div id="specificLocationSection" style="display: none;">
-          {{ template "textarea" (makemap "Field" "directaddr" "Display" "Address" "Form" .Values.Form "Rows" 3) }}
+          <div class="form-group">
+            <label for="directaddrInput">Address</label>
+            <div style="width: 300px;">
+              <input type="text" class="form-control" id="directaddrInput" name="directaddr">
+              <input type="hidden" id="directlatInput" name="directlat">
+              <input type="hidden" id="directlonInput" name="directlon">
+
+              <div class="panel panel-default">
+                <div id="directaddrPicker" style="height: 200px;" class="panel-body"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -307,6 +318,8 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
 </form>
 
 {{ template "footerscripts" . }}
+<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=` + mapsAPIKey + `&libraries=places"></script>
+<script src="/static/js/locationpicker.jquery.min.js"></script>
 <script>
   function fieldChange(val, opts) {
     $.each(opts, function(optval, optselect) {
@@ -322,6 +335,9 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
     fieldChange(document.forms["newchallenge"]["type"].value, {
       "phonecall": "#phoneDatabaseSection",
       "location": "#locationDatabaseSection"});
+    if (document.forms["newchallenge"]["type"].value == "location") {
+      setupAddress();
+    }
   }
 
   function dateTypeChange() {
@@ -429,6 +445,32 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
   function removeRestriction(idx) {
     restrictions.splice(idx, 1);
     updateRestrictions();
+  }
+
+  var addressSetUp = false;
+  function setupAddress() {
+    if (addressSetUp) { return; }
+    addressSetUp = true;
+    $("#directaddrPicker").locationpicker({
+      location: {
+        latitude: 0,
+        longitude: 0
+      },
+      radius: 0,
+      enableAutocomplete: true,
+      addressFormat: "address",
+      inputBinding: {
+        latitudeInput: $('#directlatInput'),
+        longitudeInput: $('#directlonInput'),
+        locationNameInput: $('#directaddrInput')
+      }
+    });
+    navigator.geolocation.getCurrentPosition(function(location) {
+      $("#directaddrPicker").locationpicker("location", {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      });
+    });
   }
 
   $(challengeTypeChange);
