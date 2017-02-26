@@ -263,13 +263,19 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
           <div class="form-group">
             <label for="directaddrInput">Address</label>
             <div style="width: 300px;">
-              <input type="text" class="form-control" id="directaddrInput" name="directaddr">
-              <input type="hidden" id="directlatInput" name="directlat">
-              <input type="hidden" id="directlonInput" name="directlon">
+              <input type="text" class="form-control" id="directaddrInput"
+                     name="directaddr" value="{{index .Values.Form "directaddr"}}">
+              <input type="hidden" id="directlatInput" name="directlat"
+                     value="{{index .Values.Form "directlat"}}">
+              <input type="hidden" id="directlonInput" name="directlon"
+                     value="{{index .Values.Form "directlon"}}">
 
               <div class="panel panel-default">
                 <div id="directaddrPicker" style="height: 200px;" class="panel-body"></div>
               </div>
+              <input type="number" class="form-control" id="directradiusInput"
+                     name="directradius" step="20"
+                     value="{{index .Values.Form "directradius"}}">
             </div>
           </div>
         </div>
@@ -430,6 +436,13 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
     rl.append(list);
   }
 
+  function parseReal(val) {
+    if (val.length == 0) {
+      throw "no digits";
+    }
+    return parseFloat(val);
+  }
+
   function addRestriction() {
     var rt = $("#restrictionType").val();
     var val = $(restrictionListMap[rt]).val();
@@ -451,26 +464,37 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
   function setupAddress() {
     if (addressSetUp) { return; }
     addressSetUp = true;
-    $("#directaddrPicker").locationpicker({
-      location: {
-        latitude: 0,
-        longitude: 0
-      },
-      radius: 0,
+
+    var options = {
       enableAutocomplete: true,
       addressFormat: "address",
       inputBinding: {
-        latitudeInput: $('#directlatInput'),
-        longitudeInput: $('#directlonInput'),
-        locationNameInput: $('#directaddrInput')
+        latitudeInput: $("#directlatInput"),
+        longitudeInput: $("#directlonInput"),
+        locationNameInput: $("#directaddrInput"),
+        radiusInput: $("#directradiusInput")
       }
-    });
-    navigator.geolocation.getCurrentPosition(function(location) {
-      $("#directaddrPicker").locationpicker("location", {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude
-      });
-    });
+    };
+
+    try {
+      options.location = {
+        latitude: parseReal($("#directlatInput").val()),
+        longitude: parseReal($("#directlonInput").val())
+      };
+    } catch(err) {
+      options.location = {
+        latitude: 0,
+        longitude: 0
+      };
+    }
+
+    try {
+      options.radius = parseReal($("#directradiusInput").val());
+    } catch(err) {
+      options.radius = 200;
+    }
+
+    $("#directaddrPicker").locationpicker(options);
   }
 
   $(challengeTypeChange);

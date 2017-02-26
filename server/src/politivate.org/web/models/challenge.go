@@ -65,6 +65,9 @@ func (c *Challenge) JSON() map[string]interface{} {
 		vals["database"] = c.Data.Database
 		vals["direct_phone"] = c.Data.DirectPhone
 		vals["direct_address"] = c.Data.DirectAddress
+		vals["direct_latitude"] = c.Data.DirectLatitude
+		vals["direct_longitude"] = c.Data.DirectLongitude
+		vals["direct_radius"] = c.Data.DirectRadius
 	}
 	return vals
 }
@@ -100,8 +103,12 @@ type ChallengeData struct {
 	// Database can currently be "direct", "us", "ushouse", or "ussenate"
 	Database string
 
-	DirectPhone   string
-	DirectAddress string
+	DirectPhone string
+
+	DirectAddress   string
+	DirectLatitude  float64
+	DirectLongitude float64
+	DirectRadius    float64
 }
 
 func challengeKey(ctx context.Context, id, causeId int64) *datastore.Key {

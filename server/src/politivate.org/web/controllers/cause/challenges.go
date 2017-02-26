@@ -50,7 +50,26 @@ func newChallengeCreate(w http.ResponseWriter, r *http.Request) {
 		chal.Data.DirectPhone = r.FormValue("directphone")
 	case "location":
 		chal.Data.Database = r.FormValue("locationDatabase")
+		if chal.Data.Database != "direct" {
+			whfatal.Error(wherr.BadRequest.New(
+				"only direct locations currently supported"))
+		}
 		chal.Data.DirectAddress = r.FormValue("directaddr")
+		latitude, err := strconv.ParseFloat(r.FormValue("directlat"), 64)
+		if err != nil {
+			whfatal.Error(wherr.BadRequest.Wrap(err))
+		}
+		longitude, err := strconv.ParseFloat(r.FormValue("directlon"), 64)
+		if err != nil {
+			whfatal.Error(wherr.BadRequest.Wrap(err))
+		}
+		radius, err := strconv.ParseFloat(r.FormValue("directradius"), 64)
+		if err != nil {
+			whfatal.Error(wherr.BadRequest.Wrap(err))
+		}
+		chal.Data.DirectLatitude = latitude
+		chal.Data.DirectLongitude = longitude
+		chal.Data.DirectRadius = radius
 	default:
 		whfatal.Error(wherr.BadRequest.New("bad challenge type: %s",
 			chal.Info.Type))
@@ -100,11 +119,13 @@ func newChallengeCreate(w http.ResponseWriter, r *http.Request) {
 		(chal.Info.Type == "phonecall" && chal.Data.Database == "direct" &&
 			chal.Data.DirectPhone == "") ||
 		(chal.Info.Type == "location" && chal.Data.Database == "direct" &&
-			chal.Data.DirectAddress == "") {
+			(chal.Data.DirectAddress == "" || chal.Data.DirectLatitude == 0 ||
+				chal.Data.DirectLongitude == 0)) {
 		formVals := map[string]string{}
 		for _, name := range []string{"title", "description", "points", "type",
 			"phoneDatabase", "locationDatabase", "directphone", "directaddr",
-			"dateType", "eventStart", "eventEnd"} {
+			"directlat", "directlon", "directradius", "dateType", "eventStart",
+			"eventEnd"} {
 			formVals[name] = r.FormValue(name)
 		}
 		views.Render(w, r, "new_challenge", map[string]interface{}{
