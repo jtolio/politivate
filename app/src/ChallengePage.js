@@ -7,6 +7,7 @@ import Subpage from './Subpage';
 import LoadablePage from './LoadablePage';
 import { Link, ErrorView, LoadingView, phonecall } from './common';
 import FollowButton from './FollowButton';
+import MapView from 'react-native-maps';
 
 const EARTH_RADIUS = 6378137;
 
@@ -88,19 +89,73 @@ class ChallengeLocationAction extends React.Component {
         pos.coords.latitude, pos.coords.longitude,
         chal.direct_latitude, chal.direct_longitude);
     let in_range = distance <= chal.direct_radius;
+
+    let latitudeDelta = Math.abs(chal.direct_latitude-pos.coords.latitude);
+    let longitudeDelta = Math.abs(chal.direct_longitude-pos.coords.longitude);
+    let initialRegion = {
+      latitude: (chal.direct_latitude + pos.coords.latitude)/2 +
+                latitudeDelta * 0.15,
+      longitude: (chal.direct_longitude + pos.coords.longitude)/2,
+      latitudeDelta: latitudeDelta * 1.5,
+      longitudeDelta: longitudeDelta * 1.5,
+    };
+
+
     let now = Date.now();
-    let in_time = true;
-    if (chal.event_start && now < chal.event_start) {
-      in_time = false;
+    let after_event_start = !(chal.event_start && now < chal.event_start);
+    let before_event_end = !(chal.event_end && now > chal.event_end);
+
+    var button;
+    if (after_event_start) {
+      if (before_event_end) {
+        if (in_range) {
+          button = <Button title="Check in" onPress={() => {}}/>;
+        } else {
+          button = <Button disabled title="Not in range" onPress={() => {}}/>;
+        }
+      } else {
+        button = <Button disabled title="Event is over" onPress={() => {}}/>;
+      }
+    } else {
+      button = <Button disabled title="Event hasn't started" onPress={() => {}}/>;
     }
-    if (chal.event_end && now > chal.event_end) {
-      in_time = false;
-    }
-    let valid = in_range && in_time;
-    console.log({state: this.state, distance, in_range, in_time, valid});
+
     return (
       <View>
-        <Text>Coming soon</Text>
+        { chal.event_start ? (
+          <View style={{flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", paddingRight: 10, width: 100}}>Start:</Text>
+            <Text>{(new Date(chal.event_start)).toLocaleString()}</Text>
+          </View>
+        ) : null }
+        { chal.event_end ? (
+          <View style={{flexDirection: "row"}}>
+            <Text style={{fontWeight: "bold", paddingRight: 10, width: 100}}>End:</Text>
+            <Text>{(new Date(chal.event_end)).toLocaleString()}</Text>
+          </View>
+        ) : null }
+        <View style={{flexDirection: "row", paddingBottom: 20}}>
+          <Text style={{fontWeight: "bold", paddingRight: 10, width: 100}}>Address:</Text>
+          <Text>{chal.direct_address.replace(",", "\n").replace(",", "\n")}</Text>
+        </View>
+        <MapView style={{height: 200}} showUserLocation={false}
+            rotateEnabled={false} pitchEnabled={false} loadingEnabled={true}
+            initialRegion={initialRegion}>
+          <MapView.Marker coordinate={{
+              latitude: chal.direct_latitude,
+              longitude: chal.direct_longitude,
+            }}/>
+          <MapView.Marker coordinate={{
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude,
+            }} image={require("../images/person.png")}/>
+          <MapView.Circle radius={chal.direct_radius} center={{
+              latitude: chal.direct_latitude,
+              longitude: chal.direct_longitude,
+            }} strokeWidth={0} fillColor="#ff000033" />
+        </MapView>
+        <View style={{paddingTop: 10}}/>
+        {button}
       </View>
     );
   }
@@ -149,7 +204,7 @@ class ChallengePhonecallActions extends React.Component {
     }
 
     return (
-      <View>
+      <View style={{paddingTop: 10}}>
         {results}
       </View>
     );
@@ -185,7 +240,6 @@ export default class ChallengePage extends React.Component {
                 appstate={this.props.appstate} />
         </View>
         <Text>{chal.description}</Text>
-        <View style={{paddingTop: 10}}/>
         { chal.type == "phonecall" ?
           <ChallengePhonecallActions challenge={chal}/> :
           chal.type == "location" ?
