@@ -45,10 +45,12 @@ class ChallengeLocationMap extends React.Component {
       error: null,
       success_calls: 0,
       failure_calls: 0,
+      completed: false,
     };
     this.watch_id = null;
     this.updateSuccess = this.updateSuccess.bind(this);
     this.updateFailure = this.updateFailure.bind(this);
+    this.completeChallenge = this.completeChallenge.bind(this);
   }
 
   componentDidMount() {
@@ -57,7 +59,7 @@ class ChallengeLocationMap extends React.Component {
         this.updateSuccess, this.updateFailure, {
       enableHighAccuracy: true,
       maximumAge: 0,
-      distanceFilter: 1,
+      distanceFilter: 0,
     });
   }
 
@@ -86,6 +88,18 @@ class ChallengeLocationMap extends React.Component {
     }));
   }
 
+  async completeChallenge() {
+    try {
+      let resp = await this.props.appstate.request("POST",
+          "/v1/cause/" + this.props.challenge.cause_id + "/challenge/" +
+          this.props.challenge.id + "/complete");
+      this.setState({completed: true});
+    } catch(error) {
+      // TODO
+      console.log(error);
+    }
+  }
+
   render() {
     let chal = this.props.challenge;
     if (chal.database != "direct") {
@@ -110,24 +124,23 @@ class ChallengeLocationMap extends React.Component {
       longitudeDelta: longitudeDelta * 1.5,
     };
 
-
     let now = Date.now();
     let after_event_start = !(chal.event_start && now < chal.event_start);
     let before_event_end = !(chal.event_end && now > chal.event_end);
 
     var button;
-    if (after_event_start) {
-      if (before_event_end) {
-        if (in_range) {
-          button = <Button title="Check in" onPress={() => {}}/>;
-        } else {
-          button = <Button disabled title="Not in range" onPress={() => {}}/>;
-        }
-      } else {
-        button = <Button disabled title="Event is over" onPress={() => {}}/>;
-      }
-    } else {
+    if (chal.completed || this.state.completed) {
+      button = <Button disabled title="Completed" onPress={() => {}}/>;
+    } else if (!after_event_start) {
       button = <Button disabled title="Event hasn't started" onPress={() => {}}/>;
+    } else if (!before_event_end) {
+      button = <Button disabled title="Event is over" onPress={() => {}}/>;
+    } else if (!in_range) {
+      button = <Button disabled title="Not in range" onPress={() => {}}/>;
+    } else {
+      button = (
+        <Button title="Check in" onPress={this.completeChallenge}/>
+      );
     }
 
     return (
@@ -179,7 +192,7 @@ class ChallengeLocationAction extends React.Component {
           <Text style={{fontWeight: "bold", paddingRight: 10, width: 100}}>Address:</Text>
           <Text>{chal.direct_address.replace(", ", "\n").replace(", ", "\n")}</Text>
         </View>
-        <ChallengeLocationMap challenge={chal}/>
+        <ChallengeLocationMap challenge={chal} appstate={this.props.appstate}/>
       </View>
     );
   }
@@ -228,7 +241,7 @@ class ChallengePhonecallActions extends React.Component {
     }
 
     return (
-      <View style={{paddingTop: 10}}>
+      <View>
         {results}
       </View>
     );
@@ -264,10 +277,12 @@ export default class ChallengePage extends React.Component {
                 appstate={this.props.appstate} />
         </View>
         <Text>{chal.description}</Text>
+        <View style={{paddingTop: 10}}/>
         { chal.type == "phonecall" ?
           <ChallengePhonecallActions challenge={chal}/> :
           chal.type == "location" ?
-          <ChallengeLocationAction challenge={chal}/> :
+          <ChallengeLocationAction challenge={chal}
+              appstate={this.props.appstate}/> :
           null }
       </View>
     );
