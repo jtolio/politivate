@@ -121,9 +121,20 @@ export default class AppRoot extends Component {
       navigator: navigator,
     };
 
-    appstate.request = async function(method, resource) {
+    appstate.request = async function(method, resource, options) {
+      let reqopts = {
+        method,
+        headers: {"X-Auth-Token": appstate.authtoken},
+      };
+      if (options && options.body) {
+          reqopts.body = Object.keys(options.body).map((key) => (
+              encodeURIComponent(key) + "=" +
+              encodeURIComponent(options.body[key]))
+          ).join("&");
+          reqopts.headers["Content-Type"] = "application/x-www-form-urlencoded";
+      }
       let req = new Request("https://www.politivate.org/api" + resource,
-          {method, headers: {"X-Auth-Token": appstate.authtoken}});
+                            reqopts);
       let resp = await fetch(req)
       if (!resp.ok) {
         if (resp.status == 401) {

@@ -2,8 +2,11 @@ package cause
 
 import (
 	"net/http"
+	"strconv"
 
 	"gopkg.in/webhelp.v1/whcompat"
+	"gopkg.in/webhelp.v1/wherr"
+	"gopkg.in/webhelp.v1/whfatal"
 	"gopkg.in/webhelp.v1/whjson"
 	"gopkg.in/webhelp.v1/whmux"
 
@@ -16,8 +19,12 @@ var (
 )
 
 func init() {
-	mux["challenge"] = challengeId.Shift(whmux.Exact(
-		http.HandlerFunc(serveChallenge)))
+	mux["challenge"] = challengeId.Shift(
+		whmux.Dir{
+			"": whmux.RequireGet(http.HandlerFunc(serveChallenge)),
+			"complete": whmux.ExactPath(whmux.RequireMethod("POST",
+				http.HandlerFunc(completeChallenge))),
+		})
 }
 
 func serveChallenge(w http.ResponseWriter, r *http.Request) {
@@ -44,4 +51,19 @@ func serveChallenge(w http.ResponseWriter, r *http.Request) {
 	}
 
 	whjson.Render(w, r, m)
+}
+
+func completeChallenge(w http.ResponseWriter, r *http.Request) {
+	latitude, err := strconv.ParseFloat(r.FormValue("latitude"), 64)
+	if err != nil {
+		whfatal.Error(wherr.BadRequest.Wrap(err))
+	}
+	longitude, err := strconv.ParseFloat(r.FormValue("longitude"), 64)
+	if err != nil {
+		whfatal.Error(wherr.BadRequest.Wrap(err))
+	}
+	whjson.Render(w, r, map[string]interface{}{
+		"lat": latitude,
+		"lon": longitude,
+	})
 }

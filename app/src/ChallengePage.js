@@ -88,11 +88,12 @@ class ChallengeLocationMap extends React.Component {
     }));
   }
 
-  async completeChallenge() {
+  async completeChallenge(latitude, longitude) {
     try {
+      let body = {latitude, longitude};
       let resp = await this.props.appstate.request("POST",
           "/v1/cause/" + this.props.challenge.cause_id + "/challenge/" +
-          this.props.challenge.id + "/complete");
+          this.props.challenge.id + "/complete", {body});
       this.setState({completed: true});
     } catch(error) {
       // TODO
@@ -139,7 +140,9 @@ class ChallengeLocationMap extends React.Component {
       button = <Button disabled title="Not in range" onPress={() => {}}/>;
     } else {
       button = (
-        <Button title="Check in" onPress={this.completeChallenge}/>
+        <Button title="Check in" onPress={() => {
+          this.completeChallenge(pos.coords.latitude, pos.coords.longitude);
+        }}/>
       );
     }
 
