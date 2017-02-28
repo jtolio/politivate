@@ -38,28 +38,6 @@ class ChallengeStatType extends React.Component {
   }
 }
 
-class ChallengeStatPoints extends React.Component {
-  render() {
-    if (this.props.points <= 0) {
-      return null;
-    }
-    return (
-      <ChallengeStat>
-        <Text style={{
-            fontSize: 30, lineHeight: 30,
-            color: colors.secondary.val}}>
-          {this.props.points}
-        </Text>
-        <Text style={{
-            fontSize: 8, lineHeight: 8,
-            color: colors.secondary.val}}>
-          POINTS
-        </Text>
-      </ChallengeStat>
-    );
-  }
-}
-
 class ChallengeStatDeadline extends React.Component {
   render() {
     if (!this.props.deadline) {
@@ -143,7 +121,6 @@ class ChallengeEntry extends React.Component {
             <Text style={{fontWeight: "bold"}}>{chal.title}</Text>
           </View>
           <ChallengeStatType icon={this.typeIcon}/>
-          <ChallengeStatPoints points={chal.points}/>
           <ChallengeStatDeadline deadline={chal.event_end}/>
         </View>
       </TouchableOpacity>
