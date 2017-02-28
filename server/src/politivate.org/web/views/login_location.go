@@ -13,8 +13,8 @@ districts you're in.</p>
   <input type="hidden" id="inputLatitude" name="latitude">
   <input type="hidden" id="inputLongitude" name="longitude">
 
-  <div class="col-sm-offset-2 col-sm-10">
-    <div style="width: 500px;">
+  <div class="col-sm-offset-2 col-sm-8">
+    <div>
       <div class="input-group">
         <input type="text" class="form-control" id="inputAddress" name="address">
         <span class="input-group-btn">
@@ -23,7 +23,7 @@ districts you're in.</p>
       </div>
 
       <div class="panel panel-default">
-        <div id="placepicker" style="height: 200px;" class="panel-body"></div>
+        <div id="placepicker" style="height: 300px;" class="panel-body"></div>
       </div>
     </div>
   </div>
