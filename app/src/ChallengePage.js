@@ -253,27 +253,44 @@ class ChallengePhonecallActions extends React.Component {
   render() {
     let chal = this.props.challenge;
     let results = [];
-    if (chal.database == "direct") {
+
+    let now = Date.now();
+    let after_event_start = !(chal.event_start && now < chal.event_start);
+    let before_event_end = !(chal.event_end && now > chal.event_end);
+
+    if (!after_event_start) {
       results.push(
-        <View style={{paddingTop: 10}} key="view-direct"/>
+        <Button disabled title="Event hasn't started" onPress={() => {}}/>
       );
+    } else if (!before_event_end) {
       results.push(
-        <ChallengePhonecallAction challenge={chal} phone={chal.direct_phone}
-            key="button-direct" appstate={this.props.appstate}/>
+        <Button disabled title="Event is over" onPress={() => {}}/>
       );
-    } else {
-      for (var legislator of chal.legislators) {
+    }
+
+    if (results.length == 0) {
+      if (chal.database == "direct") {
         results.push(
-          <View style={{paddingTop: 10}}
-                key={"view-" + legislator.votesmart_id}/>
+          <View style={{paddingTop: 10}} key="view-direct"/>
         );
-        let title = {"senate": "Sen.", "house": "Rep."}[legislator.chamber];
-        let name = legislator.first_name + " " + legislator.last_name;
         results.push(
-          <ChallengePhonecallAction key={"button-" + legislator.votesmart_id}
-                who={title + " " + name} phone={legislator.phone}
-                appstate={this.props.appstate} challenge={chal}/>
+          <ChallengePhonecallAction challenge={chal} phone={chal.direct_phone}
+              key="button-direct" appstate={this.props.appstate}/>
         );
+      } else {
+        for (var legislator of chal.legislators) {
+          results.push(
+            <View style={{paddingTop: 10}}
+                  key={"view-" + legislator.votesmart_id}/>
+          );
+          let title = {"senate": "Sen.", "house": "Rep."}[legislator.chamber];
+          let name = legislator.first_name + " " + legislator.last_name;
+          results.push(
+            <ChallengePhonecallAction key={"button-" + legislator.votesmart_id}
+                  who={title + " " + name} phone={legislator.phone}
+                  appstate={this.props.appstate} challenge={chal}/>
+          );
+        }
       }
     }
 
