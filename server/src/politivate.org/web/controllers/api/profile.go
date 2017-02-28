@@ -2,7 +2,9 @@ package api
 
 import (
 	"net/http"
+	"time"
 
+	"gopkg.in/webhelp.v1/whcompat"
 	"gopkg.in/webhelp.v1/whjson"
 	"gopkg.in/webhelp.v1/whmux"
 
@@ -14,5 +16,9 @@ func init() {
 }
 
 func serveProfile(w http.ResponseWriter, r *http.Request) {
-	whjson.Render(w, r, auth.User(r))
+	ctx := whcompat.Context(r)
+	u := auth.User(r)
+	m := u.JSON()
+	m["month_actions"] = u.Actions(ctx, time.Now().Add(-30*24*time.Hour))
+	whjson.Render(w, r, m)
 }

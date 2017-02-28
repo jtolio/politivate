@@ -54,8 +54,7 @@ func serveChallenge(w http.ResponseWriter, r *http.Request) {
 	if challenge.Data.Database != "direct" {
 		m["legislators"] = legislators(ctx, u, challenge)
 	}
-	m["actions"] = challenge.Completed(ctx, u,
-		time.Now().Add(-MinChallengeInterval))
+	m["actions"] = challenge.Completed(ctx, u)
 
 	whjson.Render(w, r, m)
 }
@@ -75,8 +74,7 @@ func completeChallenge(w http.ResponseWriter, r *http.Request) {
 		whfatal.Error(wherr.BadRequest.New("event is over"))
 	}
 
-	completed := challenge.Completed(ctx, u,
-		time.Now().Add(-MinChallengeInterval))
+	completed := challenge.Completed(ctx, u)
 
 AddChallengeSwitch:
 	switch challenge.Info.Type {

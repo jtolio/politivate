@@ -117,6 +117,12 @@ func (c *Cause) Delete(ctx context.Context) {
 		return datastore.NewQuery("userCause").Filter("CauseId =", c.Id)
 	})
 
+	// next, remove all actions
+	// different transaction here too
+	deleteAll(ctx, func() *datastore.Query {
+		return datastore.NewQuery("Action").Filter("CauseId =", c.Id)
+	})
+
 	// everything remaining has this cause as an ancestor
 	err := datastore.RunInTransaction(ctx, func(ctx context.Context) error {
 		// remove all challenges

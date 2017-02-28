@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -12,17 +13,35 @@ import (
 )
 
 type User struct {
-	Id             int64  `json:"id" datastore:"-"`
-	AuthId         string `json:"-"`
-	Name           string `json:"name"`
-	NickName       string `json:"nick_name"`
-	Email          string `json:"email"`
-	AvatarURL      string `json:"avatar_url"`
-	CanCreateCause bool   `json:"-"`
+	Id             int64 `datastore:"-"`
+	AuthId         string
+	Name           string
+	NickName       string
+	Email          string
+	AvatarURL      string
+	CanCreateCause bool
 
-	LocationSet bool    `json:"location_set"`
-	Latitude    float64 `json:"latitude"`
-	Longitude   float64 `json:"longitude"`
+	LocationSet bool
+	Latitude    float64
+	Longitude   float64
+}
+
+func (u *User) JSON() map[string]interface{} {
+	vals := map[string]interface{}{
+		"id":           u.Id,
+		"name":         u.Name,
+		"nick_name":    u.NickName,
+		"email":        u.Email,
+		"avatar_url":   u.AvatarURL,
+		"location_set": u.LocationSet,
+		"latitude":     u.Latitude,
+		"longitude":    u.Longitude,
+	}
+	return vals
+}
+
+func (u *User) MarshalJSON() ([]byte, error) {
+	return json.Marshal(u.JSON())
 }
 
 func userKey(ctx context.Context, id int64) *datastore.Key {

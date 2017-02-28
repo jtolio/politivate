@@ -8,6 +8,14 @@ import (
 	"gopkg.in/webhelp.v1/whfatal"
 )
 
+const (
+	// We want to tell users that they can only complete a challenge once every
+	// day, so that's what we'll message, but we only limit to once every 18 hours.
+	// This way, if someone calls once late in the day and wants to call earlier
+	// the next day, they can.
+	MinChallengeInterval = time.Hour * 18
+)
+
 type Action struct {
 	Id     int64 `json:"-", datastore:"-"`
 	UserId int64 `json:"user_id" datastore:"-"`
@@ -48,18 +56,15 @@ func (a *Action) Save(ctx context.Context) {
 	a.Id = k.IntID()
 }
 
-func (chal *Challenge) Completed(ctx context.Context, u *User,
-	after time.Time) []*Action {
+func (u *User) getActions(ctx context.Context,
+	q func(*datastore.Query) *datastore.Query) []*Action {
 	// use make so the json doesn't look like `null`
 	actions := make([]*Action, 0)
-
-	if chal.Id == 0 || chal.CauseId == 0 || u.Id == 0 {
+	if u.Id == 0 {
 		return actions
 	}
-
-	keys, err := datastore.NewQuery("Action").Ancestor(userKey(ctx, u.Id)).
-		Filter("CauseId =", chal.CauseId).Filter("ChallengeId =", chal.Id).
-		Filter("When.Time >=", after).GetAll(ctx, &actions)
+	keys, err := q(datastore.NewQuery("Action").Ancestor(userKey(ctx, u.Id))).
+		GetAll(ctx, &actions)
 	if err != nil {
 		whfatal.Error(wrapErr(err))
 	}
@@ -69,4 +74,20 @@ func (chal *Challenge) Completed(ctx context.Context, u *User,
 		actions[i].UserId = u.Id
 	}
 	return actions
+}
+
+func (chal *Challenge) Completed(ctx context.Context, u *User) []*Action {
+	return u.getActions(ctx, func(q *datastore.Query) *datastore.Query {
+		q = q.Filter("ChallengeId =", chal.Id).Filter("CauseId =", chal.CauseId)
+		if chal.Info.EventStart.Time.IsZero() || chal.Info.EventEnd.Time.IsZero() {
+			q = q.Filter("When.Time >=", time.Now().Add(-MinChallengeInterval))
+		}
+		return q
+	})
+}
+
+func (u *User) Actions(ctx context.Context, after time.Time) []*Action {
+	return u.getActions(ctx, func(q *datastore.Query) *datastore.Query {
+		return q.Filter("When.Time >=", after)
+	})
 }

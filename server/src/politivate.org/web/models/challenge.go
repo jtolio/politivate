@@ -138,6 +138,14 @@ func (c *Challenge) Save(ctx context.Context) {
 }
 
 func (c *Challenge) Delete(ctx context.Context) {
+	// first, remove all actions
+	// can't remove all actions in a transaction since they have different
+	// ancestor keys.
+	deleteAll(ctx, func() *datastore.Query {
+		return datastore.NewQuery("Action").Filter("ChallengeId =", c.Id).
+			Filter("CauseId =", c.CauseId)
+	})
+
 	err := datastore.RunInTransaction(ctx, func(ctx context.Context) error {
 		err := datastore.Delete(ctx, challengeKey(ctx, c.Id, c.CauseId))
 		if err != nil {

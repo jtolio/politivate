@@ -17,6 +17,11 @@ indexes:
   - name: ChallengeId
   - name: When.Time
 
+- kind: Action
+  ancestor: yes
+  properties:
+  - name: When.Time
+
 - kind: Challenge
   ancestor: yes
   properties:

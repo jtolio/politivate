@@ -2,16 +2,9 @@ package cause
 
 import (
 	"math"
-	"time"
 )
 
 const (
-	// We want to tell users that they can only complete a challenge once every
-	// day, so that's what we'll message, but we only limit to once every 18 hours.
-	// This way, if someone calls once late in the day and wants to call earlier
-	// the next day, they can.
-	MinChallengeInterval = time.Hour * 18
-
 	EarthRadius = 6378137
 )
 
