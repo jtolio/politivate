@@ -47,7 +47,6 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
     <div class="col-md-8">
 
       {{ template "input" (makemap "Field" "title" "Display" "Title" "Type" "text" "Form" .Values.Form) }}
-      {{ template "input" (makemap "Field" "points" "Display" "Points" "Type" "number" "Placeholder" "10" "Form" .Values.Form) }}
       {{ template "textarea" (makemap "Field" "description" "Display" "Description" "Form" .Values.Form "Rows" 10) }}
 
       <div class="form-group">
@@ -273,9 +272,14 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
               <div class="panel panel-default">
                 <div id="directaddrPicker" style="height: 200px;" class="panel-body"></div>
               </div>
-              <input type="number" class="form-control" id="directradiusInput"
-                     name="directradius" step="20"
-                     value="{{index .Values.Form "directradius"}}">
+
+              <div class="input-group">
+                <input type="number" class="form-control" id="directradiusInput"
+                       name="directradius" step="20"
+                       value="{{index .Values.Form "directradius"}}">
+                <span class="input-group-addon">meters</span>
+              </div>
+
             </div>
           </div>
         </div>

@@ -43,7 +43,6 @@ func (c *Challenge) JSON() map[string]interface{} {
 		"cause_id":     c.CauseId,
 		"posted":       c.Info.Posted,
 		"title":        c.Info.Title,
-		"points":       c.Info.Points,
 		"type":         c.Info.Type,
 		"restrictions": c.Info.Restrictions,
 		"event_start":  c.Info.EventStart,
@@ -68,8 +67,7 @@ func (c *Challenge) MarshalJSON() ([]byte, error) {
 type ChallengeHeader struct {
 	Posted Time
 
-	Title  string
-	Points int
+	Title string
 
 	// Type can be "phonecall" or "location"
 	Type string

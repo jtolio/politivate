@@ -38,11 +38,6 @@ func newChallengeCreate(w http.ResponseWriter, r *http.Request) {
 	chal := c.NewChallenge(ctx)
 	chal.Info.Title = r.FormValue("title")
 	chal.Data.Description = r.FormValue("description")
-	points, err := strconv.Atoi(r.FormValue("points"))
-	if err != nil {
-		points = -1
-	}
-	chal.Info.Points = points
 	chal.Info.Type = r.FormValue("type")
 	switch chal.Info.Type {
 	case "phonecall":
@@ -115,14 +110,14 @@ func newChallengeCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if chal.Info.Title == "" || chal.Data.Description == "" ||
-		chal.Info.Points < 0 || chal.Data.Database == "" ||
+		chal.Data.Database == "" ||
 		(chal.Info.Type == "phonecall" && chal.Data.Database == "direct" &&
 			chal.Data.DirectPhone == "") ||
 		(chal.Info.Type == "location" && chal.Data.Database == "direct" &&
 			(chal.Data.DirectAddress == "" || chal.Data.DirectLatitude == 0 ||
 				chal.Data.DirectLongitude == 0)) {
 		formVals := map[string]string{}
-		for _, name := range []string{"title", "description", "points", "type",
+		for _, name := range []string{"title", "description", "type",
 			"phoneDatabase", "locationDatabase", "directphone", "directaddr",
 			"directlat", "directlon", "directradius", "dateType", "eventStart",
 			"eventEnd"} {
