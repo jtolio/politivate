@@ -24,6 +24,13 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Cause") }}
     </div>
   </div>
   <div class="form-group">
+    <label for="inputIconURL" class="col-sm-2 control-label">Icon URL</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="inputIconURL" name="icon_url"
+             value="{{ (index .Values.Form "icon_url") }}">
+    </div>
+  </div>
+  <div class="form-group">
     <label for="inputDescription" class="col-sm-2 control-label">Description</label>
     <div class="col-sm-10">
       <textarea class="form-control" id="inputDescription" rows="3"

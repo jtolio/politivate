@@ -50,13 +50,16 @@ func newCauseCreation(w http.ResponseWriter, r *http.Request) {
 	c := models.NewCause(ctx)
 	c.Info.Name = r.FormValue("name")
 	c.Info.URL = r.FormValue("url")
+	c.Info.IconURL = r.FormValue("icon_url")
 	c.Data.Description = r.FormValue("description")
-	if c.Info.Name == "" || c.Info.URL == "" || c.Data.Description == "" {
+	if c.Info.Name == "" || c.Info.URL == "" || c.Info.IconURL == "" ||
+		c.Data.Description == "" {
 		Render(w, r, "new_cause", map[string]interface{}{
 			"Error": "Required field missing",
 			"Form": map[string]string{
 				"name":        c.Info.Name,
 				"url":         c.Info.URL,
+				"icon_url":    c.Info.IconURL,
 				"description": c.Data.Description,
 			},
 		})
