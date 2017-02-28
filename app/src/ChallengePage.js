@@ -27,25 +27,12 @@ function haversine(lat1, lon1, lat2, lon2) {
   return EARTH_RADIUS * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
-function euclidean(lat1, lon1, lat2, lon2) {
-  let latr1 = lat1 * Math.PI / 180;
-  let latr2 = lat2 * Math.PI / 180;
-  let lonr1 = lon1 * Math.PI / 180;
-  let lonr2 = lon2 * Math.PI / 180;
-  var x = (lonr2 - lonr1) * Math.cos((latr1 + latr2)/2);
-  var y = (latr2 - latr1);
-  return Math.sqrt(square(x) + square(y)) * EARTH_RADIUS;
-}
-
 class ChallengeLocationMap extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       position: null,
-      error: null,
-      success_calls: 0,
-      failure_calls: 0,
-      completed: false,
+      actions: null,
     };
     this.watch_id = null;
     this.updateSuccess = this.updateSuccess.bind(this);
@@ -59,7 +46,7 @@ class ChallengeLocationMap extends React.Component {
         this.updateSuccess, this.updateFailure, {
       enableHighAccuracy: true,
       maximumAge: 0,
-      distanceFilter: 0,
+      distanceFilter: 1,
     });
   }
 
@@ -74,27 +61,32 @@ class ChallengeLocationMap extends React.Component {
     if (this.watch_id === null) { return; }
     // makes debugging harder but also cheating
     if (position.mocked) { return; }
-    this.setState((state) => ({
-      success_calls: state.success_calls+1,
-      position,
-    }));
+    this.setState({position});
   }
 
   updateFailure(error) {
     if (this.watch_id === null) { return; }
-    this.setState((state) => ({
-      failure_calls: state.failure_calls+1,
-      error,
-    }));
+    // TODO
+    console.log(error);
   }
 
   async completeChallenge(latitude, longitude) {
     try {
-      let body = {latitude, longitude};
+      if (this.props.challenge.database != "direct") {
+        // TODO
+        console.log("invalid database type");
+        return;
+      }
+      let body = {
+        challenge_latitude: this.props.challenge.direct_latitude,
+        challenge_longitude: this.props.challenge.direct_longitude,
+        user_latitude: latitude,
+        user_longitude: longitude,
+      };
       let resp = await this.props.appstate.request("POST",
           "/v1/cause/" + this.props.challenge.cause_id + "/challenge/" +
           this.props.challenge.id + "/complete", {body});
-      this.setState({completed: true});
+      this.setState({actions: resp.actions});
     } catch(error) {
       // TODO
       console.log(error);
@@ -105,6 +97,10 @@ class ChallengeLocationMap extends React.Component {
     let chal = this.props.challenge;
     if (chal.database != "direct") {
       return <ErrorView msg="Unknown challenge type!"/>;
+    }
+    let completed = (chal.actions.length > 0);
+    if (this.state.actions !== null) {
+      completed = (this.state.actions.length > 0);
     }
     let pos = this.state.position;
     if (!pos) {
@@ -130,7 +126,7 @@ class ChallengeLocationMap extends React.Component {
     let before_event_end = !(chal.event_end && now > chal.event_end);
 
     var button;
-    if (chal.completed || this.state.completed) {
+    if (completed) {
       button = <Button disabled title="Completed" onPress={() => {}}/>;
     } else if (!after_event_start) {
       button = <Button disabled title="Event hasn't started" onPress={() => {}}/>;
@@ -202,16 +198,53 @@ class ChallengeLocationAction extends React.Component {
 }
 
 class ChallengePhonecallAction extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      actions: null,
+    };
+    this.complete = this.complete.bind(this);
+  }
+
+  async complete() {
+    if (!await phonecall(this.props.who, this.props.phone)) {
+      return
+    }
+    try {
+      let resp = await this.props.appstate.request("POST",
+          "/v1/cause/" + this.props.challenge.cause_id + "/challenge/" +
+          this.props.challenge.id + "/complete",
+          {body: {phone_number: this.props.phone}});
+      this.setState({actions: resp.actions});
+    } catch(err) {
+      // TODO
+      console.log(err);
+    }
+  }
+
   render() {
+    let actions = this.props.challenge.actions;
+    if (this.state.actions !== null) {
+      actions = this.state.actions;
+    }
+    let completed = false;
+    for (var action of actions) {
+      if (action.phone == this.props.phone) {
+        completed = true;
+        break;
+      }
+    }
     let who = this.props.who;
     let phone = this.props.phone;
     let message = "Call " + phone;
     if (who) {
       message = who + ": " + message;
     }
+    if (completed) {
+      message += " (complete)";
+    }
     return (
-      <Button title={message}
-          onPress={() => { phonecall(who, phone) }}/>
+      <Button title={message} onPress={this.complete}/>
     );
   }
 }
@@ -225,8 +258,8 @@ class ChallengePhonecallActions extends React.Component {
         <View style={{paddingTop: 10}} key="view-direct"/>
       );
       results.push(
-        <ChallengePhonecallAction phone={chal.direct_phone}
-            key="button-direct"/>
+        <ChallengePhonecallAction challenge={chal} phone={chal.direct_phone}
+            key="button-direct" appstate={this.props.appstate}/>
       );
     } else {
       for (var legislator of chal.legislators) {
@@ -238,7 +271,8 @@ class ChallengePhonecallActions extends React.Component {
         let name = legislator.first_name + " " + legislator.last_name;
         results.push(
           <ChallengePhonecallAction key={"button-" + legislator.votesmart_id}
-                who={title + " " + name} phone={legislator.phone}/>
+                who={title + " " + name} phone={legislator.phone}
+                appstate={this.props.appstate} challenge={chal}/>
         );
       }
     }
@@ -282,10 +316,11 @@ export default class ChallengePage extends React.Component {
         <Text>{chal.description}</Text>
         <View style={{paddingTop: 10}}/>
         { chal.type == "phonecall" ?
-          <ChallengePhonecallActions challenge={chal}/> :
+            <ChallengePhonecallActions challenge={chal}
+                appstate={this.props.appstate}/> :
           chal.type == "location" ?
-          <ChallengeLocationAction challenge={chal}
-              appstate={this.props.appstate}/> :
+            <ChallengeLocationAction challenge={chal}
+                appstate={this.props.appstate}/> :
           null }
       </View>
     );
