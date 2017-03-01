@@ -30,17 +30,18 @@ func init() {
 		})
 }
 
-func legislators(ctx context.Context, u *models.User, chal *models.Challenge) []*gov.Legislator {
-	rv := make([]*gov.Legislator, 0)
-	for _, district := range gov.DistrictLocateByGPS(
+func legislators(ctx context.Context, u *models.User,
+	chal *models.Challenge) []*gov.SunlightLegislator {
+	rv := make([]*gov.SunlightLegislator, 0)
+	for _, district := range gov.FederalDistrictLocateByGPS(
 		ctx, u.Latitude, u.Longitude) {
 		switch chal.Data.Database {
 		case "us", "ushouse":
-			rv = append(rv, gov.HouseRepsByDistrict(ctx, district)...)
+			rv = append(rv, gov.HouseRepsByFederalDistrict(ctx, district)...)
 		}
 		switch chal.Data.Database {
 		case "us", "ussenate":
-			rv = append(rv, gov.SenatorsByDistrict(ctx, district)...)
+			rv = append(rv, gov.SenatorsByFederalDistrict(ctx, district)...)
 		}
 	}
 	return rv
