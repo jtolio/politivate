@@ -73,7 +73,8 @@ func newChallengeCreate(w http.ResponseWriter, r *http.Request) {
 	default:
 		whfatal.Error(wherr.BadRequest.New("bad database type: %s",
 			chal.Data.Database))
-	case "direct", "us", "ushouse", "ussenate":
+	case "direct", "us", "ushouse", "ussenate", "state", "statehouse",
+		"statesenate", "usandstate":
 	}
 	restrictions, err := strconv.Atoi(r.FormValue("restrictionLength"))
 	if err != nil {

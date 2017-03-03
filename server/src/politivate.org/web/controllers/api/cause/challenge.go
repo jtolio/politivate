@@ -31,20 +31,8 @@ func init() {
 }
 
 func legislators(ctx context.Context, u *models.User,
-	chal *models.Challenge) []*gov.SunlightLegislator {
-	rv := make([]*gov.SunlightLegislator, 0)
-	for _, district := range gov.FederalDistrictLocateByGPS(
-		ctx, u.Latitude, u.Longitude) {
-		switch chal.Data.Database {
-		case "us", "ushouse":
-			rv = append(rv, gov.HouseRepsByFederalDistrict(ctx, district)...)
-		}
-		switch chal.Data.Database {
-		case "us", "ussenate":
-			rv = append(rv, gov.SenatorsByFederalDistrict(ctx, district)...)
-		}
-	}
-	return rv
+	chal *models.Challenge) []*gov.Legislator {
+	return gov.LegislatorsByGPS(ctx, chal.Data.Database, u.Latitude, u.Longitude)
 }
 
 func serveChallenge(w http.ResponseWriter, r *http.Request) {
@@ -137,9 +125,11 @@ AddChallengeSwitch:
 		case "ushouse", "ussenate", "us":
 			found := false
 			for _, legislator := range legislators(ctx, u, challenge) {
-				if phoneNumber == legislator.Phone {
-					found = true
-					break
+				for _, office := range legislator.Offices {
+					if phoneNumber == office.Phone {
+						found = true
+						break
+					}
 				}
 			}
 			if !found {

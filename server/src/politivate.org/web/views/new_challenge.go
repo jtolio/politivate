@@ -225,6 +225,18 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
             <option value="ussenate"
                 {{if (eq $phoneDatabase "ussenate")}}selected{{end}}>
               Call your local legislator in the US Senate</option>
+            <option value="state"
+                {{if (eq $phoneDatabase "state")}}selected{{end}}>
+              Call your local legislator in your state's House or Senate</option>
+            <option value="statehouse"
+                {{if (eq $phoneDatabase "statehouse")}}selected{{end}}>
+              Call your local legislator in your state's House</option>
+            <option value="statesenate"
+                {{if (eq $phoneDatabase "statesenate")}}selected{{end}}>
+              Call your local legislator in your state's Senate</option>
+            <option value="usandstate"
+                {{if (eq $phoneDatabase "usandstate")}}selected{{end}}>
+              Call any of your US or state legislators</option>
             <option value="direct"
                 {{if (eq $phoneDatabase "direct")}}selected{{end}}>
               Call a specific number</option>

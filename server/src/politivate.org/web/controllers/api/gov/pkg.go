@@ -1,8 +1,10 @@
 package gov
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/spacemonkeygo/spacelog"
 	"golang.org/x/net/context"
@@ -84,6 +86,15 @@ type SunlightLegislator struct {
 	YoutubeId   string `json:"youtube_id"`
 }
 
+func (l *SunlightLegislator) Convert() *Legislator {
+	return &Legislator{
+		FullName: l.FirstName + " " + l.LastName,
+		Website:  l.Website,
+		Offices: []Office{{
+			Phone: l.Phone,
+		}}}
+}
+
 type OpenStatesOffice struct {
 	Address string `json:"address"`
 	Email   string `json:"email"`
@@ -130,6 +141,16 @@ type OpenStatesLegislator struct {
 	URL       string            `json:"url"`
 }
 
+func (l *OpenStatesLegislator) Convert() *Legislator {
+	rv := &Legislator{
+		FullName: l.FullName,
+		Website:  l.URL}
+	for _, office := range l.Offices {
+		rv.Offices = append(rv.Offices, Office{Phone: office.Phone})
+	}
+	return rv
+}
+
 type Office struct {
 	Phone string `json:"phone"`
 }
@@ -138,4 +159,82 @@ type Legislator struct {
 	FullName string   `json:"full_name"`
 	Offices  []Office `json:"offices"`
 	Website  string   `json:"website"`
+}
+
+func (l *Legislator) MarshalJSON() ([]byte, error) {
+	var phone string
+	if len(l.Offices) > 0 {
+		phone = l.Offices[0].Phone
+	}
+
+	m := map[string]interface{}{
+		"full_name": l.FullName,
+		"offices":   l.Offices,
+		"website":   l.Website,
+		"comment": `the fields "chamber", "votesmart_id", "first_name",
+                "last_name", and "phone" are all deprecated.`,
+		"first_name":   "",
+		"last_name":    "",
+		"chamber":      "house",
+		"phone":        phone,
+		"votesmart_id": l.FullName + ": " + phone,
+	}
+
+	nameParts := strings.SplitN(l.FullName, " ", 2)
+	if len(nameParts) > 0 {
+		m["first_name"] = nameParts[0]
+		if len(nameParts) > 1 {
+			m["last_name"] = nameParts[1]
+		}
+	}
+
+	return json.Marshal(m)
+}
+
+func LegislatorsByGPS(ctx context.Context, database string,
+	latitude, longitude float64) (rv []*Legislator) {
+	rv = make([]*Legislator, 0) // json not null
+	var federalDistricts *[]FederalDistrict
+	if database == "ushouse" || database == "us" || database == "usandstate" {
+		fds := FederalDistrictLocateByGPS(ctx, latitude, longitude)
+		federalDistricts = &fds
+		for _, fd := range *federalDistricts {
+			for _, l := range HouseRepsByFederalDistrict(ctx, fd) {
+				rv = append(rv, l.Convert())
+			}
+		}
+	}
+	if database == "ussenate" || database == "us" || database == "usandstate" {
+		if federalDistricts == nil {
+			fds := FederalDistrictLocateByGPS(ctx, latitude, longitude)
+			federalDistricts = &fds
+		}
+		for _, fd := range *federalDistricts {
+			for _, l := range SenatorsByFederalDistrict(ctx, fd) {
+				rv = append(rv, l.Convert())
+			}
+		}
+	}
+	var stateReps *[]*OpenStatesLegislator
+	if database == "statehouse" || database == "state" || database == "usandstate" {
+		srs := StateRepsLocateByGPS(ctx, latitude, longitude)
+		stateReps = &srs
+		for _, sr := range *stateReps {
+			if sr.Chamber == "lower" {
+				rv = append(rv, sr.Convert())
+			}
+		}
+	}
+	if database == "statesenate" || database == "state" || database == "usandstate" {
+		if stateReps == nil {
+			srs := StateRepsLocateByGPS(ctx, latitude, longitude)
+			stateReps = &srs
+		}
+		for _, sr := range *stateReps {
+			if sr.Chamber == "upper" {
+				rv = append(rv, sr.Convert())
+			}
+		}
+	}
+	return rv
 }
