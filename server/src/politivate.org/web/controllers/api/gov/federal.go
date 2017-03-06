@@ -4,22 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"golang.org/x/net/context"
-	"gopkg.in/webhelp.v1/whcompat"
 	"gopkg.in/webhelp.v1/wherr"
 	"gopkg.in/webhelp.v1/whfatal"
-	"gopkg.in/webhelp.v1/whjson"
-	"gopkg.in/webhelp.v1/whmux"
 )
 
-func init() {
-	mux["federal"] = whmux.Dir{
-		"district": whmux.Dir{
-			"locate": whmux.Exact(http.HandlerFunc(federalDistrictLocate)),
-			"reps":   whmux.Exact(http.HandlerFunc(repsByFederalDistrict)),
-		}}
+func SunlightAPIReq(ctx context.Context, path string, vals map[string]string) (
+	*http.Response, error) {
+	return apiReq(ctx, "https://congress.api.sunlightfoundation.com"+path, vals)
 }
 
 type FederalDistrict struct {
@@ -46,19 +39,6 @@ func FederalDistrictLocateByGPS(ctx context.Context,
 		whfatal.Error(wherr.InternalServerError.Wrap(err))
 	}
 	return districts.Results
-}
-
-func federalDistrictLocate(w http.ResponseWriter, r *http.Request) {
-	ctx := whcompat.Context(r)
-	latitude, err := strconv.ParseFloat(r.FormValue("latitude"), 64)
-	if err != nil {
-		whfatal.Error(wherr.BadRequest.New("missing argument"))
-	}
-	longitude, err := strconv.ParseFloat(r.FormValue("longitude"), 64)
-	if err != nil {
-		whfatal.Error(wherr.BadRequest.New("missing argument"))
-	}
-	whjson.Render(w, r, FederalDistrictLocateByGPS(ctx, latitude, longitude))
 }
 
 func loadFederalLegislators(ctx context.Context, query map[string]string) (
@@ -126,22 +106,40 @@ func HouseRepsByFederalDistrict(ctx context.Context,
 	})
 }
 
-func repsByFederalDistrict(w http.ResponseWriter, r *http.Request) {
-	ctx := whcompat.Context(r)
+type SunlightLegislator struct {
+	Chamber   string `json:"chamber"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Phone     string `json:"phone"`
+	Title     string `json:"title"`
 
-	if r.FormValue("state") == "" || r.FormValue("district") == "" {
-		whfatal.Error(wherr.BadRequest.New("missing argument"))
-	}
-	district, err := strconv.Atoi(r.FormValue("district"))
-	if err != nil {
-		whfatal.Error(wherr.BadRequest.New("bad argument"))
-	}
-	d := FederalDistrict{
-		State:    r.FormValue("state"),
-		District: district,
-	}
+	Birthday    string `json:"birthday"`
+	ContactForm string `json:"contact_form"`
+	InOffice    bool   `json:"in_office"`
+	District    int    `json:"district"`
+	FacebookId  string `json:"facebook_id"`
+	Gender      string `json:"gender"`
+	MiddleName  string `json:"middle_name"`
+	NameSuffix  string `json:"name_suffix"`
+	NickName    string `json:"nickname"`
+	Office      string `json:"office"`
+	Party       string `json:"party"`
+	SenateClass int    `json:"senate_class"`
+	State       string `json:"state"`
+	StateName   string `json:"state_name"`
+	StateRank   string `json:"state_rank"`
+	TermEnd     string `json:"term_end"`
+	TermStart   string `json:"term_start"`
+	TwitterId   string `json:"twitter_id"`
+	Website     string `json:"website"`
+	YoutubeId   string `json:"youtube_id"`
+}
 
-	whjson.Render(w, r, append(
-		HouseRepsByFederalDistrict(ctx, d),
-		SenatorsByFederalDistrict(ctx, d)...))
+func (l *SunlightLegislator) Convert() *Legislator {
+	return &Legislator{
+		FullName: titlePrefix(l.Chamber) + l.FirstName + " " + l.LastName,
+		Website:  l.Website,
+		Offices: []Office{{
+			Phone: l.Phone,
+		}}}
 }

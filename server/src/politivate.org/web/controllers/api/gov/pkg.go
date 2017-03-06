@@ -4,18 +4,26 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/spacemonkeygo/spacelog"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
+	"gopkg.in/webhelp.v1/whcompat"
 	"gopkg.in/webhelp.v1/wherr"
+	"gopkg.in/webhelp.v1/whfatal"
+	"gopkg.in/webhelp.v1/whjson"
 	"gopkg.in/webhelp.v1/whmux"
 )
 
 var (
 	Handler http.Handler = mux
-	mux                  = whmux.Dir{}
+	mux                  = whmux.Dir{
+		"legislators": whmux.Dir{
+			"locate": whmux.Exact(http.HandlerFunc(legislatorsByGPS)),
+		},
+	}
 
 	logger = spacelog.GetLogger()
 )
@@ -42,113 +50,20 @@ func apiReq(ctx context.Context, uri string, vals map[string]string) (
 	return resp, nil
 }
 
-func SunlightAPIReq(ctx context.Context, path string, vals map[string]string) (
-	*http.Response, error) {
-	return apiReq(ctx, "https://congress.api.sunlightfoundation.com"+path, vals)
-}
-
-func OpenStatesAPIReq(ctx context.Context, path string, vals map[string]string) (
-	*http.Response, error) {
-	return apiReq(ctx, "https://openstates.org/api"+path, vals)
-}
-
 func contains(vals map[string]string, name string) bool {
 	_, exists := vals[name]
 	return exists
 }
 
-type SunlightLegislator struct {
-	Chamber   string `json:"chamber"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Phone     string `json:"phone"`
-	Title     string `json:"title"`
-
-	Birthday    string `json:"birthday"`
-	ContactForm string `json:"contact_form"`
-	InOffice    bool   `json:"in_office"`
-	District    int    `json:"district"`
-	FacebookId  string `json:"facebook_id"`
-	Gender      string `json:"gender"`
-	MiddleName  string `json:"middle_name"`
-	NameSuffix  string `json:"name_suffix"`
-	NickName    string `json:"nickname"`
-	Office      string `json:"office"`
-	Party       string `json:"party"`
-	SenateClass int    `json:"senate_class"`
-	State       string `json:"state"`
-	StateName   string `json:"state_name"`
-	StateRank   string `json:"state_rank"`
-	TermEnd     string `json:"term_end"`
-	TermStart   string `json:"term_start"`
-	TwitterId   string `json:"twitter_id"`
-	Website     string `json:"website"`
-	YoutubeId   string `json:"youtube_id"`
-}
-
-func (l *SunlightLegislator) Convert() *Legislator {
-	return &Legislator{
-		FullName: l.FirstName + " " + l.LastName,
-		Website:  l.Website,
-		Offices: []Office{{
-			Phone: l.Phone,
-		}}}
-}
-
-type OpenStatesOffice struct {
-	Address string `json:"address"`
-	Email   string `json:"email"`
-	Name    string `json:"name"`
-	Phone   string `json:"phone"`
-	Type    string `json:"type"`
-}
-
-type OpenStatesRole struct {
-	Chamber     string `json:"chamber"`
-	District    string `json:"district"`
-	EndDate     string `json:"end_date"`
-	Party       string `json:"party"`
-	StartDate   string `json:"start_date"`
-	State       string `json:"state"`
-	Committee   string `json:"committee"`
-	CommitteeId string `json:"committee_id"`
-	Position    string `json:"position"`
-	Subcomittee string `json:"subcomittee"`
-	Term        string `json:"term"`
-	Type        string `json:"type"`
-}
-
-type OpenStatesLegislator struct {
-	Active     bool                `json:"active"`
-	BoundaryId string              `json:"boundary_id"`
-	Chamber    string              `json:"chamber"`
-	CreatedAt  string              `json:"created_at"`
-	District   string              `json:"district"`
-	FirstName  string              `json:"first_name"`
-	FullName   string              `json:"full_name"`
-	Id         string              `json:"id"`
-	LastName   string              `json:"last_name"`
-	LegId      string              `json:"leg_id"`
-	MiddleName string              `json:"middle_name"`
-	Offices    []*OpenStatesOffice `json:"offices"`
-	Party      string              `json:"party"`
-	PhotoURL   string              `json:"photo_url"`
-	//	OldRoles   map[string][]*OpenStatesRole `json:"old_roles"`
-	Roles     []*OpenStatesRole `json:"roles"`
-	State     string            `json:"state"`
-	Suffixes  string            `json:"suffixes"`
-	UpdatedAt string            `json:"updated_at"`
-	URL       string            `json:"url"`
-}
-
-func (l *OpenStatesLegislator) Convert() *Legislator {
-	rv := &Legislator{
-		FullName: l.FullName,
-		Website:  l.URL}
-	for _, office := range l.Offices {
-		rv.Offices = append(rv.Offices, Office{Phone: office.Phone})
+func titlePrefix(chamber string) string {
+	switch chamber {
+	case "senate", "upper":
+		return "Sen. "
+	case "house", "lower":
+		return "Rep. "
+	default:
+		return ""
 	}
-	return rv
 }
 
 type Office struct {
@@ -156,7 +71,7 @@ type Office struct {
 }
 
 type Legislator struct {
-	FullName string   `json:"full_name"`
+	FullName string   `json:"full_name"` // includes title.
 	Offices  []Office `json:"offices"`
 	Website  string   `json:"website"`
 }
@@ -175,17 +90,23 @@ func (l *Legislator) MarshalJSON() ([]byte, error) {
                 "last_name", and "phone" are all deprecated.`,
 		"first_name":   "",
 		"last_name":    "",
-		"chamber":      "house",
+		"chamber":      "",
 		"phone":        phone,
 		"votesmart_id": l.FullName + ": " + phone,
 	}
 
-	nameParts := strings.SplitN(l.FullName, " ", 2)
-	if len(nameParts) > 0 {
-		m["first_name"] = nameParts[0]
-		if len(nameParts) > 1 {
-			m["last_name"] = nameParts[1]
-		}
+	fullName := l.FullName
+	if strings.HasPrefix(fullName, "Sen. ") {
+		m["chamber"] = "senate"
+		fullName = fullName[5:]
+	} else if strings.HasPrefix(fullName, "Rep. ") {
+		m["chamber"] = "house"
+		fullName = fullName[5:]
+	}
+	nameParts := strings.SplitN(fullName, " ", 2)
+	m["first_name"] = nameParts[0]
+	if len(nameParts) > 1 {
+		m["last_name"] = nameParts[1]
 	}
 
 	return json.Marshal(m)
@@ -237,4 +158,18 @@ func LegislatorsByGPS(ctx context.Context, database string,
 		}
 	}
 	return rv
+}
+
+func legislatorsByGPS(w http.ResponseWriter, r *http.Request) {
+	ctx := whcompat.Context(r)
+	latitude, err := strconv.ParseFloat(r.FormValue("latitude"), 64)
+	if err != nil {
+		whfatal.Error(wherr.BadRequest.New("missing argument"))
+	}
+	longitude, err := strconv.ParseFloat(r.FormValue("longitude"), 64)
+	if err != nil {
+		whfatal.Error(wherr.BadRequest.New("missing argument"))
+	}
+	whjson.Render(w, r, LegislatorsByGPS(ctx, r.FormValue("database"),
+		latitude, longitude))
 }
