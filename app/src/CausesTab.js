@@ -42,7 +42,7 @@ export default class CausesTab extends React.Component {
       <View style={{flex:1}}>
         <TabHeader>Causes</TabHeader>
         <List resource="/v1/causes/" renderRow={this.renderRow}
-              appstate={this.props.appstate} />
+              appstate={this.props.appstate} keyFunc={(cause) => cause.id}/>
       </View>
     );
   }

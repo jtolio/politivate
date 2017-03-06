@@ -279,17 +279,17 @@ class ChallengePhonecallActions extends React.Component {
         );
       } else {
         for (var legislator of chal.legislators) {
-          results.push(
-            <View style={{paddingTop: 10}}
-                  key={"view-" + legislator.votesmart_id}/>
-          );
-          let title = {"senate": "Sen.", "house": "Rep."}[legislator.chamber];
-          let name = legislator.first_name + " " + legislator.last_name;
-          results.push(
-            <ChallengePhonecallAction key={"button-" + legislator.votesmart_id}
-                  who={title + " " + name} phone={legislator.phone}
-                  appstate={this.props.appstate} challenge={chal}/>
-          );
+          for (var office of legislator.offices) {
+            let key = legislator.full_name + ": " + office.phone;
+            results.push(
+              <View style={{paddingTop: 10}} key={"view-" + key}/>
+            );
+            results.push(
+              <ChallengePhonecallAction key={"button-" + key}
+                    who={legislator.full_name} phone={office.phone}
+                    appstate={this.props.appstate} challenge={chal}/>
+            );
+          }
         }
       }
     }

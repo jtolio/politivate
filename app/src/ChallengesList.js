@@ -141,7 +141,8 @@ export default class ChallengesList extends React.Component {
   render() {
     return (
       <List resource={this.props.resource} renderRow={this.renderRow}
-            appstate={this.props.appstate}>
+            appstate={this.props.appstate}
+            keyFunc={(chal) => chal.cause_id + "-" + chal.id}>
         <View style={{flex: 1, alignItems: "center", paddingTop: 30}}>
           {this.props.children ? this.props.children : [
             (<Text key={0} style={{fontWeight: "bold"}}>

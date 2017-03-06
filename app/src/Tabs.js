@@ -29,7 +29,7 @@ export default class Tabs extends React.Component {
     const fontWeight = (isTabActive ? "bold" : "normal");
     return (<Button
                 style={{flex: 1}}
-                key={name}
+                key={"tab-" + name}
                 accessible={true}
                 accessibilityLabel={name}
                 accessibilityTraits="button"
