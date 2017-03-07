@@ -10,6 +10,8 @@ import LoginView from './LoginView';
 import { LoadingView, ErrorView, colors } from './common';
 
 const REGISTERED_OTP_PREFIX = "politivate-org-app://www.politivate.org/api/v1/login/otp/";
+const DEMO_MODE_TOKEN = "";
+//const DEMO_MODE_TOKEN = "d52e33faf8695d6c2d7dab00db0a64c502ea7ceb4329272752317633e35ca040";
 
 class BackHandler extends Component {
   constructor(props) {
@@ -98,7 +100,8 @@ export default class AppRoot extends Component {
         return;
       }
 
-      let auth_token = await AsyncStorage.getItem("@v1/auth/token");
+      let auth_token = DEMO_MODE_TOKEN.length > 0 ? DEMO_MODE_TOKEN : (
+            await AsyncStorage.getItem("@v1/auth/token"));
       if (auth_token) {
         this.setState({
           loading: false,
@@ -130,10 +133,10 @@ export default class AppRoot extends Component {
       this.setState({loading: true});
       await AsyncStorage.removeItem("@v1/auth/token");
       this.setState({
-        loading: false,
-        logged_in: false,
-        error: null,
-        token: null
+          loading: false,
+          logged_in: false,
+          error: null,
+          token: null
         });
     } catch(err) {
       this.setState({loading: false, error: err});
