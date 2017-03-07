@@ -22,8 +22,7 @@ export default class LoadablePage extends React.Component {
   async update() {
     try {
       this.setState({loading: true, error: null});
-      let response = await this.props.appstate.request(
-          "GET", this.props.resourceURL);
+      let response = await this.props.resourceFn();
       if (this.props.process) {
         response = await this.props.process(response);
       }

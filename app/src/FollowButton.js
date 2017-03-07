@@ -20,14 +20,13 @@ export default class FollowButton extends React.Component {
   }
 
   update() {
-    this.request("GET");
+    this.request(this.props.appstate.resources.causeFollowers);
   }
 
   async request(method) {
     try {
       this.setState({loading: true, error: null});
-      let resp = await this.props.appstate.request(
-          method, "/v1/cause/" + this.props.cause.id + "/followers");
+      let resp = await method(this.props.cause.id);
       this.setState({
         loading: false,
         followers: resp.followers,
@@ -39,9 +38,9 @@ export default class FollowButton extends React.Component {
 
   toggle() {
     if (this.state.following) {
-      this.request("DELETE");
+      this.request(this.props.appstate.resources.unfollowCause);
     } else {
-      this.request("POST");
+      this.request(this.props.appstate.resources.followCause);
     }
   }
 

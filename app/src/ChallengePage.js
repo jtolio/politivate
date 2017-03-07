@@ -83,10 +83,9 @@ class ChallengeLocationMap extends React.Component {
         user_latitude: latitude,
         user_longitude: longitude,
       };
-      let resp = await this.props.appstate.request("POST",
-          "/v1/cause/" + this.props.challenge.cause_id + "/challenge/" +
-          this.props.challenge.id + "/complete", {body});
-      this.setState({actions: resp.actions});
+      this.setState({actions: (
+          await this.props.appstate.resources.completeChallenge(
+              this.props.challenge.id, this.props.challenge.cause_id, body))});
     } catch(error) {
       // TODO
       console.log(error);
@@ -102,24 +101,22 @@ class ChallengeLocationMap extends React.Component {
     if (this.state.actions !== null) {
       completed = (this.state.actions.length > 0);
     }
-    let pos = this.state.position;
-    if (!pos) {
-      return <LoadingView/>;
-    }
-    let distance = haversine(
-        pos.coords.latitude, pos.coords.longitude,
-        chal.direct_latitude, chal.direct_longitude);
-    let in_range = distance <= chal.direct_radius;
 
-    let latitudeDelta = Math.abs(chal.direct_latitude-pos.coords.latitude);
-    let longitudeDelta = Math.abs(chal.direct_longitude-pos.coords.longitude);
     let initialRegion = {
-      latitude: (chal.direct_latitude + pos.coords.latitude)/2 +
-                latitudeDelta * 0.15,
-      longitude: (chal.direct_longitude + pos.coords.longitude)/2,
-      latitudeDelta: latitudeDelta * 1.5,
-      longitudeDelta: longitudeDelta * 1.5,
+      latitude: chal.direct_latitude,
+      longitude: chal.direct_longitude,
+      latitudeDelta: 0.02,
+      longitudeDelta: 0.02,
     };
+
+    let pos = this.state.position;
+    let in_range = false;
+    if (pos) {
+      let distance = haversine(
+          pos.coords.latitude, pos.coords.longitude,
+          chal.direct_latitude, chal.direct_longitude);
+      in_range = distance <= chal.direct_radius;
+    }
 
     let now = Date.now();
     let after_event_start = !(chal.event_start && now < chal.event_start);
@@ -132,7 +129,7 @@ class ChallengeLocationMap extends React.Component {
       button = <Button disabled title="Event hasn't started" onPress={() => {}}/>;
     } else if (!before_event_end) {
       button = <Button disabled title="Event is over" onPress={() => {}}/>;
-    } else if (!in_range) {
+    } else if (!pos || !in_range) {
       button = <Button disabled title="Not in range" onPress={() => {}}/>;
     } else {
       button = (
@@ -151,10 +148,11 @@ class ChallengeLocationMap extends React.Component {
               latitude: chal.direct_latitude,
               longitude: chal.direct_longitude,
             }}/>
-          <MapView.Marker coordinate={{
-              latitude: pos.coords.latitude,
-              longitude: pos.coords.longitude,
-            }} image={require("../images/person.png")}/>
+          { pos ?
+            <MapView.Marker coordinate={{
+                latitude: pos.coords.latitude,
+                longitude: pos.coords.longitude,
+              }} image={require("../images/person.png")}/> : null }
           <MapView.Circle radius={chal.direct_radius} center={{
               latitude: chal.direct_latitude,
               longitude: chal.direct_longitude,
@@ -211,11 +209,10 @@ class ChallengePhonecallAction extends React.Component {
       return
     }
     try {
-      let resp = await this.props.appstate.request("POST",
-          "/v1/cause/" + this.props.challenge.cause_id + "/challenge/" +
-          this.props.challenge.id + "/complete",
-          {body: {phone_number: this.props.phone}});
-      this.setState({actions: resp.actions});
+      this.setState({actions: (
+          await this.props.appstate.resources.completeChallenge(
+              this.props.challenge.id, this.props.challenge.cause_id,
+              {phone_number: this.props.phone}))});
     } catch(err) {
       // TODO
       console.log(err);
@@ -304,11 +301,6 @@ class ChallengePhonecallActions extends React.Component {
 
 
 export default class ChallengePage extends React.Component {
-  resourceURL() {
-    return "/v1/cause/" + this.props.challenge.cause_id +
-           "/challenge/" + this.props.challenge.id;
-  }
-
   renderLoaded(chal) {
     return (
       <View style={{
@@ -347,9 +339,11 @@ export default class ChallengePage extends React.Component {
     return (
       <Subpage appstate={this.props.appstate}
                title={this.props.challenge.title}>
-        <LoadablePage renderLoaded={this.renderLoaded.bind(this)}
-                      resourceURL={this.resourceURL()}
-                      appstate={this.props.appstate}/>
+        <LoadablePage
+            renderLoaded={this.renderLoaded.bind(this)}
+            resourceFn={() => this.props.appstate.resources.getFullChallenge(
+                this.props.challenge.id, this.props.challenge.cause_id)}
+            appstate={this.props.appstate}/>
       </Subpage>
     );
   }

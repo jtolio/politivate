@@ -16,6 +16,12 @@ export default class Subpage extends React.Component {
               justifyContent: "center",
               borderBottomWidth: 1,
               borderColor: colors.primary.val}}>
+          <Text style={{
+              fontWeight: "bold",
+              fontSize: 20, padding: 10, paddingLeft: 35, paddingRight: 35,
+              color: colors.primary.val}}>
+            {this.props.title}
+          </Text>
           <TouchableOpacity onPress={this.props.appstate.backPress}
               style={{
                   position: "absolute",
@@ -26,12 +32,6 @@ export default class Subpage extends React.Component {
                 fontSize: 30, padding: 0,
                 color: colors.primary.val}}/>
           </TouchableOpacity>
-          <Text style={{
-              fontWeight: "bold",
-              fontSize: 20, padding: 10,
-              color: colors.primary.val}}>
-            {this.props.title}
-          </Text>
         </View>
         <View style={{flex: 1}}>
           {this.props.children}

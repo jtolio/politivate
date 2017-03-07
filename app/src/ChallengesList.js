@@ -71,9 +71,9 @@ class ChallengeEntry extends React.Component {
       error: null
     };
     this.typeIcon = {
-                      "phonecall": "phone",
-                      "location": "location-pin",
-                    }[this.props.challenge.type];
+        "phonecall": "phone",
+        "location": "location-pin",
+      }[this.props.challenge.type];
     this.update = this.update.bind(this);
   }
 
@@ -84,8 +84,8 @@ class ChallengeEntry extends React.Component {
   async update() {
     try {
       this.setState({loading: true, error: null});
-      let cause = await this.props.appstate.request(
-          "GET", "/v1/cause/" + this.props.challenge.cause_id)
+      let cause = await this.props.appstate.resources.getPartialCause(
+          this.props.challenge.cause_id);
       this.setState({loading: false, cause});
     } catch(error) {
       this.setState({loading: false, error});
@@ -140,17 +140,15 @@ export default class ChallengesList extends React.Component {
 
   render() {
     return (
-      <List resource={this.props.resource} renderRow={this.renderRow}
-            appstate={this.props.appstate}
-            keyFunc={(chal) => chal.cause_id + "-" + chal.id}>
+      <List resourceFn={this.props.resourceFn} renderRow={this.renderRow}
+            appstate={this.props.appstate}>
         <View style={{flex: 1, alignItems: "center", paddingTop: 30}}>
-          {this.props.children ? this.props.children : [
-            (<Text key={0} style={{fontWeight: "bold"}}>
+          {this.props.children ? this.props.children :
+            (<Text style={{fontWeight: "bold"}}>
                There are no challenges available!
-             </Text>),
-            (<Text key={1}>
-               Consider following some more causes?
-             </Text>)]}
+             </Text>)}
+          {this.props.children ? null :
+            (<Text>Consider following some more causes?</Text>)}
         </View>
       </List>
     );

@@ -5,6 +5,7 @@ import {
   Navigator, BackAndroid, AsyncStorage, Linking, View, NativeModules
 } from 'react-native';
 import Tabs from './Tabs';
+import Resources from './Resources';
 import LoginView from './LoginView';
 import { LoadingView, ErrorView, colors } from './common';
 
@@ -117,47 +118,8 @@ export default class AppRoot extends Component {
   renderScene(route, navigator) {
     let appstate = {
       logout: this.logout,
-      authtoken: this.state.token,
+      resources: new Resources(this.state.token, this.logout),
       navigator: navigator,
-    };
-
-    appstate.request = async function(method, resource, options) {
-      let reqopts = {
-        method,
-        headers: {"X-Auth-Token": appstate.authtoken},
-      };
-      if (options && options.body) {
-          reqopts.body = Object.keys(options.body).map((key) => (
-              encodeURIComponent(key) + "=" +
-              encodeURIComponent(options.body[key]))
-          ).join("&");
-          reqopts.headers["Content-Type"] = "application/x-www-form-urlencoded";
-      }
-      let req = new Request("https://www.politivate.org/api" + resource,
-                            reqopts);
-      let resp = await fetch(req)
-      if (!resp.ok) {
-        if (resp.status == 401) {
-          // TODO: this causes warnings cause it causes logic to happen on
-          //  unmounted components.
-          appstate.logout();
-        }
-        let json = null;
-        try {
-          json = await resp.json();
-        } catch(err) {
-          throw resp.statusText;
-        }
-        if (!json.err) {
-          throw resp.statusText;
-        }
-        throw json.err;
-      }
-      let json = await resp.json();
-      if (json.err) {
-        throw json.err;
-      }
-      return json.resp;
     };
 
     return (<BackHandler route={route} appstate={appstate} />)

@@ -41,8 +41,8 @@ export default class CausesTab extends React.Component {
     return (
       <View style={{flex:1}}>
         <TabHeader>Causes</TabHeader>
-        <List resource="/v1/causes/" renderRow={this.renderRow}
-              appstate={this.props.appstate} keyFunc={(cause) => cause.id}/>
+        <List resourceFn={this.props.appstate.resources.getCauses}
+              renderRow={this.renderRow} appstate={this.props.appstate}/>
       </View>
     );
   }

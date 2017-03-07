@@ -10,7 +10,8 @@ export default class ChallengesTab extends React.Component {
     return (
       <View style={{flex:1}}>
         <TabHeader>Challenges</TabHeader>
-        <ChallengesList resource="/v1/challenges/"
+        <ChallengesList
+            resourceFn={this.props.appstate.resources.getChallenges}
             appstate={this.props.appstate}/>
       </View>
     );

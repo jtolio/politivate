@@ -10,8 +10,6 @@ import { Link } from './common';
 import Icon from 'react-native-vector-icons/Entypo';
 
 export default class Cause extends React.Component {
-  resourceURL() { return "/v1/cause/" + this.props.cause.id; }
-
   renderLoaded(cause) {
     return (
       <View style={{
@@ -48,9 +46,11 @@ export default class Cause extends React.Component {
   render() {
     return (
       <Subpage appstate={this.props.appstate} title={this.props.cause.name}>
-        <LoadablePage renderLoaded={this.renderLoaded.bind(this)}
-                      resourceURL={this.resourceURL()}
-                      appstate={this.props.appstate}/>
+        <LoadablePage appstate={this.props.appstate}
+            renderLoaded={this.renderLoaded.bind(this)}
+            resourceFn={() =>
+                this.props.appstate.resources.getFullCause(
+                    this.props.cause.id)}/>
       </Subpage>
     );
   }
@@ -76,9 +76,9 @@ class CauseChallengePage extends React.Component {
     let cause = this.props.cause;
     return (
       <Subpage appstate={this.props.appstate} title={cause.name}>
-        <ChallengesList
-            resource={"/v1/cause/" + cause.id + "/challenges/"}
-            appstate={this.props.appstate}>
+        <ChallengesList appstate={this.props.appstate}
+            resourceFn={() =>
+                this.props.appstate.resources.getCauseChallenges(cause.id)}>
           <Text style={{fontWeight: "bold"}}>
             This cause has not listed any challenges yet!
           </Text>

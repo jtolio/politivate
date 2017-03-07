@@ -7,11 +7,14 @@ import { ErrorView, colors } from './common';
 export default class List extends React.Component {
   constructor(props) {
     super(props);
+    this.keyFn = this.props.keyFn;
+    if (!this.keyFn) {
+      this.keyFn = (r) => (r._key);
+    }
     this.state = {
       loading: true,
       ds: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => (
-            this.props.keyFunc(r1) !== this.props.keyFunc(r2)),
+        rowHasChanged: (r1, r2) => (this.keyFn(r1) !== this.keyFn(r2)),
       }),
       error: null,
       empty: true,
@@ -28,8 +31,7 @@ export default class List extends React.Component {
   async update() {
     try {
       this.setState({loading: true, error: null});
-      let items = await this.props.appstate.request(
-          "GET", this.props.resource);
+      let items = await this.props.resourceFn();
       this.setState((state) => ({
         loading: false,
         ds: state.ds.cloneWithRows(items),
@@ -50,7 +52,7 @@ export default class List extends React.Component {
 
   renderRow(rowData, sectionId, rowId, highlightRow) {
     return (
-      <View key={"row-" + this.props.keyFunc(rowData)}
+      <View key={"row-" + this.keyFn(rowData)}
         style={{padding: 20, paddingTop: 5, paddingBottom: 5}}>
         {this.props.renderRow(rowData, sectionId, rowId, highlightRow)}
       </View>

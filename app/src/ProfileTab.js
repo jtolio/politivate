@@ -42,8 +42,8 @@ export default class ProfileTab extends React.Component {
       }
       for (var cause_id of Object.keys(causes)) {
         causes[cause_id] = {
-          cause: (await this.props.appstate.request(
-                             "GET", "/v1/cause/" + cause_id)),
+          cause: (await this.props.appstate.resources.getPartialCause(
+                                                          cause_id)),
           challenges: {},
         };
       }
@@ -53,9 +53,8 @@ export default class ProfileTab extends React.Component {
       for (var cause_id of Object.keys(causes)) {
         for (var challenge_id of Object.keys(causes[cause_id].challenges)) {
           causes[cause_id].challenges[challenge_id] = (
-              await this.props.appstate.request(
-                  "GET", "/v1/cause/" + cause_id +
-                         "/challenge/" + challenge_id));
+              await this.props.appstate.resources.getPartialChallenge(
+                                                challenge_id, cause_id));
         }
       }
     }
@@ -151,9 +150,10 @@ export default class ProfileTab extends React.Component {
   render() {
     return (
       <LoadablePage renderLoaded={this.renderLoaded.bind(this)}
-                    renderHeader={this.renderHeader.bind(this)}
-                    process={this.process.bind(this)}
-                    resourceURL="/v1/profile" appstate={this.props.appstate}/>
+        renderHeader={this.renderHeader.bind(this)}
+        process={this.process.bind(this)} appstate={this.props.appstate}
+        resourceFn={() =>
+            this.props.appstate.resources.request("GET", "/v1/profile")}/>
     );
   }
 }
