@@ -1,5 +1,11 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
 body {
   padding-top: 15px;
+  margin-bottom: 60px;
 }
 
 .navbar-brand {
@@ -19,4 +25,23 @@ body {
     padding-top: 4px;
     padding-bottom: 0px;
   }
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  font-size: 14px;
+  padding-top: 20px;
+  color: #bbb;
+}
+
+.footer a, .footer a:active, .footer a:hover, .footer a:visited {
+  color: #bbb;
+}
+
+.footer .container {
+  border-top: 1px solid #bbb;
+  padding-top: 10px;
 }

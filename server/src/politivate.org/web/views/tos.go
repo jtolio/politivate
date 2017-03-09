@@ -4,4 +4,6 @@ var _ = T.MustParse(`{{ template "header" (makepair . "Terms of Service") }}
 
 <h1>Terms of Service</h1>
 
+<p>Terms of service coming soon!</p>
+
 {{ template "footer" . }}`)
