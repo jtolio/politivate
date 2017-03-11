@@ -59,12 +59,11 @@ export default class AppRoot extends Component {
     this.logout = this.logout.bind(this);
   }
 
-  async otpLogin() {
-    let initialURL = await Linking.getInitialURL();
-    if (!initialURL || !initialURL.startsWith(REGISTERED_OTP_PREFIX)) {
+  async otpLogin(url) {
+    if (!url || !url.startsWith(REGISTERED_OTP_PREFIX)) {
       return false;
     }
-    let otp = initialURL.slice(REGISTERED_OTP_PREFIX.length);
+    let otp = url.slice(REGISTERED_OTP_PREFIX.length);
     let fragmentIndex = otp.indexOf("#");
     if (fragmentIndex >= 0) {
       otp = otp.slice(0, fragmentIndex);
@@ -95,8 +94,12 @@ export default class AppRoot extends Component {
   }
 
   async componentDidMount() {
+    Linking.addEventListener('url', event => {
+      this.otpLogin(event.url)
+    })
+
     try {
-      if (await this.otpLogin()) {
+      if (await this.otpLogin(await Linking.getInitialURL())) {
         return;
       }
 

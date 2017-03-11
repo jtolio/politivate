@@ -1,0 +1,55 @@
+PODS:
+  - React (0.38.1):
+    - React/Core (= 0.38.1)
+  - React/Core (0.38.1)
+  - React/RCTActionSheet (0.38.1):
+    - React/Core
+  - React/RCTAnimation (0.38.1):
+    - React/Core
+  - React/RCTGeolocation (0.38.1):
+    - React/Core
+  - React/RCTImage (0.38.1):
+    - React/Core
+    - React/RCTNetwork
+  - React/RCTLinkingIOS (0.38.1):
+    - React/Core
+  - React/RCTNetwork (0.38.1):
+    - React/Core
+  - React/RCTSettings (0.38.1):
+    - React/Core
+  - React/RCTText (0.38.1):
+    - React/Core
+  - React/RCTVibration (0.38.1):
+    - React/Core
+  - React/RCTWebSocket (0.38.1):
+    - React/Core
+  - RNVectorIcons (4.0.0):
+    - React
+
+DEPENDENCIES:
+  - React/Core (from `../node_modules/react-native`)
+  - React/RCTActionSheet (from `../node_modules/react-native`)
+  - React/RCTAnimation (from `../node_modules/react-native`)
+  - React/RCTGeolocation (from `../node_modules/react-native`)
+  - React/RCTImage (from `../node_modules/react-native`)
+  - React/RCTLinkingIOS (from `../node_modules/react-native`)
+  - React/RCTNetwork (from `../node_modules/react-native`)
+  - React/RCTSettings (from `../node_modules/react-native`)
+  - React/RCTText (from `../node_modules/react-native`)
+  - React/RCTVibration (from `../node_modules/react-native`)
+  - React/RCTWebSocket (from `../node_modules/react-native`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+
+EXTERNAL SOURCES:
+  React:
+    :path: "../node_modules/react-native"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
+
+SPEC CHECKSUMS:
+  React: 2c6b27dcaea89b3d3398df8b598330fd18abbe46
+  RNVectorIcons: d7e2c5eef986d1f594dfd2947df6d6e8093ad1e0
+
+PODFILE CHECKSUM: dbd7eb15b02f1273513c20bf82463d8aa3d8634e
+
+COCOAPODS: 1.2.0
