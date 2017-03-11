@@ -4,7 +4,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import { colors } from './common';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Entypo';
 
 export default class Subpage extends React.Component {
   render() {
@@ -28,7 +28,7 @@ export default class Subpage extends React.Component {
                   top: 0, left: 0, bottom: 0,
                   flexDirection: "column", justifyContent: "center",
                   paddingLeft: 10, paddingRight: 10}}>
-            <Icon name='ios-arrow-back' style={{
+            <Icon name='chevron-thin-left' style={{
                 fontSize: 30, padding: 0,
                 color: colors.primary.val}}/>
           </TouchableOpacity>
