@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"os"
 
-	"gopkg.in/webhelp.v1/whlog"
-	"gopkg.in/webhelp.v1/whroute"
 	"github.com/spacemonkeygo/flagfile"
 	"github.com/spacemonkeygo/spacelog/setup"
+	"gopkg.in/webhelp.v1/whlog"
+	"gopkg.in/webhelp.v1/whroute"
 
 	"politivate.org/web/app"
 )

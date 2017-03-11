@@ -8,7 +8,6 @@ import (
 	"gopkg.in/webhelp.v1/whmux"
 
 	"politivate.org/web/controllers/auth"
-	"politivate.org/web/models"
 )
 
 func init() {
@@ -16,7 +15,5 @@ func init() {
 }
 
 func serveChallenges(w http.ResponseWriter, r *http.Request) {
-	ctx := whcompat.Context(r)
-	whjson.Render(w, r,
-		models.GetChallenges(ctx, auth.User(r).CauseIds(ctx)...))
+	whjson.Render(w, r, auth.User(r).GetChallenges(whcompat.Context(r)))
 }

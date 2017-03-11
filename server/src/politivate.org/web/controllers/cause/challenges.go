@@ -82,9 +82,16 @@ func newChallengeCreate(w http.ResponseWriter, r *http.Request) {
 	}
 	chal.Info.Restrictions = make([]models.ChallengeRestriction, 0, restrictions)
 	for i := 0; i < restrictions; i++ {
+		rtype := r.FormValue(fmt.Sprintf("restrictionType[%d]", i))
+		switch rtype {
+		case "state", "housecommittee", "senatecommittee":
+		default:
+			whfatal.Error(wherr.BadRequest.New(
+				"unknown restriction type: %s", rtype))
+		}
 		chal.Info.Restrictions = append(chal.Info.Restrictions,
 			models.ChallengeRestriction{
-				Type:  r.FormValue(fmt.Sprintf("restrictionType[%d]", i)),
+				Type:  rtype,
 				Value: r.FormValue(fmt.Sprintf("restrictionValue[%d]", i))})
 	}
 

@@ -9,6 +9,8 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 	"gopkg.in/webhelp.v1/whfatal"
+
+	"politivate.org/web/controllers/api/gov"
 )
 
 type ChallengeRestriction struct {
@@ -251,4 +253,49 @@ func (c challengeSorter) Less(i, j int) bool {
 		return true
 	}
 	return c[i].Info.EventEnd.Time.Before(c[j].Info.EventEnd.Time)
+}
+
+func (u *User) isTarget(ctx context.Context, districts []gov.FederalDistrict,
+	restrictions []ChallengeRestriction) bool {
+	if len(restrictions) == 0 {
+		return true
+	}
+	for _, restriction := range restrictions {
+		switch restriction.Type {
+		case "state":
+			for _, district := range districts {
+				if restriction.Value == district.State {
+					return true
+				}
+			}
+		case "housecommittee":
+			logger.Warnf("TODO: housecommittee restrictions unimplemented")
+			return true
+		case "senatecommittee":
+			logger.Warnf("TODO: senatecommittee restrictions unimplemented")
+			return true
+		default:
+			logger.Warnf("unknown restriction type: %s", restriction.Type)
+			return true
+		}
+	}
+	return false
+}
+
+func (u *User) GetChallenges(ctx context.Context) []*Challenge {
+	causeIds := u.CauseIds(ctx)
+	challenges := make([]*Challenge, 0)
+	districts := gov.FederalDistrictLocateByGPS(ctx, u.Latitude, u.Longitude)
+	for _, causeId := range causeIds {
+		for _, challenge := range getLiveChallenges(ctx, causeId) {
+			if !u.isTarget(ctx, districts, challenge.Info.Restrictions) {
+				continue
+			}
+			challenges = append(challenges, challenge)
+		}
+	}
+	// we could probably be faster and make this some kind of merge operation,
+	// since all the individual getLiveChallenges calls are already sorted.
+	sort.Sort(challengeSorter(challenges))
+	return challenges
 }

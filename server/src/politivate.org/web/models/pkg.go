@@ -8,6 +8,7 @@ import (
 
 	"github.com/spacemonkeygo/errors"
 	"github.com/spacemonkeygo/errors/errhttp"
+	"github.com/spacemonkeygo/spacelog"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 	"gopkg.in/webhelp.v1/whfatal"
@@ -17,6 +18,8 @@ var (
 	Error    = errors.NewClass("model error")
 	NotFound = Error.NewClass("not found",
 		errhttp.SetStatusCode(404), errors.NoCaptureStack())
+
+	logger = spacelog.GetLogger()
 )
 
 func wrapErr(err error) error {
