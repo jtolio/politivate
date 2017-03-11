@@ -84,7 +84,7 @@ func newChallengeCreate(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < restrictions; i++ {
 		rtype := r.FormValue(fmt.Sprintf("restrictionType[%d]", i))
 		switch rtype {
-		case "state", "housecommittee", "senatecommittee":
+		case "state":
 		default:
 			whfatal.Error(wherr.BadRequest.New(
 				"unknown restriction type: %s", rtype))

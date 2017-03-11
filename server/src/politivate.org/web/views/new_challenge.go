@@ -57,8 +57,6 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
             <select class="form-control" id="restrictionType"
                     onchange="restrictionTypeChange(); return true;">
               <option value="state">State</option>
-              <option value="housecommittee">House Committee</option>
-              <option value="senatecommittee">Senate Committee</option>
             </select>
           </div>
           <div class="col-md-6">
@@ -120,61 +118,6 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
               <option value="WV">West Virginia</option>
               <option value="WI">Wisconsin</option>
               <option value="WY">Wyoming</option>
-            </select>
-            <select class="form-control" style="display: none;"
-                    id="houseCommitteeRestriction">
-                            <option>Agriculture</option>
-              <option>Appropriations</option>
-              <option>Armed Services</option>
-              <option>Budget</option>
-              <option>Economic</option>
-              <option>Education and the Workforce</option>
-              <option>Energy and Commerce</option>
-              <option>Ethics</option>
-              <option>Financial Services</option>
-              <option>Foreign Affairs</option>
-              <option>Homeland Security</option>
-              <option>House Administration</option>
-              <option>Intelligence</option>
-              <option>Judiciary</option>
-              <option>Library</option>
-              <option>Natural Resources</option>
-              <option>Oversight and Government Reform</option>
-              <option>Printing</option>
-              <option>Rules</option>
-              <option>Science, Space, and Technology</option>
-              <option>Small Business</option>
-              <option>Taxation</option>
-              <option>Transportation and Infrastructure</option>
-              <option>Veterans' Affairs</option>
-              <option>Ways and Means</option>
-            </select>
-            <select class="form-control" style="display: none;"
-                    id="senateCommitteeRestriction">
-              <option>Aging</option>
-              <option>Agriculture, Nutrition, and Forestry</option>
-              <option>Appropriations</option>
-              <option>Armed Services</option>
-              <option>Banking, Housing, and Urban Affairs</option>
-              <option>Budget</option>
-              <option>Commerce, Science, and Transportation</option>
-              <option>Economic</option>
-              <option>Energy and Natural Resources</option>
-              <option>Environment and Public Works</option>
-              <option>Ethics</option>
-              <option>Finance</option>
-              <option>Foreign Relations</option>
-              <option>Health, Education, Labor, and Pensions</option>
-              <option>Homeland Security and Governmental Affairs</option>
-              <option>Indian Affairs</option>
-              <option>Intelligence</option>
-              <option>Judiciary</option>
-              <option>Library</option>
-              <option>Printing</option>
-              <option>Rules and Administration</option>
-              <option>Small Business and Entrepreneurship</option>
-              <option>Taxation</option>
-              <option>Veterans' Affairs</option>
             </select>
           </div>
           <div class="col-md-2">
@@ -392,9 +335,7 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
   }
 
   var restrictionListMap = {
-    "state": "#stateRestriction",
-    "housecommittee": "#houseCommitteeRestriction",
-    "senatecommittee": "#senateCommitteeRestriction"};
+    "state": "#stateRestriction"};
 
   function restrictionTypeChange() {
     fieldChange($("#restrictionType").val(), restrictionListMap);
@@ -407,8 +348,6 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
   ];
 
   var restrictionTypeName = {
-    "housecommittee": "House Committee",
-    "senatecommittee": "Senate Committee",
     "state": "State"
   }
 

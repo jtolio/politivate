@@ -268,12 +268,6 @@ func (u *User) isTarget(ctx context.Context, districts []gov.FederalDistrict,
 					return true
 				}
 			}
-		case "housecommittee":
-			logger.Warnf("TODO: housecommittee restrictions unimplemented")
-			return true
-		case "senatecommittee":
-			logger.Warnf("TODO: senatecommittee restrictions unimplemented")
-			return true
 		default:
 			logger.Warnf("unknown restriction type: %s", restriction.Type)
 			return true
