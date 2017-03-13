@@ -11,7 +11,7 @@ var _ = T.MustParse(`{{ template "header" (makepair . "Challenge") }}
 
 <h1>{{.Values.Challenge.Info.Title}}</h1>
 
-<p>{{.Values.Challenge.Data.Description}}</p>
+<p>{{.Values.Challenge.Data.Description | format}}</p>
 
 <p><a href="/cause/{{.Values.Cause.Id}}">Back to Cause</a></p>
 

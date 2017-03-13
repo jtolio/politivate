@@ -1,7 +1,9 @@
 package views
 
 import (
+	"html/template"
 	"net/http"
+	"strings"
 
 	"golang.org/x/net/context"
 	"gopkg.in/webhelp.v1/whcompat"
@@ -13,10 +15,18 @@ import (
 )
 
 var (
-	T = whtmpl.NewCollection()
+	T = makeCollection()
 
 	mapsAPIKey = `AIzaSyDIh-CmiVPYkNzJ0AVC2RcJZk5JJYCpqqA`
 )
+
+func makeCollection() *whtmpl.Collection {
+	rv := whtmpl.NewCollection()
+	rv.Funcs(template.FuncMap{
+		"format": format,
+	})
+	return rv
+}
 
 type Page struct {
 	User   *models.User
@@ -51,4 +61,9 @@ func SimpleHandler(template string) http.Handler {
 		func(w http.ResponseWriter, r *http.Request) {
 			Render(w, r, template, nil)
 		}))
+}
+
+func format(data string) template.HTML {
+	data = template.HTMLEscapeString(data)
+	return template.HTML(strings.Replace(data, "\n", "<br/>\n", -1))
 }
