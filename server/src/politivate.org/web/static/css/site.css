@@ -45,3 +45,10 @@ body {
   border-top: 1px solid #bbb;
   padding-top: 10px;
 }
+
+.small-break {
+  display: block;
+  height: .8em;
+  margin: 0px;
+  padding: 0px;
+}
