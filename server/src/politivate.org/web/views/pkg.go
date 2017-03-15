@@ -31,6 +31,7 @@ func makeCollection() *whtmpl.Collection {
 
 type Page struct {
 	User   *models.User
+	Beta   bool
 	Values interface{}
 	Req    *http.Request
 	Ctx    context.Context
@@ -49,8 +50,10 @@ func Render(w http.ResponseWriter, r *http.Request, template string,
 	if values == nil {
 		values = map[string]interface{}{}
 	}
+	u := auth.User(r)
 	T.Render(w, r, template, &Page{
-		User:   auth.User(r),
+		User:   u,
+		Beta:   u != nil && u.BetaTester,
 		Values: values,
 		Req:    r,
 		Ctx:    whcompat.Context(r),
