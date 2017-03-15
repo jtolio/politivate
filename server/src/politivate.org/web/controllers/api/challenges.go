@@ -15,5 +15,5 @@ func init() {
 }
 
 func serveChallenges(w http.ResponseWriter, r *http.Request) {
-	whjson.Render(w, r, auth.User(r).GetChallenges(whcompat.Context(r)))
+	whjson.Render(w, r, auth.User(r).GetLiveChallenges(whcompat.Context(r)))
 }

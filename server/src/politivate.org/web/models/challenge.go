@@ -33,7 +33,8 @@ func (cause *Cause) NewChallenge(ctx context.Context) *Challenge {
 	return &Challenge{
 		CauseId: cause.Id,
 		Info: ChallengeHeader{
-			Posted: TimeNow(),
+			Posted:  TimeNow(),
+			Enabled: true, // TODO: probably shouldn't be the default
 		},
 		Data: &ChallengeData{},
 	}
@@ -84,6 +85,8 @@ type ChallengeHeader struct {
 	// It doesn't currently make sense to set EventStart only.
 	EventStart Time
 	EventEnd   Time
+
+	Enabled bool
 }
 
 type ChallengeData struct {
@@ -218,18 +221,24 @@ func getChallengesHelper(ctx context.Context, causeId int64,
 func getLiveChallenges(ctx context.Context, causeId int64) []*Challenge {
 	return append(getChallengesHelper(ctx, causeId,
 		func(q *datastore.Query) *datastore.Query {
-			return q.Order("EventEnd.Time").Filter("EventEnd.Time >", time.Now())
+			return q.Filter("Enabled =", true).Order("EventEnd.Time").
+				Filter("EventEnd.Time >", time.Now())
 		}), getChallengesHelper(ctx, causeId,
 		func(q *datastore.Query) *datastore.Query {
-			return q.Filter("EventEnd.Time =", time.Time{})
+			return q.Filter("Enabled =", true).
+				Filter("EventEnd.Time =", time.Time{})
 		})...)
 }
 
-func (cause *Cause) GetChallenges(ctx context.Context) []*Challenge {
+func (cause *Cause) GetLiveChallenges(ctx context.Context) []*Challenge {
 	return getLiveChallenges(ctx, cause.Id)
 }
 
-func GetChallenges(ctx context.Context, causeIds ...int64) []*Challenge {
+func (cause *Cause) GetAllChallenges(ctx context.Context) []*Challenge {
+	return getChallengesHelper(ctx, cause.Id, nil)
+}
+
+func GetLiveChallenges(ctx context.Context, causeIds ...int64) []*Challenge {
 	// use make so the json doesn't look like `null`
 	challenges := make([]*Challenge, 0)
 	for _, causeId := range causeIds {
@@ -276,7 +285,7 @@ func (u *User) isTarget(ctx context.Context, districts []gov.FederalDistrict,
 	return false
 }
 
-func (u *User) GetChallenges(ctx context.Context) []*Challenge {
+func (u *User) GetLiveChallenges(ctx context.Context) []*Challenge {
 	causeIds := u.CauseIds(ctx)
 	challenges := make([]*Challenge, 0)
 	districts := gov.FederalDistrictLocateByGPS(ctx, u.Latitude, u.Longitude)

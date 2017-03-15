@@ -20,6 +20,7 @@ type User struct {
 	Email          string
 	AvatarURL      string
 	CanCreateCause bool
+	BetaTester     bool
 
 	LocationSet bool
 	Latitude    float64

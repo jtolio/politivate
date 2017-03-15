@@ -25,4 +25,5 @@ indexes:
 - kind: Challenge
   ancestor: yes
   properties:
+  - name: Enabled
   - name: EventEnd.Time

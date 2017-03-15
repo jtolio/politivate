@@ -28,10 +28,16 @@ func cause(w http.ResponseWriter, r *http.Request) {
 	if u != nil {
 		isAdministrating = u.IsAdministrating(ctx, c)
 	}
+	var challenges []*models.Challenge
+	if isAdministrating {
+		challenges = c.GetAllChallenges(ctx)
+	} else {
+		challenges = c.GetLiveChallenges(ctx)
+	}
 	views.Render(w, r, "cause", map[string]interface{}{
 		"IsAdministrating": isAdministrating,
 		"Cause":            c,
-		"Challenges":       c.GetChallenges(ctx),
+		"Challenges":       challenges,
 	})
 }
 

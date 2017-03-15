@@ -15,5 +15,5 @@ func init() {
 
 func serveCauseChallenges(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
-	whjson.Render(w, r, mustGetCause(ctx).GetChallenges(ctx))
+	whjson.Render(w, r, mustGetCause(ctx).GetLiveChallenges(ctx))
 }
