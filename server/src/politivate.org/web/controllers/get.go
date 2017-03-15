@@ -1,5 +1,5 @@
 package controllers
 
 func init() {
-	mux["get"] = simpleHandler("get")
+	mux["get"] = Beta(simpleHandler("get"))
 }

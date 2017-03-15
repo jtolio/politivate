@@ -43,7 +43,9 @@ var _ = T.MustParse(`<!DOCTYPE html>
               <li><a href="/causes">Causes</a></li>
             {{ end }}
             <li><a href="/about">About</a></li>
-            <li><a href="/get">Get the App</a></li>
+            {{ if .First.Beta }}
+              <li><a href="/get">Get the App</a></li>
+            {{ end }}
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {{ if .First.User }}
@@ -53,11 +55,13 @@ var _ = T.MustParse(`<!DOCTYPE html>
                     aria-expanded="false">{{ .First.User.Name }}
                     <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><a href="/profile">Profile</a></li>
-                  {{ if .First.User.CanCreateCause }}
-                    <li><a href="/causes/new">New Cause</a></li>
+                  {{ if .First.Beta }}
+                    <li><a href="/profile">Profile</a></li>
+                    {{ if .First.User.CanCreateCause }}
+                      <li><a href="/causes/new">New Cause</a></li>
+                    {{ end }}
+                    <li role="separator" class="divider"></li>
                   {{ end }}
-                  <li role="separator" class="divider"></li>
                   <li><a href="{{ .First.LogoutURL }}">Logout</a></li>
                 </ul>
               </li>

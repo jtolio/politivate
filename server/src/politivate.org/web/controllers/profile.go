@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"politivate.org/web/controllers/auth"
+	"politivate.org/web/auth"
 )
 
 func init() {
-	mux["profile"] = auth.WebLoginRequired(simpleHandler("profile"))
+	mux["profile"] = auth.WebLoginRequired(Beta(simpleHandler("profile")))
 }

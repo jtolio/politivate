@@ -5,5 +5,5 @@ import (
 )
 
 func init() {
-	mux["cause"] = cause.Handler
+	mux["cause"] = Beta(cause.Handler)
 }

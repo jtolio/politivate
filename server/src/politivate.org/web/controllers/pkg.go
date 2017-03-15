@@ -3,9 +3,12 @@ package controllers
 import (
 	"net/http"
 
+	"gopkg.in/webhelp.v1/whfatal"
 	"gopkg.in/webhelp.v1/whmux"
 	"gopkg.in/webhelp.v1/whredir"
+	"gopkg.in/webhelp.v1/whroute"
 
+	"politivate.org/web/auth"
 	"politivate.org/web/views"
 )
 
@@ -21,3 +24,13 @@ var (
 	simpleHandler = views.SimpleHandler
 	Render        = views.Render
 )
+
+func Beta(h http.Handler) http.Handler {
+	return auth.WebLoginRequired(whroute.HandlerFunc(h,
+		func(w http.ResponseWriter, r *http.Request) {
+			if !auth.User(r).BetaTester {
+				whfatal.Redirect("/")
+			}
+			h.ServeHTTP(w, r)
+		}))
+}

@@ -9,7 +9,7 @@ import (
 	"gopkg.in/webhelp.v1/whfatal"
 	"gopkg.in/webhelp.v1/whmux"
 
-	"politivate.org/web/controllers/auth"
+	"politivate.org/web/auth"
 )
 
 func init() {

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"politivate.org/web/controllers/auth"
+	"politivate.org/web/auth"
 )
 
 func init() {

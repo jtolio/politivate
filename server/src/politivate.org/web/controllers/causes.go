@@ -8,18 +8,18 @@ import (
 	"gopkg.in/webhelp.v1/whfatal"
 	"gopkg.in/webhelp.v1/whmux"
 
-	"politivate.org/web/controllers/auth"
+	"politivate.org/web/auth"
 	"politivate.org/web/models"
 )
 
 func init() {
-	mux["causes"] = whmux.Dir{
+	mux["causes"] = Beta(whmux.Dir{
 		"": whmux.Exact(http.HandlerFunc(causes)),
 		"new": whmux.ExactPath(whmux.Method{
 			"GET":  http.HandlerFunc(newCauseForm),
 			"POST": http.HandlerFunc(newCauseCreation),
 		}),
-	}
+	})
 }
 
 func causes(w http.ResponseWriter, r *http.Request) {

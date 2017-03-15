@@ -11,7 +11,7 @@ import (
 	"gopkg.in/webhelp.v1/whmux"
 	"gopkg.in/webhelp.v1/whtmpl"
 
-	"politivate.org/web/controllers/auth"
+	"politivate.org/web/auth"
 	"politivate.org/web/models"
 )
 

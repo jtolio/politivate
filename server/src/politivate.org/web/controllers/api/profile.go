@@ -8,7 +8,7 @@ import (
 	"gopkg.in/webhelp.v1/whjson"
 	"gopkg.in/webhelp.v1/whmux"
 
-	"politivate.org/web/controllers/auth"
+	"politivate.org/web/auth"
 )
 
 func init() {
