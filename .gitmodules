@@ -49,9 +49,3 @@
 [submodule "server/src/gopkg.in/go-webhelp/whoauth2.v1"]
 	path = server/src/gopkg.in/go-webhelp/whoauth2.v1
 	url = https://github.com/go-webhelp/whoauth2
-[submodule "server/src/github.com/jteeuwen/go-bindata"]
-	path = server/src/github.com/jteeuwen/go-bindata
-	url = https://github.com/jteeuwen/go-bindata.git
-[submodule "server/src/github.com/elazarl/go-bindata-assetfs"]
-	path = server/src/github.com/elazarl/go-bindata-assetfs
-	url = https://github.com/elazarl/go-bindata-assetfs.git
