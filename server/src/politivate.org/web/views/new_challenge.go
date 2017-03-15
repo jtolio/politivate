@@ -277,7 +277,9 @@ var _ = T.MustParse(`{{ template "header" (makepair . "New Challenge") }}
   </div>
 
   <div class="form-group" style="text-align: right;">
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <a class="btn btn-default" role="button"
+        href="/cause/{{.Values.Cause.Id}}">Cancel</a>
+    <button type="submit" class="btn btn-primary">Create</button>
   </div>
 </form>
 
