@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"politivate.org/web/controllers/static"
+	"net/http"
 )
 
 func init() {
-	mux["static"] = static.Handler
+	mux["static"] = http.FileServer(http.Dir("./static/"))
 }
