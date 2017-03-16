@@ -10,13 +10,13 @@ compile: static
 routes: compile
 	bin/local routes
 
-serve: compile _check_appengine
+serve: static _check_appengine
 	@echo
 	@echo please see https://groups.google.com/d/msg/google-appengine-go/k-r_hJ7W1dw/jRkv8ZCMAgAJ
 	@echo
 	GOPATH=${PWD} ${GO_APPENGINE_ROOT}/goapp serve politivate.org/web/app/appengine
 
-deploy: compile
+deploy: static
 	GOPATH=${PWD} ${GO_APPENGINE_ROOT}/goapp deploy politivate.org/web/app/appengine
 
 rollback:
