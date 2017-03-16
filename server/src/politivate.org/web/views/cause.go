@@ -3,11 +3,15 @@ package views
 var _ = T.MustParse(`{{ template "header" (makepair . .Values.Cause.Info.Name) }}
 
 {{ if .Values.IsAdministrating }}
-  <ul>
-    <li><a href="/cause/{{ .Values.Cause.Id }}/challenges/new">New Challenge</a></li>
-    <li><form method="post"><input type="hidden" name="action" value="delete"><input type="submit" value="Delete Cause"></form></li>
-    <li><a href="/cause/{{ .Values.Cause.Id }}/admin/invite">Invite admin</a></li>
-  </ul>
+  <!-- TODO: figure out how to get the btn-group to work with internal forms -->
+  <form method="post" onsubmit="return confirm('Are you sure you want to delete the cause?');">
+    <input type="hidden" name="action" value="delete">
+    <div class="btn-group" role="group">
+      <a href="/cause/{{ .Values.Cause.Id }}/challenges/new" class="btn btn-default">New Challenge</a>
+      <a href="/cause/{{ .Values.Cause.Id }}/admin/invite" class="btn btn-default">Invite admin</a>
+      <button type="submit" class="btn btn-default">Delete Cause</button>
+    </div>
+  </form>
 {{ end }}
 
 <h1><img width=24 height=24 src="{{ .Values.Cause.Info.IconURL }}"
