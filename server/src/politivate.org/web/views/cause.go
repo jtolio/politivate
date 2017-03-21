@@ -26,14 +26,30 @@ var _ = T.MustParse(`{{ template "header" (makepair . .Values.Cause.Info.Name) }
 <p><a href="{{ .Values.Cause.Info.URL }}">{{ .Values.Cause.Info.URL }}</a></p>
 
 <h2>Challenges</h2>
-<ul>
+
   {{ $cause := .Values.Cause }}
-  {{ range .Values.Challenges }}
-    <li><a href="/cause/{{$cause.Id}}/challenge/{{.Id}}">{{.Info.Title}}</a></li>
+  {{ range $i, $chal := .Values.Challenges }}
+    {{ if (ne $i 0) }}
+      <div class="horizontal-line"></div>
+    {{ end }}
+    <a href="/cause/{{$cause.Id}}/challenge/{{$chal.Id}}" class="large-button">
+      <div class="media">
+        <div class="media-left" style="font-size: 20px;">
+          {{ if (eq $chal.Info.Type "location") }}
+            <span class="glyphicon glyphicon-earphone text-secondary"></span>
+          {{ end }}
+          {{ if (eq $chal.Info.Type "phonecall") }}
+            <span class="glyphicon glyphicon-map-marker text-secondary"></span>
+          {{ end }}
+        </div>
+        <div class="media-body">
+          <h4 class="media-heading">{{ $chal.Info.Title }}</h4>
+        </div>
+      </div>
+    </a>
   {{ end }}
   {{ if (eq (len .Values.Challenges) 0) }}
-    <li>No challenges</li>
+    No challenges.
   {{ end }}
-</ul>
 
 {{ template "footer" . }}`)

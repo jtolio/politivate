@@ -5,12 +5,15 @@ var _ = T.MustParse(`{{ template "header" (makepair . "Causes") }}
 <h1>Causes</h1>
 
 {{ $ctx := .Ctx }}
-{{ range $c := .Values.Causes }}
+{{ range $i, $c := .Values.Causes }}
+  {{ if (ne $i 0) }}
+    <div class="horizontal-line"></div>
+  {{ end }}
   <a href="/cause/{{ $c.Id }}" class="large-button">
     <div class="media">
       <div class="media-left">
-        <img class="media-object" src="{{ $c.Info.IconURL }}" alt="logo"
-            width=64 height=64 />
+        <img class="media-object" style="border-radius: 10px;"
+             src="{{ $c.Info.IconURL }}" alt="logo" width=64 height=64 />
       </div>
       <div class="media-body">
         <h4 class="media-heading">{{ $c.Info.Name }}</h4>

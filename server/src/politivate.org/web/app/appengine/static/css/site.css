@@ -53,11 +53,22 @@ body {
   padding: 0px;
 }
 
+.horizontal-line {
+  display: block;
+  height: 0;
+  margin: .2em;
+  padding: 0;
+  border-bottom: solid 1px #0075ff;
+  opacity: 0.1;
+  filter: alpha(opacity=10);
+}
+
 a.large-button {
   color: #333;
   display: block;
-  border-radius: 10px;
   padding: 10px;
-  border: solid 1px #aaa;
-  margin-bottom: 20px;
+}
+
+a.large-button:hover, a.large-button:active {
+  background: #f0f0f0;
 }
