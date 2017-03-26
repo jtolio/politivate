@@ -1,11 +1,11 @@
 package views
 
-var _ = T.MustParse(`{{ template "header" (makepair . "Challenge") }}
+var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" .Values.Callenge.Info.Title) }}
 
 <div class="row">
   <div class="col-sm-8">
     <h1 style="margin-bottom: 10px;">{{.Values.Challenge.Info.Title}}</h1>
-    <p><a href="/cause/{{.Values.Cause.Id}}">{{ .Values.Cause.Info.Name }}</a></p>
+    <p><a href="/cause/{{.Values.Cause.Id}}">Back to {{ .Values.Cause.Info.Name }}</a></p>
 
     <p>{{.Values.Challenge.Data.Description | format}}</p>
   </div>

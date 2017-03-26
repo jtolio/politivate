@@ -1,6 +1,6 @@
 package views
 
-var _ = T.MustParse(`{{ template "header" (makepair . .Values.Cause.Info.Name) }}
+var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" .Values.Cause.Info.Name) }}
 
 <div class="row">
   <div class="col-sm-8">

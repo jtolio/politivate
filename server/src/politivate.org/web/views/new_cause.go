@@ -1,6 +1,6 @@
 package views
 
-var _ = T.MustParse(`{{ template "header" (makepair . "New Cause") }}
+var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" "New Cause") }}
 
 <h1>Create a new Cause</h1>
 

@@ -1,6 +1,6 @@
 package views
 
-var _ = T.MustParse(`{{ template "header" (makepair . "Profile") }}
+var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" "Profile") }}
 
 <p><img src="{{.User.AvatarURL}}" /></p>
 

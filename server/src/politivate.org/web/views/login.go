@@ -1,6 +1,6 @@
 package views
 
-var _ = T.MustParse(`{{ template "header" (makepair . "Login") }}
+var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" "Login" "Selected" "login") }}
 
 <h1>Login</h1>
 

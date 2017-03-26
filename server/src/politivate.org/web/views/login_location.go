@@ -1,6 +1,6 @@
 package views
 
-var _ = T.MustParse(`{{ template "header" (makepair . "Set your district") }}
+var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" "Set your district") }}
 
 <h1>We need to figure out your location!</h1>
 

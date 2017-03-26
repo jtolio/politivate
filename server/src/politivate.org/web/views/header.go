@@ -6,8 +6,8 @@ var _ = T.MustParse(`<!DOCTYPE html>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {{ if .Second }}
-      <title>{{ .Second }} - Politivate.org</title>
+    {{ if .Title }}
+      <title>{{ .Title }} - Politivate.org</title>
     {{ else }}
       <title>Politivate.org</title>
     {{ end }}
@@ -40,34 +40,42 @@ var _ = T.MustParse(`<!DOCTYPE html>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-region">
           <ul class="nav navbar-nav">
-            {{ if .First.Beta }}
-              <li><a href="/causes">Causes</a></li>
+            {{ if .P.Beta }}
+              <li{{if .Selected}}{{if (eq .Selected "causes")}} class="active"{{end}}{{end}}>
+                <a href="/causes">Causes</a>
+              </li>
             {{ end }}
-            <li><a href="/about">About</a></li>
-            {{ if .First.Beta }}
-              <li><a href="/get">Get the App</a></li>
+            <li{{if .Selected}}{{if (eq .Selected "about")}} class="active"{{end}}{{end}}>
+              <a href="/about">About</a>
+            </li>
+            {{ if .P.Beta }}
+              <li{{if .Selected}}{{if (eq .Selected "get")}} class="active"{{end}}{{end}}>
+                <a href="/get">Get the App</a>
+              </li>
             {{ end }}
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            {{ if .First.User }}
+            {{ if .P.User }}
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                     role="button" aria-haspopup="true"
-                    aria-expanded="false">{{ .First.User.Name }}
+                    aria-expanded="false">{{ .P.User.Name }}
                     <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  {{ if .First.Beta }}
+                  {{ if .P.Beta }}
                     <li><a href="/profile">Profile</a></li>
-                    {{ if .First.User.CanCreateCause }}
+                    {{ if .P.User.CanCreateCause }}
                       <li><a href="/causes/new">New Cause</a></li>
                     {{ end }}
                     <li role="separator" class="divider"></li>
                   {{ end }}
-                  <li><a href="{{ .First.LogoutURL }}">Logout</a></li>
+                  <li><a href="{{ .P.LogoutURL }}">Logout</a></li>
                 </ul>
               </li>
             {{ else }}
-              <li><a href="{{ .First.LoginURL }}">Login</a></li>
+              <li{{if .Selected}}{{if (eq .Selected "login")}} class="active"{{end}}{{end}}>
+                <a href="{{ .P.LoginURL }}">Login</a>
+              </li>
             {{ end }}
           </ul>
         </div>

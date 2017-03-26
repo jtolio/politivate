@@ -1,8 +1,8 @@
 package views
 
-var _ = T.MustParse(`{{ template "header" (makepair . "Privacy") }}
+var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" "Privacy policy") }}
 
-<h1>Privacy</h1>
+<h1>Privacy policy</h1>
 
 <p>Privacy policy coming soon!</p>
 
