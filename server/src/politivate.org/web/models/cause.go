@@ -15,7 +15,8 @@ type CauseHeader struct {
 }
 
 type CauseData struct {
-	Description string `datastore:",noindex"`
+	ShortDescription string `datastore:",noindex"`
+	Description      string `datastore:",noindex"`
 }
 
 type Cause struct {

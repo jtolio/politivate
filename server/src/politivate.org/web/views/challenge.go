@@ -2,25 +2,27 @@ package views
 
 var _ = T.MustParse(`{{ template "header" (makepair . "Challenge") }}
 
-{{ if .Values.IsAdministrating }}
-  <!-- TODO: figure out how to get the btn-group to work with internal forms -->
-  <form method="post" onsubmit="return confirm('Are you sure you want to delete the challenge?');">
-    <input type="hidden" name="action" value="delete">
-    <div class="btn-group" role="group">
-      <button type="submit" class="btn btn-default">Delete Challenge</button>
-    </div>
-  </form>
-{{ end }}
-
-<h1>{{.Values.Challenge.Info.Title}}</h1>
-
 <div class="row">
   <div class="col-sm-8">
+    <h1 style="margin-bottom: 10px;">{{.Values.Challenge.Info.Title}}</h1>
+    <p><a href="/cause/{{.Values.Cause.Id}}">{{ .Values.Cause.Info.Name }}</a></p>
+
     <p>{{.Values.Challenge.Data.Description | format}}</p>
   </div>
-</div>
+  <div class="col-sm-4">
+    <img src="{{ .Values.Cause.Info.IconURL }}" class="img-responsive img-rounded center-block" style="width:100%; margin-bottom:20px;"/>
 
-<p><a href="/cause/{{.Values.Cause.Id}}">Back to Cause</a></p>
+    {{ if .Values.IsAdministrating }}
+      <div class="list-group">
+        <form method="post"
+            onsubmit="return confirm('Are you sure you want to delete the challenge?');">
+          <input type="hidden" name="action" value="delete">
+          <button type="submit" class="list-group-item">Delete</button>
+        </form>
+      </div>
+    {{ end }}
+  </div>
+</div>
 
 {{ template "footer" . }}
 `)

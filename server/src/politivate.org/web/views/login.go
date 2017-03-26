@@ -2,6 +2,8 @@ package views
 
 var _ = T.MustParse(`{{ template "header" (makepair . "Login") }}
 
+<h1>Login</h1>
+
 {{ with (index .Values.Providers "facebook") }}
   <p><a class="btn btn-primary btn-lg" href="{{.}}"
         role="button">Login with Facebook</a></p>
