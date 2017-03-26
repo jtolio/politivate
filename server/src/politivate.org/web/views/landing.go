@@ -8,7 +8,7 @@ var _ = T.MustParse(`{{ template "header" (makepair . "") }}
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    padding-top: 400px;
+    padding-top: 500px;
     text-align: right;
   }
 </style>

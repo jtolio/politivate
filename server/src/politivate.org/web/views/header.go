@@ -11,6 +11,7 @@ var _ = T.MustParse(`<!DOCTYPE html>
     {{ else }}
       <title>Politivate.org</title>
     {{ end }}
+    <link href="https://fonts.googleapis.com/css?family=Questrial" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/bootstrap.css">
     <!--[if lt IE 9]>
       <script src="//oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -34,7 +35,7 @@ var _ = T.MustParse(`<!DOCTYPE html>
           </button>
           <a class="navbar-brand" href="/">
             <img alt="Politivate.org" src="/static/images/header.svg"
-              height="40">
+              height="20">
           </a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-region">

@@ -34,7 +34,7 @@ var _ = T.MustParse(`{{ template "header" (makepair . .Values.Cause.Info.Name) }
     {{ end }}
     <a href="/cause/{{$cause.Id}}/challenge/{{$chal.Id}}" class="large-button">
       <div class="media">
-        <div class="media-left" style="font-size: 20px;">
+        <div class="media-left" style="font-size: 25px;">
           {{ if (eq $chal.Info.Type "location") }}
             <span class="glyphicon glyphicon-earphone text-secondary"></span>
           {{ end }}
