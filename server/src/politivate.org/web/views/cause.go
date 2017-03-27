@@ -46,6 +46,9 @@ var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" .Values.Cause.I
               </div>
               <div class="media-body">
                 <h4 class="media-heading">{{ $chal.Info.Title }}</h4>
+                {{ if (not $chal.Info.Enabled) }}
+                  <p>Disabled</p>
+                {{ end }}
               </div>
             </div>
           </a>

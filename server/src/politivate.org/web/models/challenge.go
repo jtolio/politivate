@@ -33,8 +33,7 @@ func (cause *Cause) NewChallenge(ctx context.Context) *Challenge {
 	return &Challenge{
 		CauseId: cause.Id,
 		Info: ChallengeHeader{
-			Posted:  TimeNow(),
-			Enabled: true, // TODO: probably shouldn't be the default
+			Posted: TimeNow(),
 		},
 		Data: &ChallengeData{},
 	}

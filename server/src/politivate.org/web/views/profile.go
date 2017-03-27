@@ -2,7 +2,7 @@ package views
 
 var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" "Profile") }}
 
-<p><img src="{{.User.AvatarURL}}" /></p>
+<p><img src="{{.User.AvatarURL}}" width=48 /></p>
 
 <dl>
 <dt>Name</dt><dd>{{.User.Name}}</dd>

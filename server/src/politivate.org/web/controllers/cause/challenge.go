@@ -18,7 +18,7 @@ func init() {
 	mux["challenge"] = challengeId.Shift(whmux.Dir{
 		"": whmux.Method{
 			"GET":  http.HandlerFunc(challenge),
-			"POST": http.HandlerFunc(editChallenge),
+			"POST": auth.WebLoginRequired(http.HandlerFunc(editChallenge)),
 		},
 	})
 }
@@ -44,6 +44,16 @@ func editChallenge(w http.ResponseWriter, r *http.Request) {
 	case "delete":
 		administerChallenge(r).Delete(ctx)
 		whfatal.Redirect(fmt.Sprintf("/cause/%d", causeId.MustGet(ctx)))
+	case "enable":
+		chal := administerChallenge(r)
+		chal.Info.Enabled = true
+		chal.Save(ctx)
+		whfatal.Redirect(r.RequestURI)
+	case "disable":
+		chal := administerChallenge(r)
+		chal.Info.Enabled = false
+		chal.Save(ctx)
+		whfatal.Redirect(r.RequestURI)
 	default:
 		whfatal.Error(wherr.BadRequest.New("action not understood"))
 	}
