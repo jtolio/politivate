@@ -77,9 +77,9 @@ var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" .Values.Cause.I
       {{ end }}
       {{ if .Values.IsAdministrating }}
         <a class="list-group-item"
-            href="/cause/{{ .Values.Cause.Id }}/admin/invite">Invite admin</a>
-        <a class="list-group-item"
             href="/cause/{{ .Values.Cause.Id }}/admin/edit">Edit</a>
+        <a class="list-group-item"
+            href="/cause/{{ .Values.Cause.Id }}/admin/invite">Invite admin</a>
         <a class="list-group-item" href="javascript:doAction('delete', 'Are you sure you want to delete the cause?');">Delete</a>
       {{ end }}
     </div>

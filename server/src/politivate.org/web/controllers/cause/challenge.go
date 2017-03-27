@@ -14,13 +14,16 @@ import (
 	"politivate.org/web/views"
 )
 
-func init() {
-	mux["challenge"] = challengeId.Shift(whmux.Dir{
+var (
+	challengeMux = whmux.Dir{
 		"": whmux.Method{
 			"GET":  http.HandlerFunc(challenge),
-			"POST": auth.WebLoginRequired(http.HandlerFunc(editChallenge)),
-		},
-	})
+			"POST": auth.WebLoginRequired(http.HandlerFunc(challengeAction)),
+		}}
+)
+
+func init() {
+	mux["challenge"] = challengeId.Shift(challengeMux)
 }
 
 func challenge(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +41,7 @@ func challenge(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func editChallenge(w http.ResponseWriter, r *http.Request) {
+func challengeAction(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
 	switch r.FormValue("action") {
 	case "delete":

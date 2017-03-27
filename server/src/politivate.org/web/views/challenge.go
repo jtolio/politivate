@@ -24,6 +24,8 @@ var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" .Values.Calleng
               href="javascript:doAction('enable');">Enable</a>
         {{ end }}
         <a class="list-group-item"
+          href="/cause/{{.Values.Cause.Id}}/challenge/{{.Values.Challenge.Id}}/admin/edit">Edit</a>
+        <a class="list-group-item"
           href="javascript:doAction('delete', 'Are you sure you want to delete the challenge?');">Delete</a>
       {{ end }}
     </div>

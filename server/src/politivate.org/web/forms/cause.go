@@ -9,16 +9,14 @@ import (
 func NewCauseForm() *Form {
 	return &Form{
 		Template: "cause_form",
-		Action:   "Create",
-		Form:     map[string]string{},
+		Form:     map[string]interface{}{},
 	}
 }
 
 func EditCauseForm(c *models.Cause) *Form {
 	return &Form{
 		Template: "cause_form",
-		Action:   "Edit",
-		Form: map[string]string{
+		Form: map[string]interface{}{
 			"name":        c.Info.Name,
 			"url":         c.Info.URL,
 			"icon_url":    c.Info.IconURL,

@@ -12,12 +12,15 @@ import (
 type Form struct {
 	Error    string
 	Template string
+	Form     map[string]interface{}
+	Page     *views.Page
 	Action   string
-	Form     map[string]string
 }
 
-func (f *Form) Render() template.HTML {
+func (f *Form) Render(p *views.Page, action string) template.HTML {
 	var buf bytes.Buffer
+	f.Page = p
+	f.Action = action
 	err := views.T.Lookup(f.Template).Execute(&buf, f)
 	if err != nil {
 		whfatal.Error(err)

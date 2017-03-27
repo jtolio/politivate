@@ -59,6 +59,8 @@ type Time struct {
 	Time time.Time
 }
 
+func (t Time) Null() bool { return t.Time.IsZero() }
+
 func TimeNow() Time {
 	return Time{Time: time.Now()}
 }
