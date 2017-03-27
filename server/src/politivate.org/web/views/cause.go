@@ -29,7 +29,6 @@ var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" .Values.Cause.I
           </div>
         {{ end }}
 
-
         {{ $cause := .Values.Cause }}
         {{ range $i, $chal := .Values.Challenges }}
           {{ if (ne $i 0) }}
@@ -67,17 +66,18 @@ var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" .Values.Cause.I
         class="img-responsive img-rounded center-block"
         style="width:100%; margin-bottom:20px;"/>
 
-    {{ if .Values.IsAdministrating }}
-      <div class="list-group">
+    <div class="list-group">
+      {{ if .Values.IsFollowing }}
+        <a class="list-group-item" href="javascript:doAction('unfollow');">Unfollow</a>
+      {{ else }}
+        <a class="list-group-item" href="javascript:doAction('follow');">Follow</a>
+      {{ end }}
+      {{ if .Values.IsAdministrating }}
         <a class="list-group-item"
             href="/cause/{{ .Values.Cause.Id }}/admin/invite">Invite admin</a>
-        <form method="post"
-            onsubmit="return confirm('Are you sure you want to delete the cause?');">
-          <input type="hidden" name="action" value="delete">
-          <button type="submit" class="list-group-item">Delete</button>
-        </form>
-      </div>
-    {{ end }}
+        <a class="list-group-item" href="javascript:doAction('delete', 'Are you sure you want to delete the cause?');">Delete</a>
+      {{ end }}
+    </div>
   </div>
 </div>
 

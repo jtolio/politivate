@@ -16,7 +16,7 @@ import (
 func init() {
 	mux[""] = whmux.Method{
 		"GET":  http.HandlerFunc(cause),
-		"POST": http.HandlerFunc(editCause),
+		"POST": auth.WebLoginRequired(http.HandlerFunc(editCause)),
 	}
 }
 
@@ -25,8 +25,10 @@ func cause(w http.ResponseWriter, r *http.Request) {
 	u := auth.User(r)
 	c := models.GetCause(ctx, causeId.MustGet(ctx))
 	isAdministrating := false
+	isFollowing := false
 	if u != nil {
 		isAdministrating = u.IsAdministrating(ctx, c)
+		isFollowing = u.IsFollowing(ctx, c)
 	}
 	var challenges []*models.Challenge
 	if isAdministrating {
@@ -36,16 +38,24 @@ func cause(w http.ResponseWriter, r *http.Request) {
 	}
 	views.Render(w, r, "cause", map[string]interface{}{
 		"IsAdministrating": isAdministrating,
+		"IsFollowing":      isFollowing,
 		"Cause":            c,
 		"Challenges":       challenges,
 	})
 }
 
 func editCause(w http.ResponseWriter, r *http.Request) {
+	ctx := whcompat.Context(r)
 	switch r.FormValue("action") {
 	case "delete":
-		administerCause(r).Delete(whcompat.Context(r))
+		administerCause(r).Delete(ctx)
 		whfatal.Redirect("/causes/")
+	case "follow":
+		auth.User(r).Follow(ctx, models.GetCause(ctx, causeId.MustGet(ctx)))
+		whfatal.Redirect(r.RequestURI)
+	case "unfollow":
+		auth.User(r).Unfollow(ctx, models.GetCause(ctx, causeId.MustGet(ctx)))
+		whfatal.Redirect(r.RequestURI)
 	default:
 		whfatal.Error(wherr.BadRequest.New("action not understood"))
 	}

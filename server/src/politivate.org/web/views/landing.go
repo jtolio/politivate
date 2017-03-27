@@ -13,7 +13,7 @@ var _ = T.MustParse(`{{ template "header" (makemap "P" .) }}
   }
 </style>
 <div class="jumbotron flag-jumbotron">
-  <p><a class="btn btn-primary btn-lg" href="/about"
+  <p><a class="btn btn-primary btn-lg" href="/login?redirect_to=%2Fabout"
         role="button">Make a difference</a></p>
 </div>
 

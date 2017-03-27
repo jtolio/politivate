@@ -14,15 +14,10 @@ var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" .Values.Calleng
 
     {{ if .Values.IsAdministrating }}
       <div class="list-group">
-        <form method="post"
-            onsubmit="return confirm('Are you sure you want to delete the challenge?');">
-          <input type="hidden" name="action" value="delete">
-          <button type="submit" class="list-group-item">Delete</button>
-        </form>
+        <a class="list-group-item" href="javascript:doAction('delete', 'Are you sure you want to delete the challenge?');">Delete</a>
       </div>
     {{ end }}
   </div>
 </div>
 
-{{ template "footer" . }}
-`)
+{{ template "footer" . }}`)
