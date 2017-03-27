@@ -21,6 +21,7 @@ func EditCauseForm(c *models.Cause) *Form {
 			"url":         c.Info.URL,
 			"icon_url":    c.Info.IconURL,
 			"description": c.Data.Description,
+			"short_desc":  c.Data.ShortDescription,
 		},
 	}
 }
@@ -30,6 +31,7 @@ func ProcessCauseForm(c *models.Cause, r *http.Request) (ok bool, f *Form) {
 	c.Info.URL = r.FormValue("url")
 	c.Info.IconURL = r.FormValue("icon_url")
 	c.Data.Description = r.FormValue("description")
+	c.Data.ShortDescription = r.FormValue("short_desc")
 	if c.Info.Name == "" || c.Info.URL == "" || c.Info.IconURL == "" ||
 		c.Data.Description == "" {
 		f := EditCauseForm(c)

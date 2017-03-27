@@ -28,6 +28,13 @@ var _ = T.MustParse(`
     </div>
   </div>
   <div class="form-group">
+    <label for="inputShortDesc" class="col-sm-2 control-label">Short Summary</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="inputShortDesc" name="short_desc"
+             value="{{ (index .Form "short_desc") }}">
+    </div>
+  </div>
+  <div class="form-group">
     <label for="inputDescription" class="col-sm-2 control-label">Description</label>
     <div class="col-sm-10">
       <textarea class="form-control" id="inputDescription" rows="3"

@@ -37,6 +37,7 @@ func (c *Cause) JSON() map[string]interface{} {
 		"url":      c.Info.URL,
 	}
 	if c.Data != nil {
+		vals["short_desc"] = c.Data.ShortDescription
 		vals["description"] = c.Data.Description
 	}
 	return vals
