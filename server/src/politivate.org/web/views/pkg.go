@@ -1,6 +1,7 @@
 package views
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"regexp"
@@ -29,12 +30,27 @@ func makeCollection() *whtmpl.Collection {
 	return rv
 }
 
+type DeferredList []string
+
+func (l *DeferredList) Add(v string) string {
+	for _, existing := range *l {
+		if existing == v {
+			panic(fmt.Sprintf("%s already deferred", v))
+		}
+	}
+	*l = append(*l, v)
+	return ""
+}
+
 type Page struct {
 	User   *models.User
 	Beta   bool
 	Values interface{}
 	Req    *http.Request
 	Ctx    context.Context
+
+	DeferredFuncs   DeferredList
+	DeferredSources DeferredList
 }
 
 func (p *Page) LogoutURL() string {

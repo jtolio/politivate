@@ -29,12 +29,8 @@ districts you're in.</p>
   </div>
 </form>
 
-
-{{ template "footerscripts" . }}
-<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=` + mapsAPIKey + `&libraries=places"></script>
-<script src="/static/js/locationpicker.jquery.min.js"></script>
 <script>
-$(function() {
+function initPlacePicker() {
   $("#placepicker").locationpicker({
     location: {
       latitude: 0,
@@ -55,6 +51,10 @@ $(function() {
       longitude: location.coords.longitude
     });
   });
-})
+}
 </script>
-{{ template "footerdoc" . }}`)
+
+{{.DeferredSources.Add "https://maps.google.com/maps/api/js?key=` + mapsAPIKey + `&libraries=places"}}
+{{.DeferredSources.Add "/static/js/locationpicker.jquery.min.js"}}
+{{.DeferredFuncs.Add "initPlacePicker"}}
+{{ template "footer" . }}`)

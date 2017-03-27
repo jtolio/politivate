@@ -283,9 +283,6 @@ var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" "New Challenge"
   </div>
 </form>
 
-{{ template "footerscripts" . }}
-<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=` + mapsAPIKey + `&libraries=places"></script>
-<script src="/static/js/locationpicker.jquery.min.js"></script>
 <script>
   function fieldChange(val, opts) {
     $.each(opts, function(optval, optselect) {
@@ -453,12 +450,17 @@ var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" "New Challenge"
     $("#directaddrPicker").locationpicker(options);
   }
 
-  $(challengeTypeChange);
-  $(dateTypeChange);
-  $(phoneDatabaseChange);
-  $(locationDatabaseChange);
-  $(restrictionTypeChange);
-  $(updateRestrictions);
+  function initChallengeForm() {
+    challengeTypeChange();
+    dateTypeChange();
+    phoneDatabaseChange();
+    locationDatabaseChange();
+    restrictionTypeChange();
+    updateRestrictions();
+  }
 </script>
-{{ template "footerdoc" . }}
-`)
+
+{{.DeferredSources.Add "https://maps.google.com/maps/api/js?key=` + mapsAPIKey + `&libraries=places"}}
+{{.DeferredSources.Add "/static/js/locationpicker.jquery.min.js"}}
+{{.DeferredFuncs.Add "initChallengeForm"}}
+{{ template "footer" . }}`)
