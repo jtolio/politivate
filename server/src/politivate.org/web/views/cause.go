@@ -38,10 +38,10 @@ var _ = T.MustParse(`{{ template "header" (makemap "P" . "Title" .Values.Cause.I
             <div class="media">
               <div class="media-left" style="font-size: 25px;">
                 {{ if (eq $chal.Info.Type "location") }}
-                  <span class="glyphicon glyphicon-earphone text-secondary"></span>
+                  <span class="glyphicon glyphicon-map-marker text-secondary"></span>
                 {{ end }}
                 {{ if (eq $chal.Info.Type "phonecall") }}
-                  <span class="glyphicon glyphicon-map-marker text-secondary"></span>
+                  <span class="glyphicon glyphicon-earphone text-secondary"></span>
                 {{ end }}
               </div>
               <div class="media-body">
