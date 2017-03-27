@@ -16,7 +16,7 @@ import (
 func init() {
 	mux[""] = whmux.Method{
 		"GET":  http.HandlerFunc(cause),
-		"POST": auth.WebLoginRequired(http.HandlerFunc(editCause)),
+		"POST": auth.WebLoginRequired(http.HandlerFunc(causeAction)),
 	}
 }
 
@@ -44,7 +44,7 @@ func cause(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func editCause(w http.ResponseWriter, r *http.Request) {
+func causeAction(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
 	switch r.FormValue("action") {
 	case "delete":

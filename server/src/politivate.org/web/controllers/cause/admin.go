@@ -9,6 +9,7 @@ import (
 	"gopkg.in/webhelp.v1/whmux"
 
 	"politivate.org/web/auth"
+	"politivate.org/web/forms"
 	"politivate.org/web/models"
 	"politivate.org/web/views"
 )
@@ -22,6 +23,10 @@ func init() {
 		"invite": inviteToken.ShiftOpt(
 			auth.WebLoginRequired(whmux.Exact(http.HandlerFunc(useInvite))),
 			whmux.Exact(http.HandlerFunc(newInvite))),
+		"edit": whmux.Method{
+			"GET":  whmux.ExactPath(http.HandlerFunc(editForm)),
+			"POST": whmux.ExactPath(http.HandlerFunc(editFormAction)),
+		},
 	}
 }
 
@@ -37,5 +42,24 @@ func useInvite(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
 	c := models.GetCause(ctx, causeId.MustGet(ctx))
 	c.UseAdminInvite(ctx, inviteToken.Get(ctx), auth.User(r))
+	whfatal.Redirect(fmt.Sprintf("/cause/%d", c.Id))
+}
+
+func editForm(w http.ResponseWriter, r *http.Request) {
+	views.Render(w, r, "edit_cause", map[string]interface{}{
+		"Form": forms.EditCauseForm(administerCause(r)),
+	})
+}
+
+func editFormAction(w http.ResponseWriter, r *http.Request) {
+	ctx := whcompat.Context(r)
+	c := administerCause(r)
+	ok, f := forms.ProcessCauseForm(c, r)
+	if !ok {
+		views.Render(w, r, "edit_cause", map[string]interface{}{"Form": f})
+		return
+	}
+	c.Save(ctx)
+
 	whfatal.Redirect(fmt.Sprintf("/cause/%d", c.Id))
 }
