@@ -34,6 +34,14 @@ type Action struct {
 	Phone string `json:"phone"`
 }
 
+func (a *Action) Cause(ctx context.Context) *Cause {
+	return GetCause(ctx, a.CauseId)
+}
+
+func (a *Action) Challenge(ctx context.Context) *Challenge {
+	return GetChallenge(ctx, a.ChallengeId, a.CauseId)
+}
+
 func (chal *Challenge) Action(ctx context.Context, u *User) *Action {
 	return &Action{
 		UserId:      u.Id,
@@ -88,6 +96,9 @@ func (chal *Challenge) Completed(ctx context.Context, u *User) []*Action {
 
 func (u *User) Actions(ctx context.Context, after time.Time) []*Action {
 	return u.getActions(ctx, func(q *datastore.Query) *datastore.Query {
+		if after.IsZero() {
+			return q
+		}
 		return q.Filter("When.Time >=", after)
 	})
 }

@@ -162,23 +162,27 @@ func (c *Challenge) Delete(ctx context.Context) {
 	}
 }
 
-func (cause *Cause) GetChallenge(ctx context.Context, id int64) *Challenge {
+func GetChallenge(ctx context.Context, id, causeId int64) *Challenge {
 	challenge := Challenge{Data: &ChallengeData{}}
 	err := datastore.RunInTransaction(ctx, func(ctx context.Context) error {
-		err := datastore.Get(ctx, challengeKey(ctx, id, cause.Id),
+		err := datastore.Get(ctx, challengeKey(ctx, id, causeId),
 			&challenge.Info)
 		if err != nil {
 			return err
 		}
-		return datastore.Get(ctx, challengeDataKey(ctx, id, cause.Id),
+		return datastore.Get(ctx, challengeDataKey(ctx, id, causeId),
 			challenge.Data)
 	}, nil)
 	if err != nil {
 		whfatal.Error(wrapErr(err))
 	}
 	challenge.Id = id
-	challenge.CauseId = cause.Id
+	challenge.CauseId = causeId
 	return &challenge
+}
+
+func (cause *Cause) GetChallenge(ctx context.Context, id int64) *Challenge {
+	return GetChallenge(ctx, id, cause.Id)
 }
 
 func structFields(val interface{}) []string {

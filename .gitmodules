@@ -49,3 +49,6 @@
 [submodule "server/src/gopkg.in/go-webhelp/whoauth2.v1"]
 	path = server/src/gopkg.in/go-webhelp/whoauth2.v1
 	url = https://github.com/go-webhelp/whoauth2
+[submodule "server/src/github.com/dustin/go-humanize"]
+	path = server/src/github.com/dustin/go-humanize
+	url = https://github.com/dustin/go-humanize

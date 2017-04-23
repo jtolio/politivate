@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
+	"github.com/dustin/go-humanize"
 	"golang.org/x/net/context"
 	"gopkg.in/webhelp.v1/whcompat"
 	"gopkg.in/webhelp.v1/whmux"
@@ -25,7 +27,8 @@ var (
 func makeCollection() *whtmpl.Collection {
 	rv := whtmpl.NewCollection()
 	rv.Funcs(template.FuncMap{
-		"format": format,
+		"format":       format,
+		"humanizeTime": humanizeTime,
 	})
 	return rv
 }
@@ -139,4 +142,19 @@ func format(data string) template.HTML {
 	data = italic2.ReplaceAllString(data, `<em>$1</em>`)
 	data = monospace.ReplaceAllString(data, `<code>$1</code>`)
 	return template.HTML(data)
+}
+
+func humanizeTime(t interface{}) string {
+	switch v := t.(type) {
+	case time.Time:
+		return humanize.Time(v)
+	case *time.Time:
+		return humanize.Time(*v)
+	case models.Time:
+		return humanize.Time(v.Time)
+	case *models.Time:
+		return humanize.Time(v.Time)
+	default:
+		panic(fmt.Sprintf("invalid type %T", t))
+	}
 }

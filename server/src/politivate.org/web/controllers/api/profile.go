@@ -19,6 +19,8 @@ func serveProfile(w http.ResponseWriter, r *http.Request) {
 	ctx := whcompat.Context(r)
 	u := auth.User(r)
 	m := u.JSON()
-	m["month_actions"] = u.Actions(ctx, time.Now().Add(-30*24*time.Hour))
+	actions := u.Actions(ctx, time.Time{})
+	m["month_actions"] = actions
+	m["actions"] = actions
 	whjson.Render(w, r, m)
 }
