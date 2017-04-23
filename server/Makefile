@@ -1,5 +1,5 @@
 _message:
-	@echo "available targets: static compile serve deploy rollback routes"
+	@echo "available targets: static compile routes serve deploy"
 
 static:
 	GOPATH=${PWD} go generate politivate.org/web/...
@@ -11,18 +11,15 @@ routes: compile
 	bin/local routes
 
 serve: static _check_appengine
-	@echo
-	@echo please see https://groups.google.com/d/msg/google-appengine-go/k-r_hJ7W1dw/jRkv8ZCMAgAJ
-	@echo
-	GOPATH=${PWD} ${GO_APPENGINE_ROOT}/goapp serve politivate.org/web/app/appengine
+	GOPATH=${PWD} ${GCLOUD_SDK_ROOT}/bin/dev_appserver.py src/politivate.org/web/app/appengine
 
 deploy: static
-	GOPATH=${PWD} ${GO_APPENGINE_ROOT}/goapp deploy politivate.org/web/app/appengine
+	GOPATH=${PWD} ${GCLOUD_SDK_ROOT}/bin/gcloud app deploy --project politiforce-150719 src/politivate.org/web/app/appengine/app.yaml
 
-rollback:
-	${GO_APPENGINE_ROOT}/appcfg.py rollback src/politivate.org/web/app/appengine
+logs:
+	GOPATH=${PWD} ${GCLOUD_SDK_ROOT}/bin/gcloud app logs tail --project politiforce-150719 -s default
 
 _check_appengine:
-	@if test -z "$$GO_APPENGINE_ROOT"; then /bin/echo -e "\n\nError: please set GO_APPENGINE_ROOT\n"; exit 1; fi
+	@if test -z "$$GCLOUD_SDK_ROOT"; then /bin/echo -e "\n\nError: please set GCLOUD_SDK_ROOT\n"; exit 1; fi
 
-.PHONY: _message _check_appengine static compile serve deploy rollback
+.PHONY: _message _check_appengine static compile routes serve deploy
