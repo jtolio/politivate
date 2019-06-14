@@ -3,10 +3,10 @@ package secrets
 import (
 	"sync"
 
-	"github.com/markbates/goth"
-	"github.com/markbates/goth/providers/facebook"
-	"github.com/markbates/goth/providers/gplus"
-	"github.com/markbates/goth/providers/twitter"
+	"github.com/jtolds/goth"
+	"github.com/jtolds/goth/providers/facebook"
+	"github.com/jtolds/goth/providers/gplus"
+	"github.com/jtolds/goth/providers/twitter"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"

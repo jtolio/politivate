@@ -1,0 +1,6 @@
+runtime: go111
+main: ./app/appengine
+
+handlers:
+- url: /.*
+  script: auto

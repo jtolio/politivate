@@ -1,4 +1,4 @@
-package appengine
+package main
 
 import (
 	"net/http"
@@ -11,7 +11,7 @@ import (
 	"politivate.org/web/app"
 )
 
-func init() {
+func main() {
 	handler := app.RootHandler
 	if !appengine.IsDevAppServer() {
 		handler = whredir.RequireHost("www.politivate.org",
@@ -19,4 +19,5 @@ func init() {
 		whgls.SetLogOutput(log.Infof)
 	}
 	http.Handle("/", whgls.Bind(handler))
+	appengine.Main()
 }

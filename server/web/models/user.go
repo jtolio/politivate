@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/markbates/goth"
+	"github.com/jtolds/goth"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 	"gopkg.in/webhelp.v1/wherr"
